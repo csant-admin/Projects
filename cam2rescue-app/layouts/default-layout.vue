@@ -5,7 +5,7 @@
 			prominent
 		>
 			<v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-			<v-toolbar-title>Cam2Rescue</v-toolbar-title>
+			<v-toolbar-title><v-img :width="40" :height="50" aspect-ratio="16/9" src="../assets/images/logo3.png"></v-img>Cam2Rescue</v-toolbar-title>
 			<v-spacer></v-spacer>
 			<v-btn icon="mdi-dots-vertical" variant="text"></v-btn>
 		</v-app-bar>
@@ -15,15 +15,14 @@
 		>
 			<v-avatar
 				class="fa-fa-user mb-4 ml-4 mt-4"
-				color="grey-darken-1"
 				size="64"
 				>
 				<v-img
-					:width="74"
+					:width="80"
 					:height="100"
 					aspect-ratio="16/9"
 					cover
-					src="../assets/images/CDUH_logo.jpg"
+					src="../assets/images/logo3.png"
 				>
 				</v-img>
 			</v-avatar>
@@ -151,25 +150,25 @@ const links = [
 	{
 		name:'Create Post',
 		path:'/adoption/create-post',
-		icon:'mdi-office-building',
+		icon:'mdi-plus',
 		logout:false
 	},
 	{
 		name:'Add Module',
 		path:'/module',
-		icon:'mdi-office-building',
+		icon:'mdi-plus',
 		logout:false
 	},
 	{
 		name:'Users',
 		path:'/user',
-		icon:'mdi-office-building',
+		icon:'mdi-account',
 		logout:false
 	},
 	{
 		name:'Add User',
-		path:'user/add-user',
-		icon:'mdi-office-building',
+		path:'/user/add-user',
+		icon:'mdi-plus',
 		logout:false
 	},
 	{
