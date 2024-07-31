@@ -206,4 +206,12 @@
 .banner-image {
     position: relative;
 }
+
+.v-tabs-bar__content {
+  transition: transform 6s ease-in-out !important;
+}
+
+.v-tabs-slider-wrapper {
+  transition: transform 6s ease-in-out !important;
+}
 </style>
