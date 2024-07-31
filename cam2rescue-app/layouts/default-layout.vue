@@ -1,7 +1,7 @@
 <template>
 	<v-layout>
 		<v-app-bar
-			color="#6A0DAD"
+			color="#673AB7"
 			prominent
 		>
 			<v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
@@ -46,6 +46,8 @@
 						:to="item.path"
 					></v-list-item>
 				</template>
+				
+				
 				<template v-for="(item, index) in links">
 					<v-list-item
 						v-if="item.name === 'Dashboard'"
@@ -56,6 +58,18 @@
 						:to="item.path"
 					></v-list-item>
 				</template>
+
+				<template v-for="(item, index) in links">
+					<v-list-item
+						v-if="item.name === 'For Rescue'"
+						:key="index"
+						:prepend-icon="item.icon"
+						:title="item.name"
+						link
+						:to="item.path"
+					></v-list-item>
+				</template>
+				
 				<v-list-group>
 					<template v-slot:activator="{ props }">
 						<v-list-item v-bind="props" class="parent-nav">
@@ -69,7 +83,8 @@
 							!item.logout && 
 							item.name !== 'Add Module' &&
 							item.name !== 'Users' &&
-							item.name !== 'Add User'"
+							item.name !== 'Add User' &&
+							item.name !== 'For Rescue'"
 							:prepend-icon="item.icon"
 							:title="item.name"
 							link
@@ -78,6 +93,7 @@
 						</div>
 					</template>
 				</v-list-group>
+
 				<v-list-group>
 					<template v-slot:activator="{ props }">
 						<v-list-item v-bind="props" class="parent-nav">
@@ -91,7 +107,8 @@
 							!item.logout && 
 							item.name !== 'Add Module' &&
 							item.name !== 'Adoption Request' &&
-							item.name !== 'Create Post'"
+							item.name !== 'Create Post' &&
+							item.name !== 'For Rescue'"
 							:prepend-icon="item.icon"
 							:title="item.name"
 							link
@@ -137,7 +154,7 @@ import '../assets/css/main.css';
 const links = [
 	{
 		name:'Dashboard',
-		path:'/',
+		path:'/dashboard',
 		icon:'mdi-view-dashboard',
 		logout: false,
 	},
@@ -171,6 +188,15 @@ const links = [
 		icon:'mdi-plus',
 		logout:false
 	},
+
+	{
+		name: 'For Rescue',
+		path:'/rescue',
+		icon:'mdi-ambulance',
+		logout:false
+	},
+
+
 	{
 		name:'Logout',
 		path:'dashboard',
