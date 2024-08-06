@@ -8,20 +8,43 @@
                 <form  @submit.prevent="submitImage">
                     <v-row>
                         <v-col cols="6">
-                            <v-text-field v-model="petName" label="Pet Name" variant="outlined"></v-text-field>
+                            <v-text-field 
+                                v-model="petName" 
+                                label="Pet Name" 
+                                variant="outlined"
+                            ></v-text-field>
                         </v-col>
                         <v-col cols="6">
-                            <v-select v-model="petGender" label="Pet Gender" variant="outlined" item-title="text" item-value="id" :items="gender"></v-select>
+                            <v-select 
+                            v-model="petGender" 
+                            label="Pet Gender" 
+                            variant="outlined" 
+                            item-title="text" 
+                            item-value="id" 
+                            :items="gender"
+                        ></v-select>
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col cols="12">
-                            <v-textarea label="Description" v-model="petDescription" name="input-7-1" variant="outlined" auto-grow></v-textarea>
+                            <v-textarea 
+                            label="Description" 
+                            v-model="petDescription" 
+                            name="input-7-1" 
+                            variant="outlined" 
+                            auto-grow
+                        ></v-textarea>
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col cols="6">
-                            <v-file-input label="Upload Images" prepend-icon="mdi-camera" variant="outlined" type="file" @change="handleTargetSelected"></v-file-input>
+                            <v-text-field 
+                                label="Upload Images" 
+                                variant="outlined" 
+                                type="file" 
+                                @change="handleTargetSelected"
+                            >
+                            </v-text-field>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -30,11 +53,15 @@
                         </v-col>
                     </v-row>
                     <v-row>
-                        <img v-if="imagePreview" :src="imagePreview" alt="Image Preview" style="max-width: 400px; height: auto;" class="mt-3"/>
+                        <img 
+                            v-if="imagePreview" 
+                            :src="imagePreview" 
+                            alt="Image Preview" 
+                            style="max-width: 400px; height: auto;" class="mt-3"
+                        />
                     </v-row>
                 </form>
             </div>
-
     </v-container>
 </template>
 
@@ -135,3 +162,12 @@
         });
     
 </script>
+
+<style>
+    .file-upload-icon {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+    }
+</style>

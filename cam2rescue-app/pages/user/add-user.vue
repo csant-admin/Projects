@@ -3,7 +3,7 @@
         <div class="page-label animated-page-header">
             <h3>Add User</h3>
         </div>
-        <div class="animated-content">
+        <div class="animated animatedFadeInUp fadeInUp">
             <form @submit.prevent="addUser">
                 <v-row>
                     <v-col cols="6">
@@ -91,6 +91,7 @@
     const toggleVisibility = () => {
         visible.value = !visible.value;
     };
+    
     const initialFormState = {
         Lastname: '',
         Firstname: '',

@@ -8,9 +8,9 @@
                     <v-toolbar-title>Cam2Rescue</v-toolbar-title>
                 </v-col>
                 <v-col class="text-right">
-                    <v-btn text>About Us</v-btn>
-                    <v-btn text>Contact Us</v-btn>
-                    <v-btn text>Login</v-btn>
+                    <v-btn text tag="nuxt-link" to="/about">About Us</v-btn>
+                    <v-btn text tag="nuxt-link" to="/contact">Contact Us</v-btn>
+                    <v-btn text tag="nuxt-link" to="/login">Login</v-btn>
                 </v-col>
                 </v-row>
             </v-container>
@@ -19,7 +19,8 @@
         <v-main>
             <!-- Header -->
             <v-container class="text-center my-5">
-                <h1 class="display-1">Cam2Rescue</h1>
+                <h1 class="page-header-text"><span style="color: #6A0DAD">Cam</span>2Rescue</h1>
+                <p>An online platform for pet rescue and shelter</p>
             </v-container>
 
             <v-container fluid>
@@ -41,7 +42,7 @@
                         </v-img>
                         <v-card class="mt-4">
                             <p class="text-justify pa-4 home-p">
-                                If you believe that animals need help as much as humans do, I encourage you to support and donate to organizations located in Cebu. Cam2Rescue is a place where we prioritize the helpless strays. With our partnered organizations, they are always called upon to rescue animals suffering from abandonment, abuse, injury or neglect and none of it is possible without your support. Donations may be used to help cover the costs of daily operations, supplies, staff training, animal housing upgrades, community outreach programs, animal enrichment and much more.
+                                If you believe that animals need help as much as humans do, we, the cam2rescue team encourage you to support and donate to organizations located in Cebu. Cam2Rescue is a place where we prioritize the helpless strays. With our partnered organizations, they are always called upon to rescue animals suffering from abandonment, abuse, injury or neglect and none of it is possible without your support. Donations may be used to help cover the costs of daily operations, supplies, staff training, animal housing upgrades, community outreach programs, animal enrichment and much more.
                             </p>
                         </v-card>
                     </v-container>
@@ -71,7 +72,96 @@
                         </div>
                     </v-container>
                 </v-tabs-window-item>
-          
+                
+                <v-tabs-window-item value="PostRescue">
+                    <v-container>
+                        <div class="page-label animated-page-header">
+                            <h3>Create Post</h3>
+                        </div>
+                        <div class="animated-content">
+                            <form  @submit.prevent="submitImage">
+                                <v-row>
+                                    <v-col cols="6">
+                                        <v-text-field 
+                                            v-model="petColor" 
+                                            label="Pet Color" 
+                                            variant="outlined"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="6">
+                                        <v-select 
+                                        v-model="petGender" 
+                                        label="Pet Gender" 
+                                        variant="outlined" 
+                                        item-title="text" 
+                                        item-value="id" 
+                                        :items="gender"
+                                    ></v-select>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="4">
+                                        <v-text-field 
+                                            v-model="foundStreet" 
+                                            label="St./Blg/Zone" 
+                                            variant="outlined"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="4">
+                                        <v-text-field 
+                                            v-model="foundBarangay" 
+                                            label="Barangay" 
+                                            variant="outlined"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="4">
+                                        <v-text-field 
+                                            v-model="foundCity" 
+                                            label="City/Municipality" 
+                                            variant="outlined"
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-textarea 
+                                        label="Description" 
+                                        v-model="petDescription" 
+                                        name="input-7-1" 
+                                        variant="outlined" 
+                                        auto-grow
+                                    ></v-textarea>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="6">
+                                        <v-text-field 
+                                            label="Upload Images" 
+                                            variant="outlined" 
+                                            type="file" 
+                                            multiple
+                                            @change="handleTargetSelected"
+                                        >
+                                        </v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="6">
+                                        <v-btn color="info" type="submit">Upload</v-btn>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <img 
+                                        v-if="imagePreview" 
+                                        :src="imagePreview" 
+                                        alt="Image Preview" 
+                                        style="max-width: 400px; height: auto;" class="mt-3"
+                                    />
+                                </v-row>
+                            </form>
+                        </div>
+                    </v-container>
+                </v-tabs-window-item>
                 <v-tabs-window-item value="AdoptionRequest">
                     <v-container fluid>
                         <div class="animated-content">
@@ -119,6 +209,7 @@
 <script setup>
     import { ref, onMounted} from 'vue';
     import axios from 'axios';
+    import { createRouter, createWebHistory } from 'vue-router'
     import '~/assets/css/main.css';
 
     const userList = ref([]);
@@ -128,6 +219,16 @@
     const rowsPerPageItems = [4, 8, 12 ]
     const base_url =  useApiUrl();
     const activeTab = ref(0);
+
+
+    const  routes = [
+        { text: "Home", id: "Home" },
+        { text: "About Us", id: "AboutUs" },
+        { text: "Contact Us", id: "ContactUs" },
+        { text: "Services", id: "Services" },
+        { text: "The Team", id: "Team" }
+    ];
+
 
     const headers = [
         { title: 'Lastname', key: 'Lastname' },
@@ -213,5 +314,15 @@
 
 .v-tabs-slider-wrapper {
   transition: transform 6s ease-in-out !important;
+}
+
+/* Change border color of the outlined text field when focused */
+.v-field--active {
+    border-color: #6A0DAD !important; 
+    border-width: 2px !important; 
+}
+
+.v-field--active {
+    color: #6A0DAD !important;
 }
 </style>

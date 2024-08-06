@@ -134,7 +134,7 @@
 				<v-row justify="center" align="center" class="mb-4">
 					<v-col class="text-center">
 						<div class="page-header-text">
-							<h1 class="text-uppercase">Cam2Rescue</h1>
+							<h1 class="text-uppercase"><span style="color: #6A0DAD">Cam</span>2Rescue</h1>
 							<p>An online platform for pet rescue and shelter</p>
 						</div>
 					</v-col>

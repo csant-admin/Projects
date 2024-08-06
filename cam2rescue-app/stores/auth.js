@@ -1,43 +1,39 @@
+// stores/auth.js
 import { defineStore } from 'pinia'
-import { useRouter } from 'vue-router'
+import axios from 'axios'
 
-const base_url = useApiUrl();
 export const useAuthStore = defineStore('auth', {
   state: () => ({
+    user: null,
     loggedIn: false,
-    user: null
   }),
-
   actions: {
     async login(username, password) {
-      const router = useRouter()
-      const config = useRuntimeConfig()
-
       try {
-        const response = await this.$axios.post(`${base_url}/api/login`, {
-          username,
-          password
-        })
+        const response = await axios.post('http://127.0.0.1:8000/api/login', { username, password })
 
-        if (response.data.user) {
-          this.loggedIn = true
-          this.user = response.data.user
-          router.push(response.data.redirect)
-        }
+			this.loggedIn = true
+			this.user = response.data.user
+			// Save the user and login status to session storage
+			sessionStorage.setItem('user', JSON.stringify(this.user))
+			sessionStorage.setItem('loggedIn', true)
       } catch (error) {
-        console.error('Login failed', error)
+        throw new Error('Invalid credentials')
       }
     },
-    async logout() {
-      const router = useRouter()
-
-      try {
-        await this.$axios.post(`${base_url}/api/logout`)
-        this.loggedIn = false
-        this.user = null
-        router.push('/login')
-      } catch (error) {
-        console.error('Logout failed', error)
+    
+    logout() {
+      this.loggedIn = false
+      this.user = null
+      sessionStorage.removeItem('user')
+      sessionStorage.removeItem('loggedIn')
+    },
+    checkAuth() {
+      const user = sessionStorage.getItem('user')
+      const loggedIn = sessionStorage.getItem('loggedIn')
+      if (user && loggedIn) {
+        this.user = JSON.parse(user)
+        this.loggedIn = true
       }
     }
   }
