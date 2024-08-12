@@ -28,7 +28,7 @@
 						variant="outlined"
 					></v-text-field>
 					<br>
-					<v-btn type="submit" :disabled="!form" :loading="loading" size="large" variant="elevated">Login</v-btn>
+					<v-btn type="submit" :disabled="!form" :loading="loading" size="large" variant="elevated" color="#6A0DAD">Login</v-btn>
 				</v-form>
 			</v-card>
 		</v-sheet>

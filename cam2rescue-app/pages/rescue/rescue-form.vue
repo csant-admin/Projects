@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-container>
+    <v-container>
         <div class="page-label animated-page-header">
             <h3>Create Post</h3>
         </div>

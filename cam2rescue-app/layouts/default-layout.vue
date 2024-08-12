@@ -7,7 +7,7 @@
 			<v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 			<v-toolbar-title><v-img :width="40" :height="50" aspect-ratio="16/9" src="../assets/images/logo3.png"></v-img>Cam2Rescue</v-toolbar-title>
 			<v-spacer></v-spacer>
-			<v-btn icon="mdi-dots-vertical" variant="text"></v-btn>
+			<v-btn @click.stop="rightdrawer = !rightdrawer" icon="mdi-dots-vertical" variant="text"></v-btn>
 		</v-app-bar>
 		<v-navigation-drawer
 			v-model="drawer"
@@ -129,6 +129,25 @@
 				</template>
 			</v-list>
 		</v-navigation-drawer>
+		<v-navigation-drawer
+			v-model="rightdrawer"
+			location="right"
+			permanent
+		>
+		<div style="color: #6A0DAD;" class="left pa-4 text-uppercase">
+			<h4>Actions</h4>
+		</div>
+
+			<v-divider></v-divider>
+
+			<v-list density="compact" nav>
+			<v-list-item prepend-icon="mdi-pill" title="Add Pet Illness" value="Add Pet Illness" color="#6A0DAD"></v-list-item>
+			<v-list-item prepend-icon="mdi-format-color-fill" title="Add Color" value="Add Color" color="#6A0DAD"></v-list-item>
+			<v-list-item prepend-icon="mdi-map-marker" title="Add Barangay" value="Add Barangay" color="#6A0DAD"></v-list-item>
+			<v-list-item prepend-icon="mdi-run-fast" title="Add Urgency" value="Add Urgency" color="#6A0DAD"></v-list-item>
+			<v-list-item prepend-icon="mdi-needle-off" title="Add Injury" value="Add Injury" color="#6A0DAD"></v-list-item>
+			</v-list>
+		</v-navigation-drawer>
 		<v-main>
 			<v-container :fluid="true">
 				<v-row justify="center" align="center" class="mb-4">
@@ -150,6 +169,7 @@
 import { ref } from 'vue';
 import '../assets/css/sidebar.css';
 import '../assets/css/main.css';
+const rightdrawer = ref(false);
 
 const links = [
 	{

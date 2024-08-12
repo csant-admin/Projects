@@ -78,25 +78,50 @@
                         <div class="page-label animated-page-header">
                             <h3>Create Post</h3>
                         </div>
-                        <div class="animated-content">
-                            <form  @submit.prevent="submitImage">
+                        <div class="animated animatedFadeInUp fadeInUp">
+                            <form  @submit.prevent="postRescue">
                                 <v-row>
                                     <v-col cols="6">
-                                        <v-text-field 
-                                            v-model="petColor" 
+                                        <v-autocomplete 
+                                            v-model="selectedColor" 
                                             label="Pet Color" 
-                                            variant="outlined"
-                                        ></v-text-field>
+                                            variant="outlined" 
+                                            :items="color"
+                                            item-title="description" 
+                                            item-value="id" 
+                                        ></v-autocomplete>
                                     </v-col>
                                     <v-col cols="6">
-                                        <v-select 
-                                        v-model="petGender" 
-                                        label="Pet Gender" 
-                                        variant="outlined" 
-                                        item-title="text" 
-                                        item-value="id" 
-                                        :items="gender"
-                                    ></v-select>
+                                        <v-autocomplete 
+                                            v-model="selectedGender" 
+                                            label="Pet Gender" 
+                                            variant="outlined" 
+                                            :items="gender"
+                                            item-title="description" 
+                                            item-value="id" 
+                                        ></v-autocomplete>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="6">
+                                        <v-autocomplete 
+                                            v-model="selectedInjury" 
+                                            label="Injury List" 
+                                            variant="outlined" 
+                                            :items="injuryList"
+                                            item-title="description" 
+                                            item-value="id" 
+                                        ></v-autocomplete>
+                                    </v-col>
+                                    <v-col cols="6">
+                                        <v-autocomplete 
+                                            v-model="selectedUrgency" 
+                                            label="Urgency" 
+                                            variant="outlined" 
+                                            :items="urgency"
+                                            item-title="description" 
+                                            item-value="id" 
+                                        ></v-autocomplete>
                                     </v-col>
                                 </v-row>
                                 <v-row>
@@ -108,11 +133,14 @@
                                         ></v-text-field>
                                     </v-col>
                                     <v-col cols="4">
-                                        <v-text-field 
-                                            v-model="foundBarangay" 
+                                        <v-autocomplete 
+                                            v-model="selectedBarangay" 
                                             label="Barangay" 
-                                            variant="outlined"
-                                        ></v-text-field>
+                                            variant="outlined" 
+                                            :items="barangay"
+                                            item-title="description" 
+                                            item-value="id" 
+                                        ></v-autocomplete>
                                     </v-col>
                                     <v-col cols="4">
                                         <v-text-field 
@@ -147,7 +175,7 @@
                                 </v-row>
                                 <v-row>
                                     <v-col cols="6">
-                                        <v-btn color="info" type="submit">Upload</v-btn>
+                                        <v-btn color="#6A0DAD" type="submit">Post a Rescue</v-btn>
                                     </v-col>
                                 </v-row>
                                 <v-row>
@@ -210,15 +238,65 @@
     import { ref, onMounted} from 'vue';
     import axios from 'axios';
     import { createRouter, createWebHistory } from 'vue-router'
+    import { generateUniqueIdb } from '~/assets/js/IDCenter';
     import '~/assets/css/main.css';
 
-    const userList = ref([]);
-    const petList = ref([]);
-    const loading = ref(true);
-    const pagination = ref({ page: 1, itemsPerPage: 10 });
-    const rowsPerPageItems = [4, 8, 12 ]
-    const base_url =  useApiUrl();
-    const activeTab = ref(0);
+    const imageFile         = ref(null);
+    const imagePreview      = ref(null);
+    const userList          = ref([]);
+    const petList           = ref([]);
+    const loading           = ref(true);
+    const pagination        = ref({ page: 1, itemsPerPage: 10 });
+    const rowsPerPageItems  = [4, 8, 12 ]
+    const gender            = ref([]);
+    const barangay          = ref([]);
+    const color             = ref([]);
+    const injuryList        = ref([]);
+    const urgency           = ref([]);
+    const base_url          =  useApiUrl();
+    const ID                = generateUniqueIdb();
+    const userID            = ref('');
+    const activeTab         = ref(0);
+    const selectedColor = ref('');
+    const selectedBarangay = ref('');
+    const selectedGender = ref('');
+    const selectedInjury = ref('');
+    const selectedUrgency = ref('');
+    const foundStreet = ref('');
+    const foundCity = ref('');
+    const petDescription = ref('');
+
+    const handleTargetSelected = (event) => {
+        if (event.target.files.length === 0) {
+            imageFile.value = null;
+            imagePreview.value = null;
+            return;
+        }
+
+        imageFile.value = event.target.files[0];
+
+        if (imagePreview.value) {
+            URL.revokeObjectURL(imagePreview.value);
+        }
+        imagePreview.value = URL.createObjectURL(imageFile.value);
+    };
+
+    const postRescue = async () => {
+        const data = {
+            petId: ID,
+            Color: selectedColor.value,
+            Gender: selectedGender.value,
+            Barangay: selectedBarangay.value,
+            Injury: selectedInjury.value,
+            Urgency: selectedUrgency.value,
+            Street: foundStreet.value,
+            City: foundCity.value,
+            description: petDescription.value,
+            image: imageFile.value,
+
+        }
+        await handleAPIRequest(data, 'post-rescue');
+    }
 
 
     const  routes = [
@@ -258,9 +336,60 @@
                     response = await axios.get(`${base_url}api/list-of-pets`);
                     if (response.status >= 200 && response.status < 300) {
                         petList.value = response.data;
-                        console.log(petList);
                         loading.value = false;
                     }
+                    break;
+                    
+                case 'get-gender':
+                    response = await axios.get(`${base_url}api/get-gender`);
+                    gender.value = response.data;
+                    loading.value = false;
+                    break;
+
+                case 'barangay-list':
+                    response = await axios.get(`${base_url}api/barangay-list`);
+                    barangay.value = response.data;
+                    loading.value = false;
+                    break;
+
+                case 'color-list':
+                    response = await axios.get(`${base_url}api/color-list`);
+                    color.value = response.data;
+                    loading.value = false;
+                    break;
+
+                case 'injury-list':
+                    response = await axios.get(`${base_url}api/injury-list`);
+                    injuryList.value = response.data;
+                    loading.value = false;
+                    break;
+
+                case 'get-urgency':
+                    response = await axios.get(`${base_url}api/get-urgency`);
+                    urgency.value = response.data;
+                    loading.value = false;
+                    break;
+
+                case 'post-rescue': 
+                    const formData = new FormData();
+                    for (const key in data) {
+                        formData.append(key, data[key]);
+                    }
+                    const loggedInUser = sessionStorage.getItem('user');
+                    if (loggedInUser) {
+                        const userObject = JSON.parse(loggedInUser);
+                        const userID = userObject.UserID;
+                        formData.append('UserID', userID);
+                    } else {
+                        console.log('No user data found in sessionStorage.');
+                    }
+                    console.log('Logged In:', sessionStorage.getItem('loggedIn'));
+
+                    response = await axios.post(`${base_url}api/post-rescue`, formData, {
+                        headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                    });
                     break;
 
                 default:
@@ -296,13 +425,20 @@
 
     onMounted(() => {
         handleAPIRequest({}, 'list-of-pets');
+        handleAPIRequest({}, 'get-gender');
+        handleAPIRequest({}, 'barangay-list');
+        handleAPIRequest({}, 'color-list');
+        handleAPIRequest({}, 'injury-list');
+        handleAPIRequest({}, 'get-urgency');
     })
 
 </script>
 
 <style>
 .v-tab--selected {
-    color: #673AB7 !important;
+    color: #6A0DAD !important;
+    border-bottom: 2px solid #6A0DAD !important;
+    font-weight: bold !important;
 }
 .banner-image {
     position: relative;
@@ -320,6 +456,7 @@
 .v-field--active {
     border-color: #6A0DAD !important; 
     border-width: 2px !important; 
+
 }
 
 .v-field--active {

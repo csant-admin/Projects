@@ -4,25 +4,35 @@
             <h3>Create Post</h3>
         </div>
         
-            <div class="animated-content">
+            <div class="animated animatedFadeInUp fadeInUp">
                 <form  @submit.prevent="submitImage">
                     <v-row>
-                        <v-col cols="6">
+                        <v-col cols="4">
                             <v-text-field 
                                 v-model="petName" 
                                 label="Pet Name" 
                                 variant="outlined"
                             ></v-text-field>
                         </v-col>
-                        <v-col cols="6">
-                            <v-select 
+                        <v-col cols="4">
+                            <v-autocomplete 
                             v-model="petGender" 
                             label="Pet Gender" 
                             variant="outlined" 
-                            item-title="text" 
-                            item-value="id" 
                             :items="gender"
-                        ></v-select>
+                            item-title="description" 
+                            item-value="id" 
+                        ></v-autocomplete>
+                        </v-col>
+                        <v-col cols="4">
+                            <v-autocomplete
+                            v-model="petColor" 
+                            label="Pet Color" 
+                            variant="outlined" 
+                            :items="color"
+                            item-title="description" 
+                            item-value="id" 
+                        ></v-autocomplete>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -49,7 +59,7 @@
                     </v-row>
                     <v-row>
                         <v-col cols="6">
-                            <v-btn color="info" type="submit">Upload</v-btn>
+                            <v-btn color="#6A0DAD" type="submit">Upload</v-btn>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -79,14 +89,12 @@
     const imagePreview = ref(null);
     const petName = ref('');
     const petGender = ref('');
+    const petColor = ref('');
     const petDescription = ref('');
+    const color = ref([]);
+    const gender = ref([]);
     const base_url =  useApiUrl();
     const ID = generateUniqueIdb();
-
-    const gender = [
-        {text: "Male",      id: "M"},
-        {text: "Female",    id: "F"}
-    ];
 
     const handleTargetSelected = (event) => {
         if (event.target.files.length === 0) {
@@ -108,6 +116,7 @@
             petId: ID,
             petName: petName.value,
             petGender: petGender.value,
+            petColor: petColor.value,
             petDescription: petDescription.value,
             image: imageFile.value,
         };
@@ -116,7 +125,6 @@
 
     const handleAPIRequest = async (data = {}, apiRequest = '') => {
             const formData = new FormData();
-            console.log('Data Vlaues', data);
             for (const key in data) {
                 formData.append(key, data[key]);
             }
@@ -145,6 +153,18 @@
                         response = await axios.get(`${base_url}api/images`);
                         break;
 
+                    case 'get-gender':
+                        response = await axios.get(`${base_url}api/get-gender`);
+                        gender.value = response.data;
+                        loading.value = false;
+                        break;
+
+                    case 'color-list':
+                        response = await axios.get(`${base_url}api/color-list`);
+                        color.value = response.data;
+                        loading.value = false;
+                        break;
+
                     default:
                         throw new Error('Invalid API request');
                 }
@@ -160,6 +180,11 @@
                 URL.revokeObjectURL(imagePreview.value);
             }
         });
+
+        onMounted(() => {
+            handleAPIRequest('', 'color-list');
+            handleAPIRequest('', 'get-gender');
+        })
     
 </script>
 
