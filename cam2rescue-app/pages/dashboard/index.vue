@@ -1,7 +1,10 @@
 <template>
-    <div>
+    <v-container fluid>
         <h1>Dashboard</h1>
-    </div>
+        <v-container>
+            
+        </v-container>
+    </v-container>
 </template>
 
 <script setup>

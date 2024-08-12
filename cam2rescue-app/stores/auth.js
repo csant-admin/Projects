@@ -1,43 +1,57 @@
 import { defineStore } from 'pinia'
-import { useRouter } from 'vue-router'
+import axios from 'axios'
 
-const base_url = useApiUrl();
 export const useAuthStore = defineStore('auth', {
   state: () => ({
+    user: null,
+    token: null,
     loggedIn: false,
-    user: null
   }),
-
   actions: {
     async login(username, password) {
-      const router = useRouter()
-      const config = useRuntimeConfig()
-
       try {
-        const response = await this.$axios.post(`${base_url}/api/login`, {
-          username,
-          password
-        })
+        const response = await axios.post('http://127.0.0.1:8000/api/login', { username, password })
 
-        if (response.data.user) {
-          this.loggedIn = true
-          this.user = response.data.user
-          router.push(response.data.redirect)
-        }
+        this.token = response.data.token
+        this.user = response.data.user
+        this.loggedIn = true
+
+        // Save the token, user, and login status to session storage
+        sessionStorage.setItem('user', JSON.stringify(this.user))
+        sessionStorage.setItem('token', this.token)
+        sessionStorage.setItem('loggedIn', true)
       } catch (error) {
-        console.error('Login failed', error)
+        throw new Error('Invalid credentials')
       }
     },
+    
     async logout() {
-      const router = useRouter()
-
       try {
-        await this.$axios.post(`${base_url}/api/logout`)
+        await axios.post('http://127.0.0.1:8000/api/logout', {}, {
+          headers: {
+            'Authorization': `Bearer ${this.token}`  // Include the token
+          }
+        })
         this.loggedIn = false
         this.user = null
-        router.push('/login')
+        this.token = null
+        sessionStorage.removeItem('user')
+        sessionStorage.removeItem('token')
+        sessionStorage.removeItem('loggedIn')
       } catch (error) {
-        console.error('Logout failed', error)
+        console.error('Logout failed:', error)
+      }
+    },
+    
+    checkAuth() {
+      const user = sessionStorage.getItem('user')
+      const token = sessionStorage.getItem('token')
+      const loggedIn = sessionStorage.getItem('loggedIn')
+
+      if (user && token && loggedIn) {
+        this.user = JSON.parse(user)
+        this.token = token
+        this.loggedIn = true
       }
     }
   }

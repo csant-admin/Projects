@@ -3,59 +3,125 @@
         <div class="page-label animated-page-header">
             <h3>Add User</h3>
         </div>
-        <div class="animated-content">
+        <div class="animated animatedFadeInUp fadeInUp">
             <form @submit.prevent="addUser">
+                <v-progress-linear
+                    v-if="loading"
+                    color="deep-purple-accent-4"
+                    indeterminate
+                ></v-progress-linear>
                 <v-row>
-                    <v-col cols="6">
-                        <v-text-field v-model="Lastname" label="Last Name" variant="outlined"></v-text-field>
+                    <v-col cols="4">
+                        <v-text-field 
+                            v-model="Lastname" 
+                            label="Last Name" 
+                            variant="outlined"
+                        ></v-text-field>
                     </v-col>
-                    <v-col cols="6">
-                        <v-text-field v-model="Firstname" label="First Name" variant="outlined"></v-text-field>
+                    <v-col cols="4">
+                        <v-text-field 
+                            v-model="Firstname" 
+                            label="First Name" 
+                            variant="outlined"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-text-field 
+                            v-model="Middlename" 
+                            label="Middle Name" 
+                            variant="outlined"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="4">
+                        <v-text-field 
+                            v-model="dob" 
+                            label="Date of Birth" 
+                            type="date" 
+                            variant="outlined"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-autocomplete 
+                            v-model="Gender" 
+                            label="Gender" 
+                            variant="outlined" 
+                            :items="gender_data"
+                            item-title="description" 
+                            item-value="id" 
+                        ></v-autocomplete>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-autocomplete 
+                            v-model="Status" 
+                            label="Status" 
+                            variant="outlined" 
+                            :items="statuses"
+                            item-title="description" 
+                            item-value="id" 
+                        ></v-autocomplete>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="4">
+                        <v-autocomplete 
+                            v-model="Barangay" 
+                            label="Barangay" 
+                            variant="outlined" 
+                            :items="barangay_data"
+                            item-title="description" 
+                            item-value="id" 
+                        ></v-autocomplete>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-text-field 
+                            v-model="City" 
+                            label="City" 
+                            variant="outlined"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-text-field 
+                            v-model="Email" 
+                            label="Email" 
+                            variant="outlined"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="">
+                        <v-text-field 
+                            v-model="Username" 
+                            label="Username" 
+                            variant="outlined"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-text-field 
+                            v-model="Password" 
+                            label="Password" 
+                            variant="outlined" 
+                            :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'":type="visible ? 'text' : 'password'"  
+                            @click:append-inner="toggleVisibility"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-text-field 
+                            v-model="ConfirmPassword" 
+                            label="Confirm Password" 
+                            variant="outlined" 
+                            :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'":type="visible ? 'text' : 'password'"  
+                            @click:append-inner="toggleVisibility"
+                        ></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-col cols="6">
-                        <v-text-field v-model="Middlename" label="Middle Name" variant="outlined"></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                        <v-text-field v-model="dob" label="Date of Birth" type="date" variant="outlined"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="6">
-                        <v-select v-model="Gender" label="Gender" variant="outlined" item-title="text" item-value="id" :items="gender"></v-select>
-                    </v-col>
-                    <v-col cols="6">
-                        <v-select v-model="Status" label="Status" variant="outlined" item-title="text" item-value="id" :items="status"></v-select>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="6">
-                        <v-text-field v-model="Barangay" label="Barangay" variant="outlined"></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                        <v-text-field v-model="City" label="City" variant="outlined"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="6">
-                        <v-text-field v-model="Email" label="Email" variant="outlined"></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                        <v-text-field v-model="Username" label="Username" variant="outlined"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="6">
-                        <v-text-field v-model="Password" label="Password" variant="outlined" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'":type="visible ? 'text' : 'password'"  @click:append-inner="toggleVisibility"></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                        <v-text-field v-model="ConfirmPassword" label="Confirm Password" variant="outlined" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'":type="visible ? 'text' : 'password'"  @click:append-inner="toggleVisibility"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="6">
-                        <v-btn color="info" type="submit"><v-icon>mdi-plus</v-icon> Add User</v-btn>
+                        <v-btn 
+                            color="#6A0DAD" 
+                            type="submit"
+                        ><v-icon>mdi-plus</v-icon> Add User</v-btn>
                     </v-col>
                 </v-row>
             </form>
@@ -84,13 +150,18 @@
     const Username = ref('');
     const Password = ref('');
     const ConfirmPassword = ref('');
+    const gender_data = ref([]);
+    const barangay_data = ref([]);
+    const statuses = ref([]);
     const base_url = useApiUrl();
     const ID = generateUniqueIdb();
     const visible = ref(false);
+    const loading = ref(false);
 
     const toggleVisibility = () => {
         visible.value = !visible.value;
     };
+    
     const initialFormState = {
         Lastname: '',
         Firstname: '',
@@ -105,16 +176,6 @@
         Password: '',
         ConfirmPassword: ''
     };
-
-    const gender = [
-        {text: "Male",    id: "M"},
-        {text: "Female",  id: "F"}
-    ];
-
-    const status = [
-        {text: "Single",   id: "Single"},
-        {text: "Married",  id: "Married"}
-    ];
 
     const addUser = async () => {
         const data = {
@@ -140,8 +201,8 @@
         for (const key in data) {
             formData.append(key, data[key]);
         }
-        console.log(formData);
         try {
+            loading.value = true;
             let response;
             switch(apiRequest) {
                 case 'add-user':
@@ -160,6 +221,24 @@
                         }
                     });
                     break;
+                    case 'get-gender':
+                    response = await axios.get(`${base_url}api/get-gender`);
+                    gender_data.value = response.data;
+                    loading.value = false;
+                    break;
+
+                case 'barangay-list':
+                    response = await axios.get(`${base_url}api/barangay-list`);
+                    barangay_data.value = response.data;
+                    loading.value = false;
+                    break;
+
+                case 'get-statuses':
+                    response = await axios.get(`${base_url}api/get-statuses`);
+                    statuses.value = response.data;
+                    loading.value = false;
+                    break;
+
                 default:
                     throw new Error('Invalid API request');
             }
@@ -169,4 +248,11 @@
             throw error;
         }
     };
+
+    onMounted(() => {
+        handleAPIRequest('', 'get-gender');
+        handleAPIRequest('', 'barangay-list');
+        handleAPIRequest('', 'get-statuses');
+
+    })
 </script>

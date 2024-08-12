@@ -40,7 +40,6 @@
     import '~/assets/css/main.css';
 
     const userList = ref([]);
-    const petList = ref([]);
     const loading = ref(true);
     const pagination = ref({ page: 1, itemsPerPage: 10 });
     const base_url =  useApiUrl();
@@ -90,5 +89,4 @@
     };
 
     handleAPIRequest({}, 'user-list');
-    handleAPIRequest({}, 'list-of-pets');
 </script>
