@@ -2,21 +2,40 @@
     <v-app>
         <!-- Navigation Bar -->
         <v-app-bar app color="#673AB7">
-            <v-container>
-                <v-row align="center">
+            <v-container fluid>
+                <v-row align="center" no-gutters>
                 <v-col class="text-left">
                     <v-toolbar-title>Cam2Rescue</v-toolbar-title>
                 </v-col>
                 <v-col class="text-right">
                     <v-btn text tag="nuxt-link" to="/about">About Us</v-btn>
                     <v-btn text tag="nuxt-link" to="/contact">Contact Us</v-btn>
-                    <v-btn text tag="nuxt-link" to="/login">Login</v-btn>
+                    <template v-if="!isAuthenticated">
+                        <v-btn text tag="nuxt-link" to="/login">Login</v-btn>
+                    </template>
+                    <template v-else>
+                        <v-btn text @click="logout">Logout</v-btn>
+                    </template>
                 </v-col>
                 </v-row>
+                <v-snackbar
+                    v-model="showSnackbar"
+                    :timeout="2000"
+                    color="#6A0DAD"
+                    elevation="24"
+                    location="top right"
+                    multi-line="true"
+                >
+                    <div>
+                        <p>Logout Successful</p>
+                        <p><strong>Thank you for visiting <span style="letter-spacing: 2px;">Cam2Rescue</span></strong></p>
+                    </div>
+                </v-snackbar>
             </v-container>
         </v-app-bar>
         <!-- Main Content -->
         <v-main>
+            <v-progress-linear v-if="loading" color="deep-purple-accent-4" indeterminate></v-progress-linear>
             <!-- Header -->
             <v-container class="text-center my-5">
                 <h1 class="page-header-text"><span style="color: #6A0DAD">Cam</span>2Rescue</h1>
@@ -25,7 +44,12 @@
 
             <v-container fluid>
                 <v-tabs v-model="activeTab" centered background-color="primary" dark>
-                    <v-tab v-for="tab in tabs" :key="tab.id" :value="tab.id">{{ tab.text }}</v-tab>
+                    <v-tab :value="'Home'">Home</v-tab>
+                    <v-tab v-if="isAuthenticated" v-for="tab in authenticatedTabs" :key="tab.id" :value="tab.id">
+                        
+                            {{ tab.text }}
+                      
+                    </v-tab>
                 </v-tabs>
             </v-container>
 
@@ -73,123 +97,123 @@
                     </v-container>
                 </v-tabs-window-item>
                 
-                <v-tabs-window-item value="PostRescue">
-                    <v-container>
-                        <div class="page-label animated-page-header">
-                            <h3>Create Post</h3>
-                        </div>
-                        <div class="animated animatedFadeInUp fadeInUp">
-                            <form  @submit.prevent="postRescue">
-                                <v-row>
-                                    <v-col cols="6">
-                                        <v-autocomplete 
-                                            v-model="selectedColor" 
-                                            label="Pet Color" 
+                    <v-tabs-window-item value="PostRescue">
+                        <v-container>
+                            <div class="page-label animated-page-header">
+                                <h3>Create Post</h3>
+                            </div>
+                            <div class="animated animatedFadeInUp fadeInUp">
+                                <form  @submit.prevent="postRescue">
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-autocomplete 
+                                                v-model="selectedColor" 
+                                                label="Pet Color" 
+                                                variant="outlined" 
+                                                :items="color"
+                                                item-title="description" 
+                                                item-value="id" 
+                                            ></v-autocomplete>
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-autocomplete 
+                                                v-model="selectedGender" 
+                                                label="Pet Gender" 
+                                                variant="outlined" 
+                                                :items="gender"
+                                                item-title="description" 
+                                                item-value="id" 
+                                            ></v-autocomplete>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-autocomplete 
+                                                v-model="selectedInjury" 
+                                                label="Injury List" 
+                                                variant="outlined" 
+                                                :items="injuryList"
+                                                item-title="description" 
+                                                item-value="id" 
+                                            ></v-autocomplete>
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-autocomplete 
+                                                v-model="selectedUrgency" 
+                                                label="Urgency" 
+                                                variant="outlined" 
+                                                :items="urgency"
+                                                item-title="description" 
+                                                item-value="id" 
+                                            ></v-autocomplete>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="4">
+                                            <v-text-field 
+                                                v-model="foundStreet" 
+                                                label="St./Blg/Zone" 
+                                                variant="outlined"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col cols="4">
+                                            <v-autocomplete 
+                                                v-model="selectedBarangay" 
+                                                label="Barangay" 
+                                                variant="outlined" 
+                                                :items="barangay"
+                                                item-title="description" 
+                                                item-value="id" 
+                                            ></v-autocomplete>
+                                        </v-col>
+                                        <v-col cols="4">
+                                            <v-text-field 
+                                                v-model="foundCity" 
+                                                label="City/Municipality" 
+                                                variant="outlined"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <v-textarea 
+                                            label="Description" 
+                                            v-model="petDescription" 
+                                            name="input-7-1" 
                                             variant="outlined" 
-                                            :items="color"
-                                            item-title="description" 
-                                            item-value="id" 
-                                        ></v-autocomplete>
-                                    </v-col>
-                                    <v-col cols="6">
-                                        <v-autocomplete 
-                                            v-model="selectedGender" 
-                                            label="Pet Gender" 
-                                            variant="outlined" 
-                                            :items="gender"
-                                            item-title="description" 
-                                            item-value="id" 
-                                        ></v-autocomplete>
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col cols="6">
-                                        <v-autocomplete 
-                                            v-model="selectedInjury" 
-                                            label="Injury List" 
-                                            variant="outlined" 
-                                            :items="injuryList"
-                                            item-title="description" 
-                                            item-value="id" 
-                                        ></v-autocomplete>
-                                    </v-col>
-                                    <v-col cols="6">
-                                        <v-autocomplete 
-                                            v-model="selectedUrgency" 
-                                            label="Urgency" 
-                                            variant="outlined" 
-                                            :items="urgency"
-                                            item-title="description" 
-                                            item-value="id" 
-                                        ></v-autocomplete>
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col cols="4">
-                                        <v-text-field 
-                                            v-model="foundStreet" 
-                                            label="St./Blg/Zone" 
-                                            variant="outlined"
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col cols="4">
-                                        <v-autocomplete 
-                                            v-model="selectedBarangay" 
-                                            label="Barangay" 
-                                            variant="outlined" 
-                                            :items="barangay"
-                                            item-title="description" 
-                                            item-value="id" 
-                                        ></v-autocomplete>
-                                    </v-col>
-                                    <v-col cols="4">
-                                        <v-text-field 
-                                            v-model="foundCity" 
-                                            label="City/Municipality" 
-                                            variant="outlined"
-                                        ></v-text-field>
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col cols="12">
-                                        <v-textarea 
-                                        label="Description" 
-                                        v-model="petDescription" 
-                                        name="input-7-1" 
-                                        variant="outlined" 
-                                        auto-grow
-                                    ></v-textarea>
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col cols="6">
-                                        <v-text-field 
-                                            label="Upload Images" 
-                                            variant="outlined" 
-                                            type="file" 
-                                            multiple
-                                            @change="handleTargetSelected"
-                                        >
-                                        </v-text-field>
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col cols="6">
-                                        <v-btn color="#6A0DAD" type="submit">Post a Rescue</v-btn>
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <img 
-                                        v-if="imagePreview" 
-                                        :src="imagePreview" 
-                                        alt="Image Preview" 
-                                        style="max-width: 400px; height: auto;" class="mt-3"
-                                    />
-                                </v-row>
-                            </form>
-                        </div>
-                    </v-container>
-                </v-tabs-window-item>
+                                            auto-grow
+                                        ></v-textarea>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-text-field 
+                                                label="Upload Images" 
+                                                variant="outlined" 
+                                                type="file" 
+                                                multiple
+                                                @change="handleTargetSelected"
+                                            >
+                                            </v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-btn color="#6A0DAD" type="submit">Post a Rescue</v-btn>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <img 
+                                            v-if="imagePreview" 
+                                            :src="imagePreview" 
+                                            alt="Image Preview" 
+                                            style="max-width: 400px; height: auto;" class="mt-3"
+                                        />
+                                    </v-row>
+                                </form>
+                            </div>
+                        </v-container>
+                    </v-tabs-window-item>
                 <v-tabs-window-item value="AdoptionRequest">
                     <v-container fluid>
                         <div class="animated-content">
@@ -237,15 +261,18 @@
 <script setup>
     import { ref, onMounted} from 'vue';
     import axios from 'axios';
-    import { createRouter, createWebHistory } from 'vue-router'
+    import { useAuthStore, userAuthenticated } from '@/stores/auth';
     import { generateUniqueIdb } from '~/assets/js/IDCenter';
     import '~/assets/css/main.css';
+
+    const authStore = useAuthStore();
+    const router = useRouter();
 
     const imageFile         = ref(null);
     const imagePreview      = ref(null);
     const userList          = ref([]);
     const petList           = ref([]);
-    const loading           = ref(true);
+    const loading           = ref(false);
     const pagination        = ref({ page: 1, itemsPerPage: 10 });
     const rowsPerPageItems  = [4, 8, 12 ]
     const gender            = ref([]);
@@ -256,7 +283,6 @@
     const base_url          =  useApiUrl();
     const ID                = generateUniqueIdb();
     const userID            = ref('');
-    const activeTab         = ref(0);
     const selectedColor = ref('');
     const selectedBarangay = ref('');
     const selectedGender = ref('');
@@ -265,6 +291,16 @@
     const foundStreet = ref('');
     const foundCity = ref('');
     const petDescription = ref('');
+    const isAuthenticated = ref('')
+    const activeTab = ref('Home');
+    const showSnackbar = ref(false);
+    const drawer = ref(false);
+    if (process.client) {
+        const authenticated = localStorage.getItem('Authenticated');
+        isAuthenticated.value = authenticated === 'true'; 
+        console.log('Authenticated : ', isAuthenticated);
+    }
+
 
     const handleTargetSelected = (event) => {
         if (event.target.files.length === 0) {
@@ -298,16 +334,6 @@
         await handleAPIRequest(data, 'post-rescue');
     }
 
-
-    const  routes = [
-        { text: "Home", id: "Home" },
-        { text: "About Us", id: "AboutUs" },
-        { text: "Contact Us", id: "ContactUs" },
-        { text: "Services", id: "Services" },
-        { text: "The Team", id: "Team" }
-    ];
-
-
     const headers = [
         { title: 'Lastname', key: 'Lastname' },
         { title: 'Firstname', key: 'Firstname'},
@@ -321,6 +347,7 @@
 
     const handleAPIRequest = async (data = {}, apiRequest = '') => {
         try {
+            loading.value = true;
             let response;
 
             switch (apiRequest) {
@@ -401,6 +428,8 @@
             console.error(`Error ${apiRequest}:`, error);
             loading.value = false;
             throw error;
+        } finally {
+            loading.value = false;
         }
     };
 
@@ -408,20 +437,25 @@
 
     const tabs = [
         {text: 'Home',              id: 'Home'},
+    ];
+    
+    const authenticatedTabs = [
         {text: 'Adopt Pet',         id: 'AdoptPet'},
         {text: 'Post Rescue',       id: 'PostRescue'},
         {text: 'Donation',          id: 'Donation'},
         {text: 'Adoption Request',  id: 'AdoptionRequest' }, 
         {text: 'For Rescue',        id: 'ForRescue'}
-    ];
-
-    const links = [
-        {text: "Home",          id: "Home"},
-        {text: "Abount Us",     id: "AbountUs"},
-        {text: "Contact Us",    id: "ContactUs"},
-        {text: "Services",      id: "Services"},
-        {text: "The Team",      id: "Team"}
     ]
+
+    const logout = () => {
+        loading.value = true;
+        authStore.logout(); 
+        isAuthenticated.value = false;
+        showSnackbar.value = true;
+        setTimeout(function(){
+            router.push('/login');
+        }, 2000)
+    };
 
     onMounted(() => {
         handleAPIRequest({}, 'list-of-pets');
@@ -431,6 +465,7 @@
         handleAPIRequest({}, 'injury-list');
         handleAPIRequest({}, 'get-urgency');
     })
+
 
 </script>
 
