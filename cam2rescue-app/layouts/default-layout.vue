@@ -4,10 +4,17 @@
 			color="#673AB7"
 			prominent
 		>
-			<v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-			<v-toolbar-title><v-img :width="40" :height="50" aspect-ratio="16/9" src="../assets/images/logo3.png"></v-img>Cam2Rescue</v-toolbar-title>
-			<v-spacer></v-spacer>
-			<v-btn @click.stop="rightdrawer = !rightdrawer" icon="mdi-dots-vertical" variant="text"></v-btn>
+			<v-container fluid>
+				<v-row align="center" no-gutters>
+					<v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+					<v-toolbar-title>
+						<v-img :width="40" :height="50" aspect-ratio="16/9" src="../assets/images/logo3.png" class="mr-3"></v-img>
+						Cam2Rescue
+					</v-toolbar-title>
+					<v-spacer></v-spacer>
+					<v-btn @click.stop="rightdrawer = !rightdrawer" icon="mdi-dots-vertical" variant="text"></v-btn>
+				</v-row>
+			</v-container>
 		</v-app-bar>
 		<v-navigation-drawer
 			v-model="drawer"

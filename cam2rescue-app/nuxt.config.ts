@@ -12,7 +12,10 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "Cam2Rescue",
-      meta: [{name: 'description', content: 'An Online Platform for pet recue and shelter'}],
+      meta: [
+        {name: 'description', content: 'An Online Platform for pet recue and shelter'},
+        { name: 'csrf-token', content: process.env.CSRF_TOKEN || '' }
+      ],
       charset: "utf-8",
       viewport: "width-device-width, initial-scale=1",
     },
