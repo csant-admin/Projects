@@ -22,9 +22,21 @@
                         <td>{{ item.City }}</td>
                         <td>
                             <div>
-                                <v-btn color="success" size="small"><v-icon>mdi-pencil-box-outline</v-icon></v-btn>
-                                <v-btn color="error" size="small"><v-icon>mdi-trash-can-outline</v-icon></v-btn>
-                                <v-btn color="warning" size="small"><v-icon>mdi-lock-open-outline</v-icon></v-btn>
+                                <v-btn 
+                                    color="#6A0DAD" 
+                                    size="small" 
+                                    class="zoom-button">
+                                    <v-icon>
+                                        mdi-pencil-box-outline
+                                    </v-icon>
+                                    <v-tooltip
+                                        activator="parent"
+                                        location="top"
+                                        color="#6A0DAD"
+                                    >Edit</v-tooltip>
+                                </v-btn>
+                                <v-btn color="error" size="small" class="zoom-button"><v-icon>mdi-trash-can-outline</v-icon></v-btn>
+                                <v-btn color="warning" size="small" class="zoom-button"><v-icon>mdi-lock-open-outline</v-icon></v-btn>
                             </div>
                         </td>
                     </tr>
