@@ -1,6 +1,7 @@
 <template>
 	<div class="animated animatedFadeInUp fadeInUp">
 	  <v-progress-linear v-if="loading" color="deep-purple-accent-4" indeterminate></v-progress-linear>
+	  <v-overlay v-model="overlay"></v-overlay>
 	  <v-sheet class="pa-16" rounded>
 		<v-card class="mx-auto px-6 py-8" max-width="500">
 		  <v-card-title class="text-center" style="letter-spacing: 2px;">
@@ -64,12 +65,14 @@
   const authStore = useAuthStore();
   const router = useRouter();
   const userType = ref('');
+  const overlay = ref(false);
   
   const required = (v) => !!v || 'Field is required';
   
   const login = async () => {
     try {
         loading.value = true;
+		overlay.value = true;
         await authStore.authenticateUser({ Username: username.value, Password: password.value });
 
         if (authStore.authenticated) {
@@ -90,6 +93,7 @@
         isError.value = true;
     } finally {
         loading.value = false;
+		overlay.value = false;
     }
 };
 

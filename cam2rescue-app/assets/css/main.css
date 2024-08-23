@@ -113,3 +113,24 @@
     font-size: 18px !important;
     letter-spacing: 1px !important;
 }
+
+.zoom-button {
+    margin: 2px !important;
+    color: white;
+    font-size: 20px !important;;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease; 
+}
+
+.zoom-button:hover {
+    transform: scale(1.2);
+}
+
+.custom-tooltip {
+    background-color: #6A0DAD !important;
+    color: white !important;
+  }
+  
+

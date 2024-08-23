@@ -11,30 +11,29 @@
                     indeterminate
                 ></v-progress-linear>
                 <v-row>
-                    <v-col cols="4">
+                    <v-col cols="12" sm="6" md="4">
                         <v-text-field 
                             v-model="Lastname" 
                             label="Last Name" 
                             variant="outlined"
                         ></v-text-field>
                     </v-col>
-                    <v-col cols="4">
+                    <v-col cols="12" sm="6" md="4">
                         <v-text-field 
                             v-model="Firstname" 
                             label="First Name" 
                             variant="outlined"
                         ></v-text-field>
                     </v-col>
-                    <v-col cols="4">
+                    <v-col cols="12" sm="6" md="4">
                         <v-text-field 
                             v-model="Middlename" 
                             label="Middle Name" 
                             variant="outlined"
                         ></v-text-field>
                     </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="4">
+              
+                    <v-col cols="12" sm="6" md="4">
                         <v-text-field 
                             v-model="dob" 
                             label="Date of Birth" 
@@ -42,7 +41,7 @@
                             variant="outlined"
                         ></v-text-field>
                     </v-col>
-                    <v-col cols="4">
+                    <v-col cols="12" sm="6" md="4">
                         <v-autocomplete 
                             v-model="Gender" 
                             label="Gender" 
@@ -52,7 +51,7 @@
                             item-value="id" 
                         ></v-autocomplete>
                     </v-col>
-                    <v-col cols="4">
+                    <v-col cols="12" sm="6" md="4">
                         <v-autocomplete 
                             v-model="Status" 
                             label="Status" 
@@ -62,9 +61,8 @@
                             item-value="id" 
                         ></v-autocomplete>
                     </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="4">
+               
+                    <v-col cols="12" sm="6" md="4">
                         <v-autocomplete 
                             v-model="Barangay" 
                             label="Barangay" 
@@ -74,30 +72,29 @@
                             item-value="id" 
                         ></v-autocomplete>
                     </v-col>
-                    <v-col cols="4">
+                    <v-col cols="12" sm="6" md="4">
                         <v-text-field 
                             v-model="City" 
                             label="City" 
                             variant="outlined"
                         ></v-text-field>
                     </v-col>
-                    <v-col cols="4">
+                    <v-col cols="12" sm="6" md="4">
                         <v-text-field 
                             v-model="Email" 
                             label="Email" 
                             variant="outlined"
                         ></v-text-field>
                     </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="">
+                
+                    <v-col cols="12" sm="6" md="4">
                         <v-text-field 
                             v-model="Username" 
                             label="Username" 
                             variant="outlined"
                         ></v-text-field>
                     </v-col>
-                    <v-col cols="4">
+                    <v-col cols="12" sm="6" md="4">
                         <v-text-field 
                             v-model="Password" 
                             label="Password" 
@@ -106,7 +103,7 @@
                             @click:append-inner="toggleVisibility"
                         ></v-text-field>
                     </v-col>
-                    <v-col cols="4">
+                    <v-col cols="12" sm="6" md="4">
                         <v-text-field 
                             v-model="ConfirmPassword" 
                             label="Confirm Password" 
@@ -115,9 +112,8 @@
                             @click:append-inner="toggleVisibility"
                         ></v-text-field>
                     </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="6">
+               
+                    <v-col cols="12" sm="6" md="4">
                         <v-btn 
                             color="#6A0DAD" 
                             type="submit"

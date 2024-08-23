@@ -1,38 +1,61 @@
 <template>
     <v-app>
         <!-- Navigation Bar -->
-        <v-app-bar app color="#673AB7">
+        <v-app-bar app color="#6A0DAD">
             <v-container fluid>
                 <v-row align="center" no-gutters>
-                <v-col class="text-left">
-                    <v-toolbar-title>Cam2Rescue</v-toolbar-title>
-                </v-col>
-                <v-col class="text-right">
-                    <v-btn text tag="nuxt-link" to="/about">About Us</v-btn>
-                    <v-btn text tag="nuxt-link" to="/contact">Contact Us</v-btn>
-                    <template v-if="!isAuthenticated">
-                        <v-btn text tag="nuxt-link" to="/login">Login</v-btn>
-                    </template>
-                    <template v-else>
-                        <v-btn text @click="logout">Logout</v-btn>
-                    </template>
-                </v-col>
+                    <v-col class="text-left d-flex d-md-none">
+                        <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+                    </v-col>
+                    <v-col class="d-none d-md-flex">
+                        <v-toolbar-title>Cam2Rescue</v-toolbar-title>
+                    </v-col>
+
+                    <v-col class="d-none d-md-flex text-right" cols="6">
+                        <v-col cols="12">
+                            <v-btn text tag="nuxt-link" to="/about">About Us</v-btn>
+                            <v-btn text tag="nuxt-link" to="/contact">Contact Us</v-btn>
+                            <template v-if="!isAuthenticated">
+                            <v-btn text tag="nuxt-link" to="/login">Login</v-btn>
+                            </template>
+                            <template v-else>
+                            <v-btn text @click="logout">Logout</v-btn>
+                            </template>
+                            <v-btn text tag="nuxt-link" to="/registration">Register</v-btn>
+                            <v-btn text tag="nuxt-link" to="/adoption-form">Adoption</v-btn>
+                        </v-col>
+                    </v-col>
                 </v-row>
-                <v-snackbar
-                    v-model="showSnackbar"
-                    :timeout="2000"
-                    color="#6A0DAD"
-                    elevation="24"
-                    location="top right"
-                    multi-line="true"
-                >
-                    <div>
-                        <p>Logout Successful</p>
-                        <p><strong>Thank you for visiting <span style="letter-spacing: 2px;">Cam2Rescue</span></strong></p>
-                    </div>
-                </v-snackbar>
             </v-container>
         </v-app-bar>
+        <v-navigation-drawer v-model="drawer" temporary app color="#6A0DAD">
+            <v-list>
+                <v-list-item link to="/about">About Us</v-list-item>
+                <v-list-item link to="/contact">Contact Us</v-list-item>
+                <template v-if="!isAuthenticated">
+                    <v-list-item link to="/login">Login</v-list-item>
+                </template>
+                <template v-else>
+                    <v-list-item @click="logout">Logout</v-list-item>
+                </template>
+                <v-list-item link to="/registration">Register</v-list-item>
+                <v-list-item link to="/adoption-form">Adoption</v-list-item>
+            </v-list>
+        </v-navigation-drawer>
+        <v-snackbar
+            v-model="showSnackbar"
+            :timeout="2000"
+            color="#6A0DAD"
+            elevation="24"
+            location="top right"
+            multi-line="true"
+        >
+            <div>
+                <p>Logout Successful</p>
+                <p><strong>Thank you for visiting <span style="letter-spacing: 2px;">Cam2Rescue</span></strong></p>
+            </div>
+        </v-snackbar>
+           
         <!-- Main Content -->
         <v-main>
             <v-progress-linear v-if="loading" color="deep-purple-accent-4" indeterminate></v-progress-linear>
@@ -77,20 +100,77 @@
                         <div class="animated-content">
                             <v-row>
                                 <template v-for="(pet, index) in petList" :key="index">
-                                    <v-col cols="3">
-                                        <v-card>
-                                            <v-img :src="`${base_url}storage/${pet.ImagePath}`" :alt="pet.PetName" height="500"></v-img>
-                                            <v-card-title primary-title class="text-center">
-                                                <div>
-                                                    <h3 class="headline mb-0">{{ pet.PetName }}</h3>
-                                                </div>
-                                            </v-card-title>
-                                            <v-card-actions>
-                                                <v-btn color="info">Adopt</v-btn>
-                                                <v-btn color="primary">View</v-btn>
-                                            </v-card-actions>
-                                        </v-card>
-                                    </v-col>
+                                    <v-hover v-slot:default="{ isHovering, props }">
+                                        <v-col cols="12" sm="6" md="4">
+                                            <v-col cols="12">
+                                                <v-card
+                                                    class="mx-auto"
+                                                    color="grey-lighten-4"
+                                                    max-width="600"
+                                                    v-bind="props"
+                                                >
+                                                    <v-img
+                                                        :src="`${base_url}storage/${pet.ImagePath}`"
+                                                        :alt="pet.PetName"
+                                                        cover
+                                                        class="pet-image"
+                                                    >
+                                                        <v-expand-transition>
+                                                            <div
+                                                                v-if="isHovering"
+                                                                class="d-flex transition-fast-in-fast-out v-card--reveal text-h2"
+                                                                style="height: 25%; background-color: #FFF !important;"
+                                                            >
+                                                                <div
+                                                                    class="action-buttons"
+                                                                >
+                                                                <v-btn 
+                                                                    link to="/adoption-form" 
+                                                                    color="#6A0DAD" 
+                                                                    size="large" 
+                                                                    class="zoom-button"
+                                                                >
+                                                                    Adopt
+                                                                </v-btn>
+
+
+                                                                    <v-btn 
+                                                                        color="#6A0DAD" 
+                                                                        size="large" 
+                                                                        class="zoom-button"
+                                                                    >
+                                                                        View
+                                                                    </v-btn>
+                                                                </div>
+                                                            </div>
+                                                        </v-expand-transition>
+                                                    </v-img>
+                                                    <v-card-title class="text-center">
+                                                        <h3 
+                                                            class="headline mb-0"
+                                                            style="color: #6A0DAD"
+                                                        >
+                                                            {{ pet.PetName }}
+                                                        </h3>
+                                                    </v-card-title>
+                                                    <v-card-text class="pt-6">
+                                                        <div class="font-weight-light text-grey text-h6 mb-2">
+                                                            For the perfect meal
+                                                        </div>
+
+                                                        <h3 class="text-h4 font-weight-light mb-2">
+                                                            QW cooking utensils
+                                                        </h3>
+
+                                                        <div class="font-weight-light text-h6 mb-2">
+                                                            Our Vintage kitchen utensils delight any chef.<br>
+                                                            Made of bamboo by hand
+                                                        </div>
+                                                    </v-card-text>
+                                                </v-card>
+                                            </v-col>
+                                        </v-col>
+                                    </v-hover>
                                 </template>
                             </v-row>
                         </div>
@@ -216,7 +296,7 @@
                     </v-tabs-window-item>
                 <v-tabs-window-item value="AdoptionRequest">
                     <v-container fluid>
-                        <div class="animated-content">
+                        <div class="animated animatedFadeInUp fadeInUp">
                             <v-data-table
                                 :headers="headers"
                                 :items="userList"
@@ -283,24 +363,23 @@
     const base_url          =  useApiUrl();
     const ID                = generateUniqueIdb();
     const userID            = ref('');
-    const selectedColor = ref('');
-    const selectedBarangay = ref('');
-    const selectedGender = ref('');
-    const selectedInjury = ref('');
-    const selectedUrgency = ref('');
-    const foundStreet = ref('');
-    const foundCity = ref('');
-    const petDescription = ref('');
-    const isAuthenticated = ref('')
-    const activeTab = ref('Home');
-    const showSnackbar = ref(false);
-    const drawer = ref(false);
+    const selectedColor     = ref('');
+    const selectedBarangay  = ref('');
+    const selectedGender    = ref('');
+    const selectedInjury    = ref('');
+    const selectedUrgency   = ref('');
+    const foundStreet       = ref('');
+    const foundCity         = ref('');
+    const petDescription    = ref('');
+    const isAuthenticated   = ref('')
+    const activeTab         = ref('Home');
+    const showSnackbar      = ref(false);
+    const drawer            = ref(false);
     if (process.client) {
         const authenticated = localStorage.getItem('Authenticated');
         isAuthenticated.value = authenticated === 'true'; 
         console.log('Authenticated : ', isAuthenticated);
     }
-
 
     const handleTargetSelected = (event) => {
         if (event.target.files.length === 0) {
@@ -497,4 +576,25 @@
 .v-field--active {
     color: #6A0DAD !important;
 }
+
+.v-card--reveal {
+    align-items: center;
+    bottom: 0;
+    justify-content: center;
+    opacity: .9;
+    position: absolute;
+    width: 100%;
+}
+
+.action-buttons {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
 </style>
