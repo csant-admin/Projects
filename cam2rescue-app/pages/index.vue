@@ -125,7 +125,7 @@
                                                                     class="action-buttons"
                                                                 >
                                                                 <v-btn 
-                                                                    link to="/adoption-form" 
+                                                                    link to="/adopt" 
                                                                     color="#6A0DAD" 
                                                                     size="large" 
                                                                     class="zoom-button"
@@ -145,26 +145,13 @@
                                                             </div>
                                                         </v-expand-transition>
                                                     </v-img>
-                                                    <v-card-title class="text-center">
-                                                        <h3 
-                                                            class="headline mb-0"
-                                                            style="color: #6A0DAD"
-                                                        >
-                                                            {{ pet.PetName }}
-                                                        </h3>
-                                                    </v-card-title>
                                                     <v-card-text class="pt-6">
-                                                        <div class="font-weight-light text-grey text-h6 mb-2">
-                                                            For the perfect meal
-                                                        </div>
-
-                                                        <h3 class="text-h4 font-weight-light mb-2">
-                                                            QW cooking utensils
-                                                        </h3>
+                                                        <h4 class="text-h4 font-weight-light mb-2" style="color: #6A0DAD">
+                                                            {{ pet.PetName }}
+                                                        </h4>
 
                                                         <div class="font-weight-light text-h6 mb-2">
-                                                            Our Vintage kitchen utensils delight any chef.<br>
-                                                            Made of bamboo by hand
+                                                            {{ pet.PetDescription }}
                                                         </div>
                                                     </v-card-text>
                                                 </v-card>
@@ -326,6 +313,42 @@
                         </div>
                     </v-container>
                 </v-tabs-window-item>
+
+                <v-tabs-window-item value="ForRescue">
+                    <v-container fluid>
+                        <div class="animated animatedFadeInUp fadeInUp">
+                            <v-data-table
+                                :headers="RescueHeaders"
+                                :items="rescueData"
+                                :pagination.sync="pagination"
+                                :loading="loading"
+                                class="elevation-1"
+                            >
+                                <template v-slot:item="{ item }">
+                                    <tr>
+                                        <td>{{ item.SBZ_Address }}</td>
+                                        <td>{{ item.BarangayId }}</td>
+                                        <td>{{ item.City }}</td>
+                                        <td>{{ item.PetColorId }}</td>
+                                        <td>{{ item.PetSexId }}</td>
+                                        <td>{{ item.UrgencyId }}</td>
+                                        <td>{{ item.InjuryId }}</td>
+                                        <td>{{ item.Description }}</td>
+                                        <td>{{ item.created_by }}</td>
+                                        <td>{{ item.created_at }}</td>
+                                        <td>
+                                            <div>
+                                                <v-btn color="success" size="small"><v-icon>mdi-pencil-box-outline</v-icon></v-btn>
+                                                <v-btn color="error" size="small"><v-icon>mdi-trash-can-outline</v-icon></v-btn>
+                                                <v-btn color="warning" size="small"><v-icon>mdi-lock-open-outline</v-icon></v-btn>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </v-data-table>
+                        </div>
+                    </v-container>
+                </v-tabs-window-item>
             </v-tabs-window>
         </v-main>
 
@@ -360,6 +383,7 @@
     const color             = ref([]);
     const injuryList        = ref([]);
     const urgency           = ref([]);
+    const rescueData        = ref([]);
     const base_url          =  useApiUrl();
     const ID                = generateUniqueIdb();
     const userID            = ref('');
@@ -375,6 +399,7 @@
     const activeTab         = ref('Home');
     const showSnackbar      = ref(false);
     const drawer            = ref(false);
+    console.log(base_url);
     if (process.client) {
         const authenticated = localStorage.getItem('Authenticated');
         isAuthenticated.value = authenticated === 'true'; 
@@ -424,6 +449,20 @@
         { title: 'Action', key: 'Action', sortable: false},
     ];
 
+    const RescueHeaders = [
+        { title: 'Street/Blg/Zone', key: 'SBZ_Address' },
+        { title: 'Barangay', key: 'BarangayId'},
+        { title: 'City', key: 'City' },
+        { title: 'PetColor', key: 'PetColorId'},
+        { title: 'PetSex', key: 'PetSexId'},
+        { title: 'Urgency', key: 'UrgencyId' },
+        { title: 'Injury', key: 'InjuryId' },
+        { title: 'Description', key: 'Description' },
+        { title: 'created_by', key: 'created_by' },
+        { title: 'created_at', key: 'created_at' },
+        { title: 'Action', key: 'Action', sortable: false},
+    ];
+
     const handleAPIRequest = async (data = {}, apiRequest = '') => {
         try {
             loading.value = true;
@@ -442,6 +481,15 @@
                     response = await axios.get(`${base_url}api/list-of-pets`);
                     if (response.status >= 200 && response.status < 300) {
                         petList.value = response.data;
+                        loading.value = false;
+                    }
+                    break;
+
+                case 'get-rescue-list': 
+                    response = await axios.get(`${base_url}api/get-rescue-list`);
+                    if(response.status >= 200 && response.status < 300) {
+                        rescueData.value = response.data;
+                        console.log('Rescue List : ', rescueData)
                         loading.value = false;
                     }
                     break;
@@ -538,6 +586,7 @@
 
     onMounted(() => {
         handleAPIRequest({}, 'list-of-pets');
+        handleAPIRequest({}, 'get-rescue-list');
         handleAPIRequest({}, 'get-gender');
         handleAPIRequest({}, 'barangay-list');
         handleAPIRequest({}, 'color-list');
@@ -567,6 +616,11 @@
 }
 
 /* Change border color of the outlined text field when focused */
+.v-autocomplete__selection {
+    border-width: 2px !important;
+    color: #6A0DAD !important;
+}
+
 .v-field--active {
     border-color: #6A0DAD !important; 
     border-width: 2px !important; 

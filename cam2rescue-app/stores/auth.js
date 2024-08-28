@@ -21,8 +21,9 @@ export const useAuthStore = defineStore('auth', {
                   'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
               }
           });
-  
+          console.log('Response : ', response);
           if (response.data) {
+              console.log('Test');
               const token = useCookie('token');
               token.value = response.data.access_token;
               this.authenticated = true;
