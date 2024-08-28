@@ -12,7 +12,7 @@
                     <div class="page-label">
                         <h3>Adoption Form</h3>
                     </div>
-						<form>
+						<form @submit.prevent="handleAdoption">
 							<v-row>
 								<v-col cols="12">
 									<v-subheader 
@@ -26,6 +26,7 @@
 									<v-text-field 
 										label="Street" 
 										variant="outlined"
+										v-model="payload.Street"
 									></v-text-field>
 								</v-col>
 						
@@ -33,6 +34,7 @@
 									<v-text-field 
 										label="Barangay" 
 										variant="outlined"
+										v-model="payload.Barangay"
 									></v-text-field>
 								</v-col>
 						
@@ -40,6 +42,7 @@
 									<v-text-field 
 										label="City" 
 										variant="outlined"
+										v-model="payload.City"
 									></v-text-field>
 								</v-col>
 						
@@ -47,6 +50,7 @@
 									<v-text-field 
 										label="Email Address" 
 										variant="outlined"
+										v-model="payload.Email_Address"
 									></v-text-field>
 								</v-col>
 						
@@ -54,6 +58,7 @@
 									<v-text-field 
 										label="Mobile Number" 
 										variant="outlined"
+										v-model="payload.Mobile_No"
 									></v-text-field>
 								</v-col>
 						
@@ -61,6 +66,7 @@
 									<v-text-field 
 										label="Telephone Number" 
 										variant="outlined"
+										v-model="payload.Telephone_No"
 									></v-text-field>
 								</v-col>
 							</v-row>
@@ -79,6 +85,7 @@
 									<v-text-field 
 										label="Last Name" 
 										variant="outlined"
+										v-model="payload.Lastname"
 									></v-text-field>
 								</v-col>
 						
@@ -86,6 +93,7 @@
 									<v-text-field 
 										label="First Name" 
 										variant="outlined"
+										v-model="payload.Firstname"
 									></v-text-field>
 								</v-col>
 						
@@ -93,6 +101,7 @@
 									<v-text-field 
 										label="Middle Name" 
 										variant="outlined"
+										v-model="payload.Middlename"
 									></v-text-field>
 								</v-col>
 						
@@ -100,6 +109,7 @@
 									<v-text-field 
 										label="Name Extension" 
 										variant="outlined"
+										v-model="payload.Suffix"
 									></v-text-field>
 								</v-col>
 						
@@ -149,7 +159,7 @@
 							<!-- Submit Button -->
 							<v-row>
 								<v-col cols="12">
-									<v-btn color="#6A0DAD">Send Adoption Request Form</v-btn>
+									<v-btn color="#6A0DAD" type="submit">Send Adoption Request Form</v-btn>
 								</v-col>
 							</v-row>
 						</form>
@@ -216,19 +226,37 @@
   <script setup>
     const showAgreement = ref(false);
 	const agreementConfirmed = ref(false);
+	const payload = ref({});
 
+	const props = defineProps({
+		payload: {
+			type: object,
+			required: true
+		}
+	});
+
+	const emit = defineEmits(['update:payload']);
+	console.log('Payload : ', payload);
 	const readAgreement = () => {
 		agreementConfirmed.value = false;
 		showAgreement.value = true;
 	};
+
 	const agreementDisagreed = () => {
 		agreementConfirmed.value = false;
 		showAgreement.value = false;
-	}
+	};
+
   	const handleAgreement = () => {
 		agreementConfirmed.value = true;
 		showAgreement.value = false;
-	}
+	};
+
+	watch(() => props.payload, (newValue) => {
+		emit('update:payload', newValue);
+		console.log(newValue);
+	}, { deep: true });
+
   </script>
   
   <style scoped>
