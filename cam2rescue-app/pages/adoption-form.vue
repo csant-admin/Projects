@@ -1,8 +1,7 @@
 <template>
     <v-container fluid>
-
       <!-- Address and Contact Information -->
-      <div class="mx-auto px-16 py-12">
+      	<div class="mx-auto px-16 py-12">
             <v-card-title class="text-center animated animatedFadeInUp fadeInUp" style="letter-spacing: 2px;">
                 <h1><span style="color:#6A0DAD;">Cam</span>2Rescue</h1>
             </v-card-title>
