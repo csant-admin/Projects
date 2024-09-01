@@ -133,7 +133,6 @@
                                                                     Adopt
                                                                 </v-btn>
 
-
                                                                     <v-btn 
                                                                         color="#6A0DAD" 
                                                                         size="large" 
@@ -326,21 +325,89 @@
                             >
                                 <template v-slot:item="{ item }">
                                     <tr>
-                                        <td>{{ item.SBZ_Address }}</td>
-                                        <td>{{ item.BarangayId }}</td>
-                                        <td>{{ item.City }}</td>
+                                        <td>{{ item.Address }}</td>
                                         <td>{{ item.PetColorId }}</td>
                                         <td>{{ item.PetSexId }}</td>
-                                        <td>{{ item.UrgencyId }}</td>
-                                        <td>{{ item.InjuryId }}</td>
+                                        <td>{{ item.ImportantNote }}</td>
                                         <td>{{ item.Description }}</td>
                                         <td>{{ item.created_by }}</td>
                                         <td>{{ item.created_at }}</td>
+                                        <td>{{ item.updated_by }}</td>
+                                        <td>{{ item.RescueStatus }}</td>
                                         <td>
                                             <div>
-                                                <v-btn color="success" size="small"><v-icon>mdi-pencil-box-outline</v-icon></v-btn>
-                                                <v-btn color="error" size="small"><v-icon>mdi-trash-can-outline</v-icon></v-btn>
-                                                <v-btn color="warning" size="small"><v-icon>mdi-lock-open-outline</v-icon></v-btn>
+                                                <v-btn 
+                                                    color="#6A0DAD" 
+                                                    size="small"
+                                                    class="zoom-button"
+                                                    @click.prevent="handleAction(item.RescueId, 1)"
+                                                    :disabled="
+                                                        parseInt(item.RescueStatusId) === 1 || 
+                                                        parseInt(item.RescueStatusId) === 2 || 
+                                                        parseInt(item.RescueStatusId) === 3
+                                                    "
+                                                >
+                                                    <v-icon>mdi-ambulance</v-icon>
+                                                    <v-tooltip
+                                                        activator="parent"
+                                                        location="top"
+                                                    >
+                                                        Confirm Rescue
+                                                    </v-tooltip>
+                                                </v-btn>
+                                                <v-btn 
+                                                    color="success" 
+                                                    size="small"
+                                                    class="zoom-button"
+                                                    @click.prevent="handleAction(item.RescueId, 2)"
+                                                    :disabled="
+                                                        parseInt(item.RescueStatusId) === 0 || 
+                                                        parseInt(item.RescueStatusId) === 2 || 
+                                                        parseInt(item.RescueStatusId) === 3
+                                                    "
+                                                >
+                                                    <v-icon>mdi-check-bold</v-icon>
+                                                    <v-tooltip
+                                                        activator="parent"
+                                                        location="top"
+                                                    >
+                                                        Rescue was Successful
+                                                    </v-tooltip>
+                                                </v-btn>
+                                                <v-btn 
+                                                    color="error" 
+                                                    size="small"
+                                                    class="zoom-button"
+                                                    @click.prevent="handleFailedRescue(item.RescueId, 3)"
+                                                    :disabled="
+                                                        parseInt(item.RescueStatusId) === 0 || 
+                                                        parseInt(item.RescueStatusId) === 2 || 
+                                                        parseInt(item.RescueStatusId) === 3
+                                                    "
+                                                >
+                                                    <v-icon>mdi-close-thick</v-icon>
+                                                    <v-tooltip
+                                                        activator="parent"
+                                                        location="top"
+                                                    >
+                                                        Rescue Operation Failed
+                                                    </v-tooltip>
+                                                </v-btn>
+                                                <v-btn 
+                                                    color="#6A0DAD" 
+                                                    size="small"
+                                                    class="zoom-button"
+                                                    @click.prevent="generateRescueReport(item.RescueId)"
+                                                >
+                                                    <v-icon>mdi-printer</v-icon>
+                                                    <v-tooltip
+                                                        activator="parent"
+                                                        location="top"
+                                                    >
+                                                        Print Rescue Details
+                                                    </v-tooltip>
+
+                                                </v-btn>
                                             </div>
                                         </td>
                                     </tr>
@@ -358,6 +425,79 @@
                 <span>&copy; 2024 Cam2Rescue. All rights reserved.</span>
             </v-col>
         </v-footer>
+
+        <!-- Modal -->
+ 
+            <div class="text-center pa-4">
+                <v-dialog
+                    v-model="failedRescueDialog"
+                    transition="dialog-bottom-transition"
+                    max-width="600"
+                    persistent
+                >
+            
+                <v-card>
+
+                    <v-container class="text-center my-5">
+                        <h1 class="page-header-text"><span style="color: #6A0DAD">Cam</span>2Rescue</h1>
+                        <p>An online platform for pet rescue and shelter</p>
+                    </v-container>
+                    <v-container>
+                        <form @submit.prevent="handleFailedRecue">
+                            <v-row>
+                                <v-col cols="6">
+                                    <v-text-field
+                                        label="Rescue ID"
+                                        v-model="RescueId"
+                                        density="compact"
+                                        variant="outlined"
+                                        readonly
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="6">
+                                    <v-text-field
+                                        label="Rescue Status ID"
+                                        v-model="RescueStatusId"
+                                        density="compact"
+                                        variant="outlined"
+                                        readonly
+                                    ></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-textarea
+                                        label="Reason for failed rescue"
+                                        v-model="failedReason"
+                                        density="compact"
+                                        variant="outlined"
+                                    >
+                                        
+                                    </v-textarea>
+                                </v-col>
+                            </v-row>
+                            <v-btn
+                                type="submit"
+                                color="#6A0DAD"
+                            >
+                            Submit
+                            </v-btn> 
+                        </form>
+                    </v-container>
+                    <template v-slot:actions>
+                    <v-spacer></v-spacer>
+
+                    <v-btn 
+                        @click="failedRescueDialog = false"
+                        color="#6A0DAD"
+                        >
+                        Close
+                    </v-btn>
+
+                    </template>
+                </v-card>
+                </v-dialog>
+            </div>
     </v-app>
 </template>
 
@@ -399,6 +539,10 @@
     const activeTab         = ref('Home');
     const showSnackbar      = ref(false);
     const drawer            = ref(false);
+    const failedRescueDialog = ref(false);
+    const failedReason = ref('');
+    const RescueId = ref(null);
+    const RescueStatusId = ref(null);
     console.log(base_url);
     if (process.client) {
         const authenticated = localStorage.getItem('Authenticated');
@@ -420,6 +564,103 @@
         }
         imagePreview.value = URL.createObjectURL(imageFile.value);
     };
+
+    // const handleAction = async (rescueId, rescueStatusId) => {
+    //     const url = `${base_url}api/approve-rescue/${rescueId}`;
+    //     const formData = new FormData();
+    //     formData.append('RescueId', rescueId);
+    //     formData.append('RescueStatus', rescueStatusId);
+    //     const loggedInUser = sessionStorage.getItem('user');
+    //     if (loggedInUser) {
+    //         const userObject = JSON.parse(loggedInUser);
+    //         formData.append('updated_by', userObject.UserID);
+    //     } 
+    //     try{
+    //         loading.value = true;
+    //         const response = await axios.put(url, formData);
+
+    //         if(response) {
+    //             console.log('Successfull')
+    //         } else {
+    //             console.log('Failed');
+    //         }
+    //     } catch( error ) {
+    //         console.error(`Error ${response}:`, error);
+    //         loading.value = false;
+    //         throw error;
+    //     } finally {
+    //         loading.value = false;
+    //     }
+
+    // }
+
+    const handleAction = async (rescueId, rescueStatusId) => {
+        const url = `${base_url}api/approve-rescue/${rescueId}`;
+        const data = {
+            RescueStatus: rescueStatusId,
+            updated_by: JSON.parse(sessionStorage.getItem('user')).UserID
+        };
+
+        try {
+            loading.value = true;
+            const response = await axios.put(url, data);
+
+            if (response.status === 200) {
+                console.log('Successful');
+            } else {
+                console.log('Failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    const handleFailedRescue = (rescueId, rescueStatusId) => {
+        RescueId.value = rescueId;              
+        RescueStatusId.value = rescueStatusId; 
+        console.log(RescueId.value)
+        console.log(RescueStatusId.value)
+        failedRescueDialog.value = true;
+
+    }
+
+    const handleFailedRecue = async () => {
+        const url = `${base_url}api/approve-rescue/${RescueId.value}`;
+        const data = {
+            RescueStatus: RescueStatusId.value,
+            updated_by: JSON.parse(sessionStorage.getItem('user')).UserID,
+            FailedReason: failedReason.value
+        }
+        try {
+            loading.value = true;
+            const response = await axios.put(url, data);
+
+            if (response.status === 200) {
+                console.log('Successful');
+            } else {
+                console.log('Failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        } finally {
+            loading.value = false;
+            failedRescueDialog.value = false;
+        }
+    }
+
+    const generateRescueReport = async (rescueId) => {
+        console.log('Test');
+        try{
+            const url = `${base_url}api/generate-rescue-report/${rescueId}`;
+            window.open(url, '_blank');
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+        }
+    }
 
     const postRescue = async () => {
         const data = {
@@ -450,16 +691,15 @@
     ];
 
     const RescueHeaders = [
-        { title: 'Street/Blg/Zone', key: 'SBZ_Address' },
-        { title: 'Barangay', key: 'BarangayId'},
-        { title: 'City', key: 'City' },
+        { title: 'Full Address', key: 'Address' },
         { title: 'PetColor', key: 'PetColorId'},
         { title: 'PetSex', key: 'PetSexId'},
-        { title: 'Urgency', key: 'UrgencyId' },
-        { title: 'Injury', key: 'InjuryId' },
+        { title: 'Important Note', key: 'ImportantNote'},
         { title: 'Description', key: 'Description' },
-        { title: 'created_by', key: 'created_by' },
-        { title: 'created_at', key: 'created_at' },
+        { title: 'Posted By', key: 'created_by' },
+        { title: 'Date & Time Posted', key: 'created_at' },
+        { title: 'Approved By', key: 'updated_by' },
+        { title: 'Rescue Status', key:'RescueStatus'},
         { title: 'Action', key: 'Action', sortable: false},
     ];
 
