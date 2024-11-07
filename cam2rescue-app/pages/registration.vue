@@ -1,202 +1,204 @@
 <template>
-    <v-container>
-        <v-card class="mx-auto px-6 py-8">
-            <v-card-title class="text-center animated animatedFadeInUp fadeInUp" style="letter-spacing: 2px;">
-                <h1><span style="color:#6A0DAD;">Cam</span>2Rescue</h1>
-            </v-card-title>
-		  <p class="text-center ">An Online Platform form for pet rescue and shelter</p>
-            <div class="animated animatedFadeInUp fadeInUp">
-                <div class="py-8">
-                    <div class="page-label">
-                        <h3>Registration Form</h3>
+    <container fluid>
+        <div>
+            <v-container>
+                <v-card-title class="text-center animated animatedFadeInUp fadeInUp" style="letter-spacing: 2px;">
+                    <h1><span style="color:#6A0DAD;">Cam</span>2Rescue</h1>
+                </v-card-title>
+                <p class="text-center ">An Online Platform form for pet rescue and shelter</p>
+                <div class="animated animatedFadeInUp fadeInUp">
+                    <div class="py-8">
+                        <div class="page-label">
+                            <h3>Registration Form</h3>
+                        </div>
+                        <v-form @submit.prevent="handleRegistration" ref="form" v-model="valid">
+                            <v-container>
+                                <v-row>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field
+                                            hint="Last Name"
+                                            v-model="Lastname"
+                                            :rules="fieldRules"
+                                            label="Last Name"
+                                            variant="outlined"
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field
+                                            v-model="Firstname"
+                                            hint="First Name"
+                                            label="First Name"
+                                            :rules="fieldRules"
+                                            variant="outlined"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field
+                                            v-model="Middlename"
+                                            hint="Middle Name"
+                                            label="Middle Name"
+                                            variant="outlined"
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field 
+                                            v-model="dob" 
+                                            hint="Date Of Birth"
+                                            label="Date of Birth" 
+                                            type="date" 
+                                            :rules="fieldRules"
+                                            variant="outlined"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-autocomplete 
+                                            v-model="Gender" 
+                                            label="Gender" 
+                                            variant="outlined" 
+                                            :items="gender_data"
+                                            :rules="fieldRules"
+                                            item-title="description" 
+                                            item-value="id" 
+                                        ></v-autocomplete>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-autocomplete 
+                                            v-model="Status" 
+                                            label="Status" 
+                                            variant="outlined" 
+                                            :items="statuses"
+                                            :rules="fieldRules"
+                                            item-title="description" 
+                                            item-value="id" 
+                                        ></v-autocomplete>
+                                    </v-col>
+                            
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-autocomplete 
+                                            v-model="Barangay" 
+                                            label="Barangay"
+                                            variant="outlined" 
+                                            :items="barangay_data"
+                                            :rules="fieldRules"
+                                            item-title="description" 
+                                            item-value="id" 
+                                        ></v-autocomplete>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field 
+                                            v-model="City" 
+                                            label="City" 
+                                            :rules="fieldRules"
+                                            hint="City"
+                                            variant="outlined"
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field 
+                                            v-model="Email" 
+                                            label="Email" 
+                                            :rules="emailRules"
+                                            hint="Email"
+                                            variant="outlined"
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-autocomplete 
+                                            v-model="UserType" 
+                                            label="User Type"
+                                            :rules="fieldRules" 
+                                            variant="outlined"
+                                            :items="userType"
+                                            item-title="description" 
+                                            item-value="id" 
+                                        ></v-autocomplete>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-autocomplete 
+                                            v-model="OrgType" 
+                                            label="Organization Type" 
+                                            variant="outlined"
+                                            :items="orgType"
+                                            item-title="description" 
+                                            item-value="id" 
+                                        ></v-autocomplete>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field 
+                                            v-model="OrgName" 
+                                            label="Organization Name" 
+                                            hint="Organization Name"
+                                            variant="outlined"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-autocomplete 
+                                            v-model="OrgBarangay" 
+                                            label="Barangay"
+                                            variant="outlined" 
+                                            :items="barangay_data"
+                                            item-title="description" 
+                                            item-value="id" 
+                                        ></v-autocomplete>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field 
+                                            v-model="OrgCity" 
+                                            label="City" 
+                                            hint="City"
+                                            variant="outlined"
+                                        ></v-text-field>
+                                    </v-col>
+                            
+                                    <v-col cols="">
+                                        <v-text-field 
+                                            v-model="Username" 
+                                            hint="Username"
+                                            label="Username" 
+                                            variant="outlined"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field 
+                                            v-model="Password" 
+                                            label="Password" 
+                                            hint="Password"
+                                            variant="outlined" 
+                                            :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'":type="visible ? 'text' : 'password'"  
+                                            @click:append-inner="toggleVisibility"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" md="4">
+                                        <v-text-field 
+                                            v-model="ConfirmPassword" 
+                                            label="Confirm Password" 
+                                            hint="Confirm Password"
+                                            variant="outlined" 
+                                            :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'":type="visible ? 'text' : 'password'"  
+                                            @click:append-inner="toggleVisibility"
+                                        ></v-text-field>
+                                    </v-col>
+                        
+                                    <v-col cols="6">
+                                        <v-btn 
+                                            color="#6A0DAD" 
+                                            type="submit"
+                                        ><v-icon>mdi-account-plus</v-icon> Register User</v-btn>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                        </v-form>
                     </div>
-                    <v-form @submit.prevent="handleRegistration" ref="form" v-model="valid">
-                        <v-container>
-                            <v-row>
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-text-field
-                                        hint="Last Name"
-                                        v-model="Lastname"
-                                        :rules="fieldRules"
-                                        label="Last Name"
-                                        variant="outlined"
-                                    ></v-text-field>
-                                </v-col>
-
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-text-field
-                                        v-model="Firstname"
-                                        hint="First Name"
-                                        label="First Name"
-                                        :rules="fieldRules"
-                                        variant="outlined"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-text-field
-                                        v-model="Middlename"
-                                        hint="Middle Name"
-                                        label="Middle Name"
-                                        variant="outlined"
-                                    ></v-text-field>
-                                </v-col>
-
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-text-field 
-                                        v-model="dob" 
-                                        hint="Date Of Birth"
-                                        label="Date of Birth" 
-                                        type="date" 
-                                        :rules="fieldRules"
-                                        variant="outlined"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-autocomplete 
-                                        v-model="Gender" 
-                                        label="Gender" 
-                                        variant="outlined" 
-                                        :items="gender_data"
-                                        :rules="fieldRules"
-                                        item-title="description" 
-                                        item-value="id" 
-                                    ></v-autocomplete>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-autocomplete 
-                                        v-model="Status" 
-                                        label="Status" 
-                                        variant="outlined" 
-                                        :items="statuses"
-                                        :rules="fieldRules"
-                                        item-title="description" 
-                                        item-value="id" 
-                                    ></v-autocomplete>
-                                </v-col>
-                        
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-autocomplete 
-                                        v-model="Barangay" 
-                                        label="Barangay"
-                                        variant="outlined" 
-                                        :items="barangay_data"
-                                        :rules="fieldRules"
-                                        item-title="description" 
-                                        item-value="id" 
-                                    ></v-autocomplete>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-text-field 
-                                        v-model="City" 
-                                        label="City" 
-                                        :rules="fieldRules"
-                                        hint="City"
-                                        variant="outlined"
-                                    ></v-text-field>
-                                </v-col>
-
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-text-field 
-                                        v-model="Email" 
-                                        label="Email" 
-                                        :rules="emailRules"
-                                        hint="Email"
-                                        variant="outlined"
-                                    ></v-text-field>
-                                </v-col>
-
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-autocomplete 
-                                        v-model="UserType" 
-                                        label="User Type"
-                                        :rules="fieldRules" 
-                                        variant="outlined"
-                                        :items="userType"
-                                        item-title="description" 
-                                        item-value="id" 
-                                    ></v-autocomplete>
-                                </v-col>
-
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-autocomplete 
-                                        v-model="OrgType" 
-                                        label="Organization Type" 
-                                        variant="outlined"
-                                        :items="orgType"
-                                        item-title="description" 
-                                        item-value="id" 
-                                    ></v-autocomplete>
-                                </v-col>
-
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-text-field 
-                                        v-model="OrgName" 
-                                        label="Organization Name" 
-                                        hint="Organization Name"
-                                        variant="outlined"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-autocomplete 
-                                        v-model="OrgBarangay" 
-                                        label="Barangay"
-                                        variant="outlined" 
-                                        :items="barangay_data"
-                                        item-title="description" 
-                                        item-value="id" 
-                                    ></v-autocomplete>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-text-field 
-                                        v-model="OrgCity" 
-                                        label="City" 
-                                        hint="City"
-                                        variant="outlined"
-                                    ></v-text-field>
-                                </v-col>
-                        
-                                <v-col cols="">
-                                    <v-text-field 
-                                        v-model="Username" 
-                                        hint="Username"
-                                        label="Username" 
-                                        variant="outlined"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-text-field 
-                                        v-model="Password" 
-                                        label="Password" 
-                                        hint="Password"
-                                        variant="outlined" 
-                                        :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'":type="visible ? 'text' : 'password'"  
-                                        @click:append-inner="toggleVisibility"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="4">
-                                    <v-text-field 
-                                        v-model="ConfirmPassword" 
-                                        label="Confirm Password" 
-                                        hint="Confirm Password"
-                                        variant="outlined" 
-                                        :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'":type="visible ? 'text' : 'password'"  
-                                        @click:append-inner="toggleVisibility"
-                                    ></v-text-field>
-                                </v-col>
-                    
-                                <v-col cols="6">
-                                    <v-btn 
-                                        color="#6A0DAD" 
-                                        type="submit"
-                                    ><v-icon>mdi-account-plus</v-icon> Register User</v-btn>
-                                </v-col>
-                            </v-row>
-                        </v-container>
-                    </v-form>
                 </div>
-            </div>
-        </v-card>
-    </v-container>
+            </v-container>
+        </div>
+    </container>
   </template>
   
   <script setup>

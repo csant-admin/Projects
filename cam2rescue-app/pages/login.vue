@@ -1,53 +1,56 @@
 <template>
 	<div class="animated animatedFadeInUp fadeInUp">
-	  <v-progress-linear v-if="loading" color="deep-purple-accent-4" indeterminate></v-progress-linear>
-	  <v-overlay v-model="overlay"></v-overlay>
-	  <v-sheet class="pa-16" rounded>
-		<v-card class="mx-auto px-6 py-8" max-width="500">
-		  <v-card-title class="text-center" style="letter-spacing: 2px;">
-			<h1><span style="color:#6A0DAD;">Cam</span>2Rescue</h1>
-		  </v-card-title>
-		  <p class="text-center">An Online Platform form for pet rescue and shelter</p>
-		  <v-form @submit.prevent="login" class="py-8">
-			<v-text-field
-			  v-model="username"
-			  :rules="[required]"
-			  label="Username"
-			  required
-			  variant="outlined"
-			></v-text-field>
-			<v-text-field
-			  v-model="password"
-			  :rules="[required]"
-			  label="Password"
-			  type="password"
-			  required
-			  variant="outlined"
-			></v-text-field>
-			<br>
-			<v-btn type="submit" :disabled="!username || !password" :loading="loading" size="large" variant="elevated" color="#6A0DAD">
-			  Login
-			</v-btn>
-		  </v-form>
-		  <v-snackbar
-			v-model="showSnackbar"
-			:timeout="2000"
-			color="#6A0DAD"
-			elevation="24"
-			location="top right"
-			multi-line="true"
-		  >
-			<div v-if="!isError">
-			  <p>Login Successful</p>
-			  <p>Welcome back <strong>{{ username }}</strong></p>
-			</div>
-			<div v-else>
-			  <p>Login Failed</p>
-			  <p><strong>ERROR! </strong>Incorrect username or password</p>
-			</div>
-		  </v-snackbar>
-		</v-card>
-	  </v-sheet>
+		<v-container fluid class="py-11">
+			<v-progress-linear v-if="loading" color="deep-purple-accent-4" indeterminate></v-progress-linear>
+			<v-overlay v-model="overlay"></v-overlay>
+			<v-card sm="12" md="3" lg="2" max-width="500" class="mx-auto">
+				<v-container>
+					<v-card-title class="text-center" style="letter-spacing: 2px;">
+						<h1><span style="color:#6A0DAD;">Cam</span>2Rescue</h1>
+					</v-card-title>
+					<p class="text-center">An Online Platform form for pet rescue and shelter</p>
+					<v-form @submit.prevent="login" class="py-8">
+						<v-text-field
+							v-model="username"
+							:rules="[required]"
+							label="Username"
+							required
+							variant="outlined"
+						></v-text-field>
+
+						<v-text-field
+							v-model="password"
+							:rules="[required]"
+							label="Password"
+							type="password"
+							required
+							variant="outlined"
+						></v-text-field>
+						<br>
+						<v-btn type="submit" :disabled="!username || !password" :loading="loading" size="large" variant="elevated" color="#6A0DAD">
+						Login
+						</v-btn>
+					</v-form>
+					<v-snackbar
+						v-model="showSnackbar"
+						:timeout="2000"
+						color="#6A0DAD"
+						elevation="24"
+						location="top right"
+						multi-line="true"
+					>
+						<div v-if="!isError">
+							<p>Login Successful</p>
+							<p>Welcome back <strong>{{ username }}</strong></p>
+						</div>
+						<div v-else>
+							<p>Login Failed</p>
+							<p><strong>ERROR! </strong>Incorrect username or password</p>
+						</div>
+					</v-snackbar>
+				</v-container>
+			</v-card>
+		</v-container>
 	</div>
   </template>
   

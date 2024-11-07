@@ -8,7 +8,8 @@
 
     import {ref} from 'vue';
     definePageMeta({
-        layout: "default-layout"
+        layout: "default-layout",
+        middleware: 'auth'
     });
 
 </script>
