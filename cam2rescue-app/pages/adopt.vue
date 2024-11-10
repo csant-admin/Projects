@@ -22,7 +22,6 @@
                     >
                     <div class="step-content">  <!-- Added div to wrap step content -->
                         <v-row>
-
                             <v-col cols="12">
                                 <v-text-field 
                                     v-model="payload.petname" 
@@ -214,13 +213,13 @@
                     <v-row>
                         <v-col cols="12" md="6">
                             <v-text-field 
-                                v-model="organizationDetails.orgname" 
+                                v-model="payload.orgname" 
                                 label="Organization Name" 
                                 variant="outlined"
                             ></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6">
-                            <v-text-field v-model="organizationDetails.orgemail" label="Organization Email" outlined></v-text-field>
+                            <v-text-field v-model="payload.orgemail" label="Organization Email" outlined></v-text-field>
                         </v-col>
                     </v-row>
                 </div>
@@ -237,10 +236,10 @@
                 <div class="step-content">
                     <v-row>
                     <v-col cols="12" md="6">
-                        <v-text-field v-model="appointmentDetails.date" label="Date" type="date" outlined></v-text-field>
+                        <v-text-field v-model="payload.appointmentDetails_date" label="Date" type="date" outlined></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
-                        <v-text-field v-model="appointmentDetails.time" label="Time" type="time" outlined></v-text-field>
+                        <v-text-field v-model="payload.appointmentDetails_time" label="Time" type="time" outlined></v-text-field>
                     </v-col>
                     </v-row>
                 </div>
@@ -310,239 +309,226 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
+    import { ref } from 'vue';
 
-    import axios from 'axios';
-    import { useAuthStore, userAuthenticated } from '@/stores/auth';
-    import { generateUniqueIdb } from '~/assets/js/IDCenter';
-    import '~/assets/css/main.css';
+        import axios from 'axios';
+        import { useAuthStore, userAuthenticated } from '@/stores/auth';
+        import { generateUniqueIdb } from '~/assets/js/IDCenter';
+        import '~/assets/css/main.css';
 
-    definePageMeta({
-        middleware: 'auth'
-    })
+        definePageMeta({
+            middleware: 'auth'
+        })
 
-    const valid             = ref(true)
-    const Lastname          = ref('')
-    const Firstname         = ref('');
-    const Middlename        = ref('');
-    const dob               = ref('');
-    const Gender            = ref('');
-    const CivilStatus            = ref('');
-    const Barangay          = ref('');
-    const City              = ref('');
-    const Email             = ref('');
-    const gender_data       = ref([]);
-    const barangay_data     = ref([]);
-    const statuses          = ref([]);
-    const userType          = ref([]);
-    const orgType           = ref([]);
-    const base_url          = useApiUrl();
-    const ID                = generateUniqueIdb();
-    const visible           = ref(false);
-    const loading           = ref(false);
-    const email             = ref('');
-    const form              = ref(null)
-    const showAgreement = ref(false);
-	const agreementConfirmed = ref(false);
-    const petDetail = ref([]);
-    const userID = ref('');
- 
-  
-  const step = ref(1);
-  const petDetails = ref({ petname: '', gender: '', color: '' });
-  const adopteeDetails = ref({ firstname: '', lastname: '', email: '' });
-  const organizationDetails = ref({ orgname: '', orgemail: '' });
-  const appointmentDetails = ref({ date: '', time: '' });
-  const genders = ['Male', 'Female'];
-
-
-    const props = defineProps({
-        type: Boolean,
-        default: ()=>false
-    });
-
-    const payload = ref([]);
-  
-  const stepLabels = ['Pet Details', 'Adoptee Information', 'Organization Information', 'Appointment', 'Agreement'];
-  const stepIcons = ['mdi-paw', 'mdi-account', 'mdi-home-group', 'mdi-calendar', 'mdi-file-document-outline'];
-  
-  const nextStep = () => {
-    if (step.value < stepLabels.length) step.value++;
-  };
-  
-  const previousStep = () => {
-    if (step.value > 1) step.value--;
-  };
-  
-  const submitForm = () => {
-    if (agreementConfirmed.value) {
-      console.log('Form submitted:', {
-        petDetails: petDetails.value,
-        adopteeDetails: adopteeDetails.value,
-        organizationDetails: organizationDetails.value,
-        appointmentDetails: appointmentDetails.value,
-      });
-    }
-
-    const handleAPIRequest = async (data = {}, apiRequest = '') => {
-        console.log(data);
-        const formData = new FormData();
-        for (const key in data) {
-            formData.append(key, data[key]);
-        }
-        try {
-            loading.value = true;
-            let response;
-            switch(apiRequest) {
-                case 'get-gender':
-                    response = await axios.get(`${base_url}api/get-gender`);
-                    gender_data.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'barangay-list':
-                    response = await axios.get(`${base_url}api/barangay-list`);
-                    barangay_data.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'get-statuses':
-                    response = await axios.get(`${base_url}api/get-statuses`);
-                    statuses.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'get-user-type':
-                    response = await axios.get(`${base_url}api/get-user-type`);
-                    userType.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'get-organization-type':
-                    response = await axios.get(`${base_url}api/get-organization-type`);
-                    orgType.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'get-pet-details':
-                    response = await axios.get(`${base_url}api/get-pet-details/${petId}`);
-                    petDetail.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'get-user-details':
-                    response = await axios.get(`${base_url}api/get-pet-details/${petId}`);
-                    petDetail.value = response.data;
-                    loading.value = false;
-                    break;
-
-                
-
-                default:
-                    throw new Error('Invalid API request');
-            }
-            return response.data;
-        } catch (error) {
-            console.error(`Error ${apiRequest}:`, error);
-            throw error;
-        }
-    };
-
-    const getUserID = () => {
-        const loggedInUser = sessionStorage.getItem('user');
-        if (loggedInUser) {
-            const userObject = JSON.parse(loggedInUser);
-            const userID = userObject.UserID;
-            
-        } else {
-            console.log('No user data found in sessionStorage.');
-        }
-    }
-
-    const getPetInfo = async () => {
-        let response;
+        const gender_data           = ref([]);
+        const barangay_data         = ref([]);
+        const statuses              = ref([]);
+        const userType              = ref([]);
+        const orgType               = ref([]);
+        const base_url              = useApiUrl();
+        const ID                    = generateUniqueIdb();
+        const visible               = ref(false);
+        const loading               = ref(false);
+        const email                 = ref('');
+        const form                  = ref(null)
+        const showAgreement         = ref(false);
+        const agreementConfirmed    = ref(false);
+        const petDetail             = ref([]);
+        const petId                 = ref(null);
+        const userID                = ref(null); 
+        const UserDetail            = ref([]);
+        const step = ref(1);
         
-        response = await axios.get(`${base_url}api/get-pet-info`)
-    }
+        const props = defineProps({
+            type: Boolean,
+            default: ()=>false
+        });
 
-    onMounted(() => {
+        const payload = ref([{}]);
+    
+        const stepLabels = [
+            'Pet Details', 
+            'Adoptee Information', 
+            'Organization Information', 
+            'Appointment', 
+            'Agreement'
+        ];
 
-        const petId = localStorage.getItem('PetId'); // Accessing localStorage safely
-        const loggedInUser = sessionStorage.getItem('user'); // Accessing sessionStorage safely
+        const stepIcons = [
+            'mdi-paw', 
+            'mdi-account', 
+            'mdi-home-group', 
+            'mdi-calendar', 
+            'mdi-file-document-outline'
+        ];
+    
+        const nextStep = () => {
+            if (step.value < stepLabels.length) step.value++;
+        };
+    
+        const previousStep = () => {
+            if (step.value > 1) step.value--;
+        };
+    
+        const submitForm = () => {
+            if (agreementConfirmed.value) {
+                console.log('Form submitted:', {
+                    petDetails: petDetails.value,
+                    adopteeDetails: adopteeDetails.value,
+                    organizationDetails: organizationDetails.value,
+                    appointmentDetails: appointmentDetails.value,
+                });
+            }
+        };
 
-        if (petId) {
-            // Handle petId if needed
-            console.log('Pet ID:', petId);
+        const handleAPIRequest = async (data = {}, apiRequest = '') => {
+            try {
+                loading.value = true;
+                let response;
+                switch(apiRequest) {
+                    case 'get-gender':
+                        response = await axios.get(`${base_url}api/get-gender`);
+                        gender_data.value = response.data;
+                        loading.value = false;
+                        break;
+                    case 'barangay-list':
+                        response = await axios.get(`${base_url}api/barangay-list`);
+                        barangay_data.value = response.data;
+                        loading.value = false;
+                        break; 
+                    case 'get-statuses':
+                        response = await axios.get(`${base_url}api/get-statuses`);
+                        statuses.value = response.data;
+                        loading.value = false;
+                        break;         
+                    case 'get-user-type':
+                        response = await axios.get(`${base_url}api/get-user-type`);
+                        userType.value = response.data;
+                        loading.value = false;
+                        break;            
+                    case 'get-organization-type':
+                        response = await axios.get(`${base_url}api/get-organization-type`);
+                        orgType.value = response.data;
+                        loading.value = false;
+                        break;                
+                    case 'get-pet-details':
+                        if (petId.value) { 
+                            response = await axios.get(`${base_url}api/get-pet-details/${petId.value}`);
+                            petDetail.value = response.data;
+                            payload.value.petname = petDetail.value[0].PetName;
+                            payload.value.gender  = petDetail.value[0].PetSex;
+                        }
+                        loading.value = false;
+                        break;
+                    case 'get-user-details':
+                        if(userID.value) {
+                            response = await axios.get(`${base_url}api/get-user-details/${userID.value}`);
+                            UserDetail.value = response.data;
+                            payload.value.Lastname = UserDetail.value[0].lastname
+                            payload.value.Firstname = userDetail.value[0].firstname
+                            payload.value.Middlename = userDetail.value[0].middlename
+                            payload.value.dob = userDetail.value[0].birthday
+                            payload.value.Gender = userDetail.value[0].gender
+                            payload.value.CivilStatus = userDetail.value[0].CivilStatus
+                            console.log('User man ni lagi : ', response.data);
+                        }
+                        loading.value = false;
+                        break;
+                    default:
+                        throw new Error('Invalid API request');
+                }
+                return response.data;
+            } catch (error) {
+                console.error(`Error ${apiRequest}:`, error);
+                throw error;
+            }
+        };
+
+        const getUserID = () => {
+            const loggedInUser = sessionStorage.getItem('user');
+            if (loggedInUser) {
+                const userObject = JSON.parse(loggedInUser);
+                const userID = userObject.UserID;
+                
+            } else {
+                console.log('No user data found in sessionStorage.');
+            }
+        }
+        
+        const getPetInfo = async () => {
+            let response;
+            response = await axios.get(`${base_url}api/get-pet-info`)
         }
 
-        if (loggedInUser) {
-            const userObject = JSON.parse(loggedInUser);
-            userID.value = userObject.UserID;
-        } else {
-            console.log('No user data found in sessionStorage.');
-        }
-        handleAPIRequest({}, 'get-pet-details');
-        handleAPIRequest({}, 'get-gender');
-        handleAPIRequest({}, 'barangay-list');
-        handleAPIRequest({}, 'get-statuses');
-        handleAPIRequest({}, 'get-user-type');
-        handleAPIRequest({}, 'get-organization-type');
-    });
+        onMounted(() => {
+            petId.value = localStorage.getItem('PetId');
+            const loggedInUser = sessionStorage.getItem('user');
+            if (loggedInUser && petId) {
+                const userObject = JSON.parse(loggedInUser);
+                userID.value = userObject.UserID;
 
+                handleAPIRequest({}, 'get-pet-details');
+                handleAPIRequest({}, 'get-user-details');
+                handleAPIRequest({}, 'get-gender');
+                handleAPIRequest({}, 'barangay-list');
+                handleAPIRequest({}, 'get-statuses');
+                handleAPIRequest({}, 'get-user-type');
+                handleAPIRequest({}, 'get-organization-type');
+            } 
+        });
 
-  };
-  </script>
+    </script>
   
-  <style>
-    .slide-fade-enter-active, .slide-fade-leave-active {
-        transition: transform 0.5s ease, opacity 0.5s ease;
-    }
-    .slide-fade-enter, .slide-fade-leave-to {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    
-    .step-content {
-        margin-top: 2rem; /* Space for the fields */
-    }
-    
-    /* Active Step Color */
-    .active-step {
-        color: #6A0DAD !important; /* Active header color */
-    }
-    
-  /* Connecting Line for Stepper */
-  .v-stepper-header .v-stepper-step::after {
-    content: "";
-    position: absolute;
-    height: 2px;
-    background-color: #6A0DAD; /* Line color */
-    left: 50%;
-    top: 25%;
-    width: 100%;
-    z-index: -1;
-  }
+    <style>
 
-     .form-header {
-        color: #000;
-        margin: -12px 0px -12px 0px;
-        font-size: 18px !important;
-        font-weight: 500;
-    }
-    .form-col {
-        /* padding: 3.25px 0px 3.25px 0px !important; */
-        margin: 0px !important;
-    }
+        .slide-fade-enter-active, .slide-fade-leave-active {
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
 
-    .v-input--density-compact {
-        --v-input-control-height: 20px !important;
-    }
+        .slide-fade-enter, .slide-fade-leave-to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        
+        .step-content {
+            margin-top: 2rem;
+        }
+        
+        .active-step {
+            color: #6A0DAD !important; 
+        }
+        
+        .v-stepper-header .v-stepper-step::after {
+            content: "";
+            position: absolute;
+            height: 2px;
+            background-color: #6A0DAD;
+            left: 50%;
+            top: 25%;
+            width: 100%;
+            z-index: -1;
+        }
 
-  .rounded-fieldset {
-        border: 1px solid #673AB7; /* Example border color */
-        background-color: #f9f9f9; /* Light background for better contrast */
-        border-radius: 8px; /* Rounded corners */
-    }
+        .form-header {
+            color: #000;
+            margin: -12px 0px -12px 0px;
+            font-size: 18px !important;
+            font-weight: 500;
+        }
 
-  </style>
+        .form-col {
+            margin: 0px !important;
+        }
+
+        .v-input--density-compact {
+            --v-input-control-height: 20px !important;
+        }
+
+        .rounded-fieldset {
+            border: 1px solid #673AB7;
+            background-color: #f9f9f9; 
+            border-radius: 8px; 
+        }
+
+    </style>
   
