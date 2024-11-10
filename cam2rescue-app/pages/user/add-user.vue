@@ -131,7 +131,8 @@
     import { generateUniqueIdb } from '~/assets/js/IDCenter';
     import { logEvent } from '~/assets/js/LoggingService';
     definePageMeta({
-        layout: "default-layout"
+        layout: "default-layout",
+        middleware: 'auth'
     });
 
     const Lastname = ref('');

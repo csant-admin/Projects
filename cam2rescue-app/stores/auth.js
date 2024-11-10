@@ -4,47 +4,46 @@ export const userAuthenticated = ref([]);
 export const path = ref('');
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    authenticated: false,
-    loading: false,
-  }),
+  	state: () => ({
+    	authenticated: false,
+    	loading: false,
+		user: null,
+		token: null,
+	}),
 
-  actions: {
-    async authenticateUser({ Username, Password }) {
-      this.loading = true;
-      try {
-          const response = await axios.post('http://127.0.0.1:8000/api/login', {
-              username: Username,
-              password: Password,
-          }, {
-              headers: {
-                  'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-              }
-          });
-          console.log('Response : ', response);
-          if (response.data) {
-              console.log('Test');
-              const token = useCookie('token');
-              token.value = response.data.access_token;
-              this.authenticated = true;
-              this.user = response.data.user;
-              if(parseInt(this.user.UserType) === 1 ) {
-                  path.value = 'dashboard';
-              } else {
-                  path.value = '/';
-              }
-              sessionStorage.setItem('user', JSON.stringify(this.user));  
-              sessionStorage.setItem('loggedIn', true); 
-              localStorage.setItem('Authenticated', 'true');
-              localStorage.setItem('token', this.token);
-          }
-      } catch (error) {
-          console.error('Login failed', error);
-          throw new Error('Invalid credentials');
-      } finally {
+  	actions: {
+   		async authenticateUser({ Username, Password }) {
+      		this.loading = true;
+		try {
+			const response = await axios.post('http://127.0.0.1:8000/api/login', {
+				username: Username,
+				password: Password,
+			}, {
+				headers: {
+					'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+				}
+			});
+			if (response.data) {
+				const token = useCookie('token');
+				token.value = response.data.access_token;
+				this.authenticated = true;
+				this.user = response.data.user;
+				if(parseInt(this.user.UserType) === 1 ) {
+					path.value = 'dashboard';
+				} else {
+					path.value = '/';
+				}
+				sessionStorage.setItem('user', JSON.stringify(this.user));  
+				sessionStorage.setItem('loggedIn', true); 
+				localStorage.setItem('Authenticated', 'true');
+				localStorage.setItem('token', this.token);
+			}
+		} catch (error) {
+			throw new Error('Invalid credentials');
+		} finally {
           this.loading = false;
-      }
-  },
+      	}
+  	},
   
     async logout() {
       try {
@@ -54,9 +53,12 @@ export const useAuthStore = defineStore('auth', {
           }
         });
         this.authenticated = false;
-        sessionStorage.removeItem('user');
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('loggedIn');
+		this.user = null;
+		this.token = null;
+		sessionStorage.clear();
+		const token = useCookie('token');
+		token.value = null;
+		clearTimeout(inactivityTimeout);
         localStorage.removeItem('Authenticated');
         localStorage.removeItem('token');
         localStorage.removeItem('type');
@@ -81,6 +83,37 @@ export const useAuthStore = defineStore('auth', {
         this.user = null;
         this.token = null;
       }
-    }
+    },
   }
 });
+
+let inactivityTimeout;
+
+function startInactivityTimer() {
+  const authStore = useAuthStore();
+  inactivityTimeout = setTimeout(() => {  
+    authStore.logout(); 
+  }, 1800000); 
+}
+
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimeout);
+  startInactivityTimer();
+}
+
+
+if (process.client) {
+  window.onload = () => {
+    startInactivityTimer();
+    document.onmousemove = resetInactivityTimer;
+    document.onkeypress = resetInactivityTimer;
+  };
+
+  window.onclose = () => {
+    const authStore = useAuthStore();
+    inactivityTimeout = setTimeout(() => {  
+      authStore.logout(); 
+    }, 1000 * 60 * 5); 
+  }
+}
+

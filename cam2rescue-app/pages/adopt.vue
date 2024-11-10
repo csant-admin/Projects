@@ -1,383 +1,534 @@
 <template>
     <v-container>
-        <div class="mx-auto px-6 py-8">
-            <v-card-title class="text-center animated animatedFadeInUp fadeInUp" style="letter-spacing: 2px;">
-                <h1><span style="color:#6A0DAD;">Cam</span>2Rescue</h1>
-            </v-card-title>
-		  <p class="text-center ">An Online Platform form for pet rescue and shelter</p>
-            <div class="animated animatedFadeInUp fadeInUp">
-                <div class="py-8">
-                    <div class="page-label">
-                        <h3>Adoption Form</h3>
-                    </div>
-                    <form @submit.prevent="handleAdoption">
+        <v-stepper v-model="step" vertical class="pa-4">
+            <v-stepper-header>
+                <v-stepper-step
+                    v-for="(stepLabel, index) in stepLabels"
+                    :key="index"
+                    :complete="step > index + 1"
+                    :step="index + 1"
+                    :class="{'active-step': step === index + 1}"
+                >
+                    <v-icon color="blue" class="mr-2">{{ stepIcons[index] }}</v-icon>
+                    {{ stepLabel }}
+                </v-stepper-step>
+            </v-stepper-header>
+    
+            <v-stepper-items>
+                <transition name="slide-fade">
+                    <v-stepper-content
+                        v-if="step === 1"
+                        step="1"
+                    >
+                    <div class="step-content">  <!-- Added div to wrap step content -->
                         <v-row>
                             <v-col cols="12">
-                                <v-subheader 
-                                    class="pb-4"
-                                >
-                                    Address and Contact Information
-                                </v-subheader>
-                            </v-col>
-                    
-                            <v-col cols="12" md="3">
                                 <v-text-field 
-                                    v-model="payload.Street"
-                                    label="Street" 
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
-                    
-                            <v-col cols="12" md="3">
-                                <v-autocomplete 
-                                    v-model="payload.Barangay"
-                                    label="Barangay" 
-                                    variant="outlined"
-                                    :items="barangay_data"
-                                    item-title="description"
-                                    item-value="id"
-                                ></v-autocomplete>
-                            </v-col>
-                    
-                            <v-col cols="12" md="3">
-                                <v-text-field 
-                                    v-model="payload.City"
-                                    label="City" 
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
-                    
-                            <v-col cols="12" md="3">
-                                <v-text-field 
-                                    v-model="payload.Email"
-                                    label="Email Address" 
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
-                    
-                            <v-col cols="12" md="3">
-                                <v-text-field 
-                                    v-model="payload.Mobile_No"
-                                    label="Mobile Number" 
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
-                    
-                            <v-col cols="12" md="3">
-                                <v-text-field 
-                                    v-model="payload.Tel_No"
-                                    label="Telephone Number" 
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
-                        </v-row>
-                    
-                        <!-- Adoptee Information -->
-                        <v-row>
-                            <v-col cols="12">
-                                <v-subheader 
-                                    class="pb-4"
-                                >
-                                    Adoptee Information
-                                </v-subheader>
-                            </v-col>
-                    
-                            <v-col cols="12" md="3">
-                                <v-text-field 
-                                    v-model="payload.Lastname"
-                                    label="Last Name" 
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
-                    
-                            <v-col cols="12" md="3">
-                                <v-text-field
-                                    v-model="payload.Firstname"
-                                    label="First Name" 
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
-                    
-                            <v-col cols="12" md="3">
-                                <v-text-field 
-                                    v-model="payload.Middlename"
-                                    label="Middle Name" 
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
-                    
-                            <v-col cols="12" md="3">
-                                <v-text-field 
-                                    v-model="payload.Suffix"
-                                    label="Name Extension" 
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
-                    
-                            <!-- Additional fields as needed -->
-                            <v-col cols="12" md="3">
-                                <v-text-field
-                                    v-model="payload.dob" 
-                                    label="Date of Birth" 
-                                    variant="outlined"
-                                ></v-text-field>
-                            </v-col>
-                    
-                            <v-col cols="12" md="3">
-                                <v-text-field
-                                    v-model="payload.PlaceOfBirth" 
-                                    label="Place of Birth" 
+                                    v-model="payload.petname" 
+                                    label="Pet Name" 
                                     variant="outlined"
                                 ></v-text-field>
                             </v-col>
 
-                            <v-col cols="12" md="3">
-                                <v-autocomplete 
-                                    v-model="payload.Gender"
+                            <v-col cols="12" md="4">
+                                <v-select 
+                                    v-model="payload.gender" 
+                                    :items="genders" 
                                     label="Gender" 
                                     variant="outlined"
-                                    :items="gender_data"
-                                    item-title="description"
-                                    item-value="id"
-                                ></v-autocomplete>
+                                ></v-select>
                             </v-col>
 
-                            <v-col cols="12" md="3">
-                                <v-autocomplete 
-                                    v-model="payload.CivilStatus"
-                                    label="Status" 
+                            <v-col cols="12" md="4">
+                                <v-text-field 
+                                    v-model="payload.color" 
+                                    label="Color" 
                                     variant="outlined"
-                                    :items="statuses"
-                                    item-title="description"
-                                    item-value="id"
-                                ></v-autocomplete>
+                                ></v-text-field>
                             </v-col>
+
                         </v-row>
-                    
-                        <!-- Agreement Section -->
+                    </div>
+
+                    <v-btn @click="nextStep" color="primary">Next</v-btn>
+                    </v-stepper-content>
+                </transition>
+
+                <transition name="slide-fade">
+                    <v-stepper-content
+                        v-if="step === 2"
+                        step="2"
+                    >
+                    <div class="step-content mb-4">
                         <v-row>
-                            <v-col cols="12">
-                                <v-checkbox
-                                    v-model="agreementConfirmed"
-                                    label="I agree to the terms and conditions of Cam2Rescue"
-                                    variant="outlined"
-                                    color="#6A0DAD"
-                                    @click="readAgreement"
-                                ></v-checkbox>
+                            <v-col cols="6">
+                                <fieldset class="pa-4 rounded-fieldset">
+                                    <legend class="pa-2">Adoptee Name</legend>
+                                    <v-row >
+                                        <v-col cols="3" class="form-col d-flex align-center justify-center">
+                                            <v-list-subheader class="form-header">Last Name </v-list-subheader>
+                                        </v-col>
+                                        <v-col cols="9">
+                                            <v-text-field 
+                                                v-model="payload.Lastname"
+                                                label="Last Name" 
+                                                variant="outlined"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-row>
+                                        <v-col cols="3" class="form-col d-flex align-center justify-center">
+                                            <v-list-subheader class="form-header">First Name </v-list-subheader>
+                                        </v-col>
+                                        <v-col cols="9">
+                                            <v-text-field
+                                                v-model="payload.Firstname"
+                                                label="First Name" 
+                                                variant="outlined"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    
+                                    <v-row>
+                                        <v-col cols="3" class="form-col d-flex align-center justify-center">
+                                            <v-list-subheader class="form-header">Middle Name </v-list-subheader>
+                                        </v-col>
+                                        <v-col cols="9">
+                                            <v-text-field 
+                                                v-model="payload.Middlename"
+                                                label="Middle Name" 
+                                                variant="outlined"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="3" class="form-col d-flex align-center justify-center">
+                                            <v-list-subheader class="form-header">Suffix </v-list-subheader>
+                                        </v-col>
+                                        <v-col cols="9">
+                                            <v-text-field 
+                                                v-model="payload.Suffix"
+                                                label="Name Extension" 
+                                                variant="outlined"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                </fieldset>
                             </v-col>
-                        </v-row>
-                    
-                        <!-- Submit Button -->
-                        <v-row>
-                            <v-col cols="12">
-                                <v-btn color="#6A0DAD" type="submit">Send Adoption Request Form</v-btn>
+
+                            <v-col cols="6">
+                            <!-- Additional fields as needed -->
+                                <fieldset class="pa-4 rounded-fieldset">
+                                    <legend class="pa-2">Adoptee Details</legend>
+                                        <v-row>
+                                            <v-col cols="3" class="form-col d-flex align-center justify-center">
+                                                <v-list-subheader class="form-header">Birth Date </v-list-subheader>
+                                            </v-col>
+                                            <v-col cols="9">
+                                                <v-text-field
+                                                    v-model="payload.dob" 
+                                                    label="Date of Birth" 
+                                                    variant="outlined"
+                                                ></v-text-field>
+                                            </v-col>
+                                        </v-row>
+
+                                        <v-row>
+                                            <v-col cols="3" class="form-col d-flex align-center justify-center">
+                                                <v-list-subheader class="form-header">Birth Place </v-list-subheader>
+                                            </v-col>
+                                            <v-col cols="9">
+                                                <v-text-field
+                                                    v-model="payload.PlaceOfBirth" 
+                                                    label="Place of Birth" 
+                                                    variant="outlined"
+                                                ></v-text-field>
+                                            </v-col>
+                                        </v-row>
+
+                                        <v-row>
+                                            <v-col cols="3" class="form-col d-flex align-center justify-center">
+                                                <v-list-subheader class="form-header">Gender </v-list-subheader>
+                                            </v-col>
+                                            <v-col cols="9">
+                                                <v-autocomplete 
+                                                    v-model="payload.Gender"
+                                                    label="Gender" 
+                                                    variant="outlined"
+                                                    :items="gender_data"
+                                                    item-title="description"
+                                                    item-value="id"
+                                                ></v-autocomplete>
+                                            </v-col>
+                                        </v-row>
+                                        <v-row>
+                                            <v-col cols="3" class="form-col d-flex align-center justify-center">
+                                                <v-list-subheader class="form-header">Civil Status </v-list-subheader>
+                                            </v-col>
+                                            <v-col cols="9">
+                                                <v-autocomplete 
+                                                    v-model="payload.CivilStatus"
+                                                    label="Status" 
+                                                    variant="outlined"
+                                                    :items="statuses"
+                                                    item-title="description"
+                                                    item-value="id"
+                                                ></v-autocomplete>
+                                            </v-col>
+                                        </v-row>
+                                </fieldset>
                             </v-col>
+
                         </v-row>
-                    </form>
+                    </div>
+                    <div>
+                        <v-btn 
+                            @click="previousStep" 
+                            color="secondary"
+                            class="ma-2"
+                            >   
+                            Back
+                        </v-btn>
+
+                        <v-btn 
+                            @click="nextStep" 
+                            color="primary"
+                            class="ma-2"
+                            >
+                            Next
+                        </v-btn>
+                    </div>
+
+                    </v-stepper-content>
+
+                </transition>
+    
+            <transition name="slide-fade">
+                <v-stepper-content
+                    v-if="step === 3"
+                    step="3"
+                >
+                <div class="step-content">
+                    <v-row>
+                        <v-col cols="12" md="6">
+                            <v-text-field 
+                                v-model="payload.orgname" 
+                                label="Organization Name" 
+                                variant="outlined"
+                            ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                            <v-text-field v-model="payload.orgemail" label="Organization Email" outlined></v-text-field>
+                        </v-col>
+                    </v-row>
                 </div>
-            </div>
-        </div>
-        <div class="pa-4 text-center">
-			<v-dialog max-width="800" v-model="showAgreement">
-				<v-card>
-					<v-card-title>Terms and Conditions</v-card-title>
-					<v-card-text>
-						<p>
-							Welcome to Cam2Rescue! By using our services, you agree to the
-							following terms and conditions regarding the use of your
-							information:
-						</p>
+                <v-btn @click="previousStep" color="secondary">Back</v-btn>
+                <v-btn @click="nextStep" color="primary">Next</v-btn>
+                </v-stepper-content>
+            </transition>
+    
+            <transition name="slide-fade">
+                <v-stepper-content
+                v-if="step === 4"
+                step="4"
+                >
+                <div class="step-content">
+                    <v-row>
+                    <v-col cols="12" md="6">
+                        <v-text-field v-model="payload.appointmentDetails_date" label="Date" type="date" outlined></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-text-field v-model="payload.appointmentDetails_time" label="Time" type="time" outlined></v-text-field>
+                    </v-col>
+                    </v-row>
+                </div>
+                <v-btn @click="previousStep" color="secondary">Back</v-btn>
+                <v-btn @click="nextStep" color="primary">Next</v-btn>
+                </v-stepper-content>
+            </transition>
+    
+            <transition name="slide-fade">
+                <v-stepper-content
+                v-if="step === 5"
+                step="5"
+                >
+                <div class="step-content">
+                    <v-card-title>Terms & Conditions</v-card-title>
+                        <v-card-text class="pa-4">
+                            <p>
+                                Welcome to Cam2Rescue! By using our services, you agree to the
+                                following terms and conditions regarding the use of your
+                                information:
+                            </p>
 
-						<ol>
-							<li>
-								<strong>Information Collection:</strong> We collect personal
-								information such as your name, contact details, and any other
-								information you provide when using our services. This information
-								is collected to ensure that we can effectively provide our
-								services and keep you updated.
-							</li>
-							<li>
-								<strong>Use of Information:</strong> The information you provide
-								will be used solely for the purposes of operating Cam2Rescue,
-								including contacting you regarding adoption, rescue, and other
-								related services. Your information will not be shared with third
-								parties without your explicit consent.
-							</li>
-							<li>
-								<strong>Data Security:</strong> We take data security seriously
-								and implement various measures to protect your personal
-								information. However, please note that no method of transmission
-								over the internet is 100% secure.
-							</li>
-							<li>
-								<strong>User Responsibilities:</strong> You are responsible for
-								ensuring that the information you provide is accurate and
-								up-to-date. Misuse of the platform or providing false information
-								may result in termination of your access to Cam2Rescue services.
-							</li>
-							<li>
-								<strong>Changes to Terms:</strong> Cam2Rescue reserves the right
-								to modify these terms and conditions at any time. We will notify
-								users of significant changes via email or through our platform.
-							</li>
-						</ol>
-					</v-card-text>
+                            <ol class="pa-4">
+                                <li class="pa-2">
+                                    <strong>Information Collection:</strong> We collect personal
+                                    information such as your name, contact details, and any other
+                                    information you provide when using our services. This information
+                                    is collected to ensure that we can effectively provide our
+                                    services and keep you updated.
+                                </li>
+                                <li class="pa-2">
+                                    <strong>Use of Information:</strong> The information you provide
+                                    will be used solely for the purposes of operating Cam2Rescue,
+                                    including contacting you regarding adoption, rescue, and other
+                                    related services. Your information will not be shared with third
+                                    parties without your explicit consent.
+                                </li>
+                                <li class="pa-2">
+                                    <strong>Data Security:</strong> We take data security seriously
+                                    and implement various measures to protect your personal
+                                    information. However, please note that no method of transmission
+                                    over the internet is 100% secure.
+                                </li>
+                                <li class="pa-2">
+                                    <strong>User Responsibilities:</strong> You are responsible for
+                                    ensuring that the information you provide is accurate and
+                                    up-to-date. Misuse of the platform or providing false information
+                                    may result in termination of your access to Cam2Rescue services.
+                                </li>
+                                <li class="pa-2">
+                                    <strong>Changes to Terms:</strong> Cam2Rescue reserves the right
+                                    to modify these terms and conditions at any time. We will notify
+                                    users of significant changes via email or through our platform.
+                                </li>
+                            </ol>
 
-					<v-card-actions>
-						<v-spacer></v-spacer>
-						<v-btn text @click="agreementDisagreed">Disagree</v-btn>
-						<v-btn color="primary" @click="handleAgreement">Agree</v-btn>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-		</div>
+                            <v-checkbox v-model="agreementConfirmed" label="I agree to the terms and conditions"></v-checkbox>
+                        </v-card-text>
+                </div>
+                <v-btn @click="previousStep" color="secondary">Back</v-btn>
+                <v-btn @click="submitForm" :disabled="!agreementConfirmed" color="success">Submit</v-btn>
+                </v-stepper-content>
+            </transition>
+            </v-stepper-items>
+        </v-stepper>
     </v-container>
   </template>
   
   <script setup>
-    import {ref} from 'vue';
-    import axios from 'axios';
-    import { generateUniqueIdb } from '~/assets/js/IDCenter';
-    import { logEvent } from '~/assets/js/LoggingService';
-    const valid             = ref(true)
-    const Lastname          = ref('')
-    const Firstname         = ref('');
-    const Middlename        = ref('');
-    const dob               = ref('');
-    const Gender            = ref('');
-    const CivilStatus            = ref('');
-    const Barangay          = ref('');
-    const City              = ref('');
-    const Email             = ref('');
-    const gender_data       = ref([]);
-    const barangay_data     = ref([]);
-    const statuses          = ref([]);
-    const userType          = ref([]);
-    const orgType           = ref([]);
-    const base_url          = useApiUrl();
-    const ID                = generateUniqueIdb();
-    const visible           = ref(false);
-    const loading           = ref(false);
-    const email             = ref('')
-    const form              = ref(null)
-    const showAgreement = ref(false);
-	const agreementConfirmed = ref(false);
+    import { ref } from 'vue';
 
-    const payload = ref({
-        Street: '',
-        Barangay: '',
-        City: '',
-        Email: '',
-        Mobile_No: '',
-        Tel_No: '',
-        Lastname: '',
-        Firstname: '',
-        Middlename: '',
-        Suffix: '',
-        dob: '',
-        PlaceOfBirth: '',
-        Gender: '',
-        CivilStatus: ''
-    });
+        import axios from 'axios';
+        import { useAuthStore, userAuthenticated } from '@/stores/auth';
+        import { generateUniqueIdb } from '~/assets/js/IDCenter';
+        import '~/assets/css/main.css';
 
-    const handleAdoption = () => {
-        console.log(payload);
-    }
+        definePageMeta({
+            middleware: 'auth'
+        })
 
-	const emit = defineEmits(['update:payload']);
-	console.log('Payload : ', payload);
+        const gender_data           = ref([]);
+        const barangay_data         = ref([]);
+        const statuses              = ref([]);
+        const userType              = ref([]);
+        const orgType               = ref([]);
+        const base_url              = useApiUrl();
+        const ID                    = generateUniqueIdb();
+        const visible               = ref(false);
+        const loading               = ref(false);
+        const email                 = ref('');
+        const form                  = ref(null)
+        const showAgreement         = ref(false);
+        const agreementConfirmed    = ref(false);
+        const petDetail             = ref([]);
+        const petId                 = ref(null);
+        const userID                = ref(null); 
+        const UserDetail            = ref([]);
+        const step = ref(1);
+        
+        const props = defineProps({
+            type: Boolean,
+            default: ()=>false
+        });
 
-	const readAgreement = () => {
-		agreementConfirmed.value = false;
-		showAgreement.value = true;
-	};
-	const agreementDisagreed = () => {
-		agreementConfirmed.value = false;
-		showAgreement.value = false;
-	}
-  	const handleAgreement = () => {
-		agreementConfirmed.value = true;
-		showAgreement.value = false;
-	}
+        const payload = ref([{}]);
+    
+        const stepLabels = [
+            'Pet Details', 
+            'Adoptee Information', 
+            'Organization Information', 
+            'Appointment', 
+            'Agreement'
+        ];
 
-    const fieldRules = [
-        v => !!v || 'Field is required',
-    ]
-    const emailRules = [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+/.test(v) || 'E-mail must be valid'
-    ]
-
-    const toggleVisibility = () => {
-        visible.value = !visible.value;
-    };
-
-    const handleAPIRequest = async (data = {}, apiRequest = '') => {
-        console.log(data);
-        const formData = new FormData();
-        for (const key in data) {
-            formData.append(key, data[key]);
-        }
-        try {
-            loading.value = true;
-            let response;
-            switch(apiRequest) {
-                case 'get-gender':
-                    response = await axios.get(`${base_url}api/get-gender`);
-                    gender_data.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'barangay-list':
-                    response = await axios.get(`${base_url}api/barangay-list`);
-                    barangay_data.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'get-statuses':
-                    response = await axios.get(`${base_url}api/get-statuses`);
-                    statuses.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'get-user-type':
-                    response = await axios.get(`${base_url}api/get-user-type`);
-                    userType.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'get-organization-type':
-                    response = await axios.get(`${base_url}api/get-organization-type`);
-                    orgType.value = response.data;
-                    loading.value = false;
-                    break;
-
-                default:
-                    throw new Error('Invalid API request');
+        const stepIcons = [
+            'mdi-paw', 
+            'mdi-account', 
+            'mdi-home-group', 
+            'mdi-calendar', 
+            'mdi-file-document-outline'
+        ];
+    
+        const nextStep = () => {
+            if (step.value < stepLabels.length) step.value++;
+        };
+    
+        const previousStep = () => {
+            if (step.value > 1) step.value--;
+        };
+    
+        const submitForm = () => {
+            if (agreementConfirmed.value) {
+                console.log('Form submitted:', {
+                    petDetails: petDetails.value,
+                    adopteeDetails: adopteeDetails.value,
+                    organizationDetails: organizationDetails.value,
+                    appointmentDetails: appointmentDetails.value,
+                });
             }
-            return response.data;
-        } catch (error) {
-            console.error(`Error ${apiRequest}:`, error);
-            throw error;
+        };
+
+        const handleAPIRequest = async (data = {}, apiRequest = '') => {
+            try {
+                loading.value = true;
+                let response;
+                switch(apiRequest) {
+                    case 'get-gender':
+                        response = await axios.get(`${base_url}api/get-gender`);
+                        gender_data.value = response.data;
+                        loading.value = false;
+                        break;
+                    case 'barangay-list':
+                        response = await axios.get(`${base_url}api/barangay-list`);
+                        barangay_data.value = response.data;
+                        loading.value = false;
+                        break; 
+                    case 'get-statuses':
+                        response = await axios.get(`${base_url}api/get-statuses`);
+                        statuses.value = response.data;
+                        loading.value = false;
+                        break;         
+                    case 'get-user-type':
+                        response = await axios.get(`${base_url}api/get-user-type`);
+                        userType.value = response.data;
+                        loading.value = false;
+                        break;            
+                    case 'get-organization-type':
+                        response = await axios.get(`${base_url}api/get-organization-type`);
+                        orgType.value = response.data;
+                        loading.value = false;
+                        break;                
+                    case 'get-pet-details':
+                        if (petId.value) { 
+                            response = await axios.get(`${base_url}api/get-pet-details/${petId.value}`);
+                            petDetail.value = response.data;
+                            payload.value.petname = petDetail.value[0].PetName;
+                            payload.value.gender  = petDetail.value[0].PetSex;
+                        }
+                        loading.value = false;
+                        break;
+                    case 'get-user-details':
+                        if(userID.value) {
+                            response = await axios.get(`${base_url}api/get-user-details/${userID.value}`);
+                            UserDetail.value = response.data;
+                            payload.value.Lastname = UserDetail.value[0].lastname
+                            payload.value.Firstname = userDetail.value[0].firstname
+                            payload.value.Middlename = userDetail.value[0].middlename
+                            payload.value.dob = userDetail.value[0].birthday
+                            payload.value.Gender = userDetail.value[0].gender
+                            payload.value.CivilStatus = userDetail.value[0].CivilStatus
+                            console.log('User man ni lagi : ', response.data);
+                        }
+                        loading.value = false;
+                        break;
+                    default:
+                        throw new Error('Invalid API request');
+                }
+                return response.data;
+            } catch (error) {
+                console.error(`Error ${apiRequest}:`, error);
+                throw error;
+            }
+        };
+
+        const getUserID = () => {
+            const loggedInUser = sessionStorage.getItem('user');
+            if (loggedInUser) {
+                const userObject = JSON.parse(loggedInUser);
+                const userID = userObject.UserID;
+                
+            } else {
+                console.log('No user data found in sessionStorage.');
+            }
         }
-    };
+        
+        const getPetInfo = async () => {
+            let response;
+            response = await axios.get(`${base_url}api/get-pet-info`)
+        }
 
-    onMounted(() => {
-        handleAPIRequest({}, 'get-gender');
-        handleAPIRequest({}, 'barangay-list');
-        handleAPIRequest({}, 'get-statuses');
-        handleAPIRequest({}, 'get-user-type');
-        handleAPIRequest({}, 'get-organization-type');
-    });
+        onMounted(() => {
+            petId.value = localStorage.getItem('PetId');
+            const loggedInUser = sessionStorage.getItem('user');
+            if (loggedInUser && petId) {
+                const userObject = JSON.parse(loggedInUser);
+                userID.value = userObject.UserID;
 
-</script>
+                handleAPIRequest({}, 'get-pet-details');
+                handleAPIRequest({}, 'get-user-details');
+                handleAPIRequest({}, 'get-gender');
+                handleAPIRequest({}, 'barangay-list');
+                handleAPIRequest({}, 'get-statuses');
+                handleAPIRequest({}, 'get-user-type');
+                handleAPIRequest({}, 'get-organization-type');
+            } 
+        });
 
-<style scoped>
-html, body, #app, .v-application {
-  height: 100%;
-}
+    </script>
+  
+    <style>
 
-.v-container {
-  height: 100%;
-}
-</style>
+        .slide-fade-enter-active, .slide-fade-leave-active {
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        .slide-fade-enter, .slide-fade-leave-to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        
+        .step-content {
+            margin-top: 2rem;
+        }
+        
+        .active-step {
+            color: #6A0DAD !important; 
+        }
+        
+        .v-stepper-header .v-stepper-step::after {
+            content: "";
+            position: absolute;
+            height: 2px;
+            background-color: #6A0DAD;
+            left: 50%;
+            top: 25%;
+            width: 100%;
+            z-index: -1;
+        }
+
+        .form-header {
+            color: #000;
+            margin: -12px 0px -12px 0px;
+            font-size: 18px !important;
+            font-weight: 500;
+        }
+
+        .form-col {
+            margin: 0px !important;
+        }
+
+        .v-input--density-compact {
+            --v-input-control-height: 20px !important;
+        }
+
+        .rounded-fieldset {
+            border: 1px solid #673AB7;
+            background-color: #f9f9f9; 
+            border-radius: 8px; 
+        }
+
+    </style>
+  

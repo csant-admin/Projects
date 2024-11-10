@@ -57,7 +57,8 @@
     const base_url =  useApiUrl();
 
     definePageMeta({
-        layout: "default-layout"
+        layout: "default-layout",
+        middleware: 'auth'
     });
 
     const headers = [

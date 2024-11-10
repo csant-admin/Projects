@@ -8,7 +8,11 @@
                         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
                     </v-col>
                     <v-col class="d-none d-md-flex">
-                        <v-toolbar-title>Cam2Rescue</v-toolbar-title>
+                        <v-toolbar-title>
+                            <v-btn text tag="nuxt-link" to="/user-dashboard">
+                                Cam2Rescue
+                            </v-btn>
+                        </v-toolbar-title>
                     </v-col>
 
                     <v-col class="d-none d-md-flex text-right" cols="6">
@@ -61,780 +65,116 @@
             <v-progress-linear v-if="loading" color="deep-purple-accent-4" indeterminate></v-progress-linear>
             <!-- Header -->
             <v-container class="text-center my-5">
-                <h1 class="page-header-text"><span style="color: #6A0DAD">Cam</span>2Rescue</h1>
-                <p>An online platform for pet rescue and shelter</p>
+                <v-row class="align-center justify-center">
+                    <v-col cols="auto">
+                        <img src="/assets/images/logo3.png" alt="Cam2Rescue Official logo" style="height: 100px;">
+                    </v-col>
+                    <v-col cols="auto">
+                        <h1 class="page-header-text">
+                            <span style="color: #6A0DAD">Cam</span>2Rescue
+                        </h1>
+                        <p>An online platform for pet rescue and shelter</p>
+                    </v-col>
+                </v-row>
             </v-container>
 
-            <v-container fluid>
-                <v-tabs v-model="activeTab" centered background-color="primary" dark>
-                    <v-tab :value="'Home'">Home</v-tab>
-                    <v-tab v-if="isAuthenticated" v-for="tab in authenticatedTabs" :key="tab.id" :value="tab.id">
-                        
-                            {{ tab.text }}
-                      
-                    </v-tab>
-                </v-tabs>
+            <v-container fluid class="animated-content">
+                <v-img src="../assets/images/cam2rescue-banner.jpg" class="banner-image">
+                    <v-row class="fill-height" align="center" justify="center">
+                        <v-col class="text-center">
+                            <div class="action-btn">
+                                <v-btn text tag="nuxt-link" to="/adoption/home" large color="primary" class="mx-3">Find Your Furry Friend</v-btn>
+                                <v-btn large color="secondary" class="mx-3">Post Rescue</v-btn>
+                            </div>
+                        </v-col>
+                    </v-row>
+                </v-img>
+                <v-card class="mt-4">
+                    <p class="text-justify pa-4 home-p">
+                        If you believe that animals need help as much as humans do, we, the cam2rescue team encourage you to support and donate to organizations located in Cebu. Cam2Rescue is a place where we prioritize the helpless strays. With our partnered organizations, they are always called upon to rescue animals suffering from abandonment, abuse, injury or neglect and none of it is possible without your support. Donations may be used to help cover the costs of daily operations, supplies, staff training, animal housing upgrades, community outreach programs, animal enrichment and much more.
+                    </p>
+                </v-card>
+                <!-- Team Section -->
+                <v-container fluid class="team-section my-12">
+                    <h2 class="text-center mb-8">Meet Our Team</h2>
+                    <v-row>
+                        <v-col cols="12" md="3" lg="2.4" class="team-member-card">
+                            <v-hover v-slot:default="{ isHovering }">
+                                <v-card class="elevation-1 team-card" outlined>
+                                    <v-img src="/assets/images/team1.png" aspect-ratio="1" lazy-src="../assets/images/placeholder.jpg" class="team-image" transition="scale-transition" :eager="false" />
+                                    <v-card-text class="text-center">
+                                        <h3 class="team-member-name">Roselyn S. Ramos</h3>
+                                        <p class="team-member-role">Founder & Project Manager</p>
+                                        <p class="team-member-bio">Animal lover with a passion for rescue missions.</p>
+                                    </v-card-text>
+                                </v-card>
+                            </v-hover>
+                        </v-col>
+                        <v-col cols="12" md="3" lg="2.4" class="team-member-card">
+                            <v-hover v-slot:default="{ isHovering }">
+                                <v-card class="elevation-1 team-card" outlined>
+                                    <v-img src="/assets/images/team4.png" aspect-ratio="1" lazy-src="../assets/images/placeholder.jpg" class="team-image" transition="scale-transition" :eager="false" />
+                                    <v-card-text class="text-center">
+                                        <h3 class="team-member-name">Regine Heruela</h3>
+                                        <p class="team-member-role">Frontend Developer</p>
+                                        <p class="team-member-bio">Animal lover with a passion for rescue missions.</p>
+                                    </v-card-text>
+                                </v-card>
+                            </v-hover>
+                        </v-col>
+                        <v-col cols="12" md="3" lg="2.4" class="team-member-card">
+                            <v-hover v-slot:default="{ isHovering }">
+                                <v-card class="elevation-1 team-card" outlined>
+                                    <v-img src="/assets/images/team5.png" aspect-ratio="1" lazy-src="../assets/images/placeholder.jpg" class="team-image" transition="scale-transition" :eager="false" />
+                                    <v-card-text class="text-center">
+                                        <h3 class="team-member-name">Greg Jamero</h3>
+                                        <p class="team-member-role">Layout Designer</p>
+                                        <p class="team-member-bio">Animal lover with a passion for rescue missions.</p>
+                                    </v-card-text>
+                                </v-card>
+                            </v-hover>
+                        </v-col>
+                        <v-col cols="12" md="3" lg="2.4" class="team-member-card">
+                            <v-hover v-slot:default="{ isHovering }">
+                                <v-card class="elevation-1 team-card" outlined>
+                                    <v-img src="/assets/images/team3.png" aspect-ratio="1" lazy-src="../assets/images/placeholder.jpg" class="team-image" transition="scale-transition" :eager="false" />
+                                    <v-card-text class="text-center">
+                                        <h3 class="team-member-name">Lorgel Cantal</h3>
+                                        <p class="team-member-role">Client Coordinator</p>
+                                        <p class="team-member-bio">Animal lover with a passion for rescue missions.</p>
+                                    </v-card-text>
+                                </v-card>
+                            </v-hover>
+                        </v-col>
+                        <v-col cols="12" md="3" lg="2.4" class="team-member-card">
+                            <v-hover v-slot:default="{ isHovering }">
+                                <v-card class="elevation-1 team-card" outlined>
+                                    <v-img src="/assets/images/team2.png" aspect-ratio="1" lazy-src="../assets/images/placeholder.jpg" class="team-image" transition="scale-transition" :eager="false" />
+                                    <v-card-text class="text-center">
+                                        <h3 class="team-member-name">Charlie Santander</h3>
+                                        <p class="team-member-role">Website Developer / Programmer</p>
+                                        <p class="team-member-bio">Animal lover with a passion for rescue missions.</p>
+                                    </v-card-text>
+                                </v-card>
+                            </v-hover>
+                        </v-col>
+                    </v-row>
+                </v-container>
             </v-container>
-
-            <v-tabs-window v-model="activeTab">
-                <v-tabs-window-item value="Home">
-                    <v-container fluid class="animated-content">
-                        <v-img src="../assets/images/cam2rescue-banner.jpg" height="800"  class="banner-image">
-                            <v-row class="fill-height" align="center" justify="center">
-                                <v-col class="text-center">
-                                    <!-- <v-btn large color="primary" class="mx-3">Adopt</v-btn>
-                                    <v-btn large color="secondary" class="mx-3">Post Rescue</v-btn> -->
-                                </v-col>
-                            </v-row>
-                        </v-img>
-                        <v-card class="mt-4">
-                            <p class="text-justify pa-4 home-p">
-                                If you believe that animals need help as much as humans do, we, the cam2rescue team encourage you to support and donate to organizations located in Cebu. Cam2Rescue is a place where we prioritize the helpless strays. With our partnered organizations, they are always called upon to rescue animals suffering from abandonment, abuse, injury or neglect and none of it is possible without your support. Donations may be used to help cover the costs of daily operations, supplies, staff training, animal housing upgrades, community outreach programs, animal enrichment and much more.
-                            </p>
-                        </v-card>
-                    </v-container>
-                </v-tabs-window-item>
-
-                <v-tabs-window-item value="AdoptPet">
-                    <v-container fluid>
-                        <div class="animated-content">
-                            <v-row>
-                                <template v-for="(pet, index) in petList" :key="index">
-                                    <v-hover v-slot:default="{ isHovering, props }">
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-col cols="12">
-                                                <v-card
-                                                    class="mx-auto"
-                                                    color="grey-lighten-4"
-                                                    max-width="600"
-                                                    v-bind="props"
-                                                >
-                                                    <v-img
-                                                        :src="`${base_url}storage/${pet.ImagePath}`"
-                                                        :alt="pet.PetName"
-                                                        cover
-                                                        class="pet-image"
-                                                    >
-                                                        <v-expand-transition>
-                                                            <div
-                                                                v-if="isHovering"
-                                                                class="d-flex transition-fast-in-fast-out v-card--reveal text-h2"
-                                                                style="height: 25%; background-color: #FFF !important;"
-                                                            >
-                                                                <div
-                                                                    class="action-buttons"
-                                                                >
-                                                                <v-btn 
-                                                                    link to="/adopt" 
-                                                                    color="#6A0DAD" 
-                                                                    size="large" 
-                                                                    class="zoom-button"
-                                                                >
-                                                                    Adopt
-                                                                </v-btn>
-
-                                                                    <v-btn 
-                                                                        color="#6A0DAD" 
-                                                                        size="large" 
-                                                                        class="zoom-button"
-                                                                    >
-                                                                        View
-                                                                    </v-btn>
-                                                                </div>
-                                                            </div>
-                                                        </v-expand-transition>
-                                                    </v-img>
-                                                    <v-card-text class="pt-6">
-                                                        <h4 class="text-h4 font-weight-light mb-2" style="color: #6A0DAD">
-                                                            {{ pet.PetName }}
-                                                        </h4>
-
-                                                        <div class="font-weight-light text-h6 mb-2">
-                                                            {{ pet.PetDescription }}
-                                                        </div>
-                                                    </v-card-text>
-                                                </v-card>
-                                            </v-col>
-                                        </v-col>
-                                    </v-hover>
-                                </template>
-                            </v-row>
-                        </div>
-                    </v-container>
-                </v-tabs-window-item>
-                
-                    <v-tabs-window-item value="PostRescue">
-                        <v-container>
-                            <div class="page-label animated-page-header">
-                                <h3>Create Post</h3>
-                            </div>
-                            <div class="animated animatedFadeInUp fadeInUp">
-                                <form  @submit.prevent="postRescue">
-                                    <v-row>
-                                        <v-col cols="6">
-                                            <v-autocomplete 
-                                                v-model="selectedColor" 
-                                                label="Pet Color" 
-                                                variant="outlined" 
-                                                :items="color"
-                                                item-title="description" 
-                                                item-value="id" 
-                                            ></v-autocomplete>
-                                        </v-col>
-                                        <v-col cols="6">
-                                            <v-autocomplete 
-                                                v-model="selectedGender" 
-                                                label="Pet Gender" 
-                                                variant="outlined" 
-                                                :items="gender"
-                                                item-title="description" 
-                                                item-value="id" 
-                                            ></v-autocomplete>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col cols="6">
-                                            <v-autocomplete 
-                                                v-model="selectedInjury" 
-                                                label="Injury List" 
-                                                variant="outlined" 
-                                                :items="injuryList"
-                                                item-title="description" 
-                                                item-value="id" 
-                                            ></v-autocomplete>
-                                        </v-col>
-                                        <v-col cols="6">
-                                            <v-autocomplete 
-                                                v-model="selectedUrgency" 
-                                                label="Urgency" 
-                                                variant="outlined" 
-                                                :items="urgency"
-                                                item-title="description" 
-                                                item-value="id" 
-                                            ></v-autocomplete>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col cols="4">
-                                            <v-text-field 
-                                                v-model="foundStreet" 
-                                                label="St./Blg/Zone" 
-                                                variant="outlined"
-                                            ></v-text-field>
-                                        </v-col>
-                                        <v-col cols="4">
-                                            <v-autocomplete 
-                                                v-model="selectedBarangay" 
-                                                label="Barangay" 
-                                                variant="outlined" 
-                                                :items="barangay"
-                                                item-title="description" 
-                                                item-value="id" 
-                                            ></v-autocomplete>
-                                        </v-col>
-                                        <v-col cols="4">
-                                            <v-text-field 
-                                                v-model="foundCity" 
-                                                label="City/Municipality" 
-                                                variant="outlined"
-                                            ></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col cols="12">
-                                            <v-textarea 
-                                            label="Description" 
-                                            v-model="petDescription" 
-                                            name="input-7-1" 
-                                            variant="outlined" 
-                                            auto-grow
-                                        ></v-textarea>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col cols="6">
-                                            <v-text-field 
-                                                label="Upload Images" 
-                                                variant="outlined" 
-                                                type="file" 
-                                                multiple
-                                                @change="handleTargetSelected"
-                                            >
-                                            </v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col cols="6">
-                                            <v-btn color="#6A0DAD" type="submit">Post a Rescue</v-btn>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <img 
-                                            v-if="imagePreview" 
-                                            :src="imagePreview" 
-                                            alt="Image Preview" 
-                                            style="max-width: 400px; height: auto;" class="mt-3"
-                                        />
-                                    </v-row>
-                                </form>
-                            </div>
-                        </v-container>
-                    </v-tabs-window-item>
-                <v-tabs-window-item value="AdoptionRequest">
-                    <v-container fluid>
-                        <div class="animated animatedFadeInUp fadeInUp">
-                            <v-data-table
-                                :headers="headers"
-                                :items="userList"
-                                :pagination.sync="pagination"
-                                :loading="loading"
-                                class="elevation-1"
-                            >
-                                <template v-slot:item="{ item }">
-                                    <tr>
-                                        <td>{{ item.Lastname }}</td>
-                                        <td>{{ item.Firstname }}</td>
-                                        <td>{{ item.Middlename }}</td>
-                                        <td>{{ item.Email }}</td>
-                                        <td>{{ item.Gender }}</td>
-                                        <td>{{ item.Barangay }}</td>
-                                        <td>{{ item.City }}</td>
-                                        <td>
-                                            <div>
-                                                <v-btn color="success" size="small"><v-icon>mdi-pencil-box-outline</v-icon></v-btn>
-                                                <v-btn color="error" size="small"><v-icon>mdi-trash-can-outline</v-icon></v-btn>
-                                                <v-btn color="warning" size="small"><v-icon>mdi-lock-open-outline</v-icon></v-btn>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </v-data-table>
-                        </div>
-                    </v-container>
-                </v-tabs-window-item>
-
-                <v-tabs-window-item value="ForRescue">
-                    <v-container fluid>
-                        <div class="animated animatedFadeInUp fadeInUp">
-                            <v-data-table
-                                :headers="RescueHeaders"
-                                :items="rescueData"
-                                :pagination.sync="pagination"
-                                :loading="loading"
-                                class="elevation-1"
-                            >
-                                <template v-slot:item="{ item }">
-                                    <tr>
-                                        <td>{{ item.Address }}</td>
-                                        <td>{{ item.PetColorId }}</td>
-                                        <td>{{ item.PetSexId }}</td>
-                                        <td>{{ item.ImportantNote }}</td>
-                                        <td>{{ item.Description }}</td>
-                                        <td>{{ item.created_by }}</td>
-                                        <td>{{ item.created_at }}</td>
-                                        <td>{{ item.updated_by }}</td>
-                                        <td>{{ item.RescueStatus }}</td>
-                                        <td>
-                                            <div>
-                                                <v-btn 
-                                                    color="#6A0DAD" 
-                                                    size="small"
-                                                    class="zoom-button"
-                                                    @click.prevent="handleAction(item.RescueId, 1)"
-                                                    :disabled="
-                                                        parseInt(item.RescueStatusId) === 1 || 
-                                                        parseInt(item.RescueStatusId) === 2 || 
-                                                        parseInt(item.RescueStatusId) === 3
-                                                    "
-                                                >
-                                                    <v-icon>mdi-ambulance</v-icon>
-                                                    <v-tooltip
-                                                        activator="parent"
-                                                        location="top"
-                                                    >
-                                                        Confirm Rescue
-                                                    </v-tooltip>
-                                                </v-btn>
-                                                <v-btn 
-                                                    color="success" 
-                                                    size="small"
-                                                    class="zoom-button"
-                                                    @click.prevent="handleAction(item.RescueId, 2)"
-                                                    :disabled="
-                                                        parseInt(item.RescueStatusId) === 0 || 
-                                                        parseInt(item.RescueStatusId) === 2 || 
-                                                        parseInt(item.RescueStatusId) === 3
-                                                    "
-                                                >
-                                                    <v-icon>mdi-check-bold</v-icon>
-                                                    <v-tooltip
-                                                        activator="parent"
-                                                        location="top"
-                                                    >
-                                                        Rescue was Successful
-                                                    </v-tooltip>
-                                                </v-btn>
-                                                <v-btn 
-                                                    color="error" 
-                                                    size="small"
-                                                    class="zoom-button"
-                                                    @click.prevent="handleFailedRescue(item.RescueId, 3)"
-                                                    :disabled="
-                                                        parseInt(item.RescueStatusId) === 0 || 
-                                                        parseInt(item.RescueStatusId) === 2 || 
-                                                        parseInt(item.RescueStatusId) === 3
-                                                    "
-                                                >
-                                                    <v-icon>mdi-close-thick</v-icon>
-                                                    <v-tooltip
-                                                        activator="parent"
-                                                        location="top"
-                                                    >
-                                                        Rescue Operation Failed
-                                                    </v-tooltip>
-                                                </v-btn>
-                                                <v-btn 
-                                                    color="#6A0DAD" 
-                                                    size="small"
-                                                    class="zoom-button"
-                                                    @click.prevent="generateRescueReport(item.RescueId)"
-                                                >
-                                                    <v-icon>mdi-printer</v-icon>
-                                                    <v-tooltip
-                                                        activator="parent"
-                                                        location="top"
-                                                    >
-                                                        Print Rescue Details
-                                                    </v-tooltip>
-
-                                                </v-btn>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </v-data-table>
-                        </div>
-                    </v-container>
-                </v-tabs-window-item>
-            </v-tabs-window>
         </v-main>
 
-        <!-- Footer -->
         <v-footer app>
             <v-col class="text-center">
                 <span>&copy; 2024 Cam2Rescue. All rights reserved.</span>
             </v-col>
         </v-footer>
-
-        <!-- Modal -->
- 
-            <div class="text-center pa-4">
-                <v-dialog
-                    v-model="failedRescueDialog"
-                    transition="dialog-bottom-transition"
-                    max-width="600"
-                    persistent
-                >
-            
-                <v-card>
-
-                    <v-container class="text-center my-5">
-                        <h1 class="page-header-text"><span style="color: #6A0DAD">Cam</span>2Rescue</h1>
-                        <p>An online platform for pet rescue and shelter</p>
-                    </v-container>
-                    <v-container>
-                        <form @submit.prevent="handleFailedRecue">
-                            <v-row>
-                                <v-col cols="6">
-                                    <v-text-field
-                                        label="Rescue ID"
-                                        v-model="RescueId"
-                                        density="compact"
-                                        variant="outlined"
-                                        readonly
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="6">
-                                    <v-text-field
-                                        label="Rescue Status ID"
-                                        v-model="RescueStatusId"
-                                        density="compact"
-                                        variant="outlined"
-                                        readonly
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-textarea
-                                        label="Reason for failed rescue"
-                                        v-model="failedReason"
-                                        density="compact"
-                                        variant="outlined"
-                                    >
-                                        
-                                    </v-textarea>
-                                </v-col>
-                            </v-row>
-                            <v-btn
-                                type="submit"
-                                color="#6A0DAD"
-                            >
-                            Submit
-                            </v-btn> 
-                        </form>
-                    </v-container>
-                    <template v-slot:actions>
-                    <v-spacer></v-spacer>
-
-                    <v-btn 
-                        @click="failedRescueDialog = false"
-                        color="#6A0DAD"
-                        >
-                        Close
-                    </v-btn>
-
-                    </template>
-                </v-card>
-                </v-dialog>
-            </div>
     </v-app>
 </template>
 
 <script setup>
-    import { ref, onMounted} from 'vue';
-    import axios from 'axios';
-    import { useAuthStore, userAuthenticated } from '@/stores/auth';
-    import { generateUniqueIdb } from '~/assets/js/IDCenter';
+    import { ref } from 'vue';
     import '~/assets/css/main.css';
-
-    const authStore = useAuthStore();
-    const router = useRouter();
-
-    const imageFile         = ref(null);
-    const imagePreview      = ref(null);
-    const userList          = ref([]);
-    const petList           = ref([]);
-    const loading           = ref(false);
-    const pagination        = ref({ page: 1, itemsPerPage: 10 });
-    const rowsPerPageItems  = [4, 8, 12 ]
-    const gender            = ref([]);
-    const barangay          = ref([]);
-    const color             = ref([]);
-    const injuryList        = ref([]);
-    const urgency           = ref([]);
-    const rescueData        = ref([]);
-    const base_url          =  useApiUrl();
-    const ID                = generateUniqueIdb();
-    const userID            = ref('');
-    const selectedColor     = ref('');
-    const selectedBarangay  = ref('');
-    const selectedGender    = ref('');
-    const selectedInjury    = ref('');
-    const selectedUrgency   = ref('');
-    const foundStreet       = ref('');
-    const foundCity         = ref('');
-    const petDescription    = ref('');
-    const isAuthenticated   = ref('')
-    const activeTab         = ref('Home');
-    const showSnackbar      = ref(false);
-    const drawer            = ref(false);
-    const failedRescueDialog = ref(false);
-    const failedReason = ref('');
-    const RescueId = ref(null);
-    const RescueStatusId = ref(null);
-    console.log(base_url);
-    if (process.client) {
-        const authenticated = localStorage.getItem('Authenticated');
-        isAuthenticated.value = authenticated === 'true'; 
-        console.log('Authenticated : ', isAuthenticated);
-    }
-
-    const handleTargetSelected = (event) => {
-        if (event.target.files.length === 0) {
-            imageFile.value = null;
-            imagePreview.value = null;
-            return;
-        }
-
-        imageFile.value = event.target.files[0];
-
-        if (imagePreview.value) {
-            URL.revokeObjectURL(imagePreview.value);
-        }
-        imagePreview.value = URL.createObjectURL(imageFile.value);
-    };
-
-    // const handleAction = async (rescueId, rescueStatusId) => {
-    //     const url = `${base_url}api/approve-rescue/${rescueId}`;
-    //     const formData = new FormData();
-    //     formData.append('RescueId', rescueId);
-    //     formData.append('RescueStatus', rescueStatusId);
-    //     const loggedInUser = sessionStorage.getItem('user');
-    //     if (loggedInUser) {
-    //         const userObject = JSON.parse(loggedInUser);
-    //         formData.append('updated_by', userObject.UserID);
-    //     } 
-    //     try{
-    //         loading.value = true;
-    //         const response = await axios.put(url, formData);
-
-    //         if(response) {
-    //             console.log('Successfull')
-    //         } else {
-    //             console.log('Failed');
-    //         }
-    //     } catch( error ) {
-    //         console.error(`Error ${response}:`, error);
-    //         loading.value = false;
-    //         throw error;
-    //     } finally {
-    //         loading.value = false;
-    //     }
-
-    // }
-
-    const handleAction = async (rescueId, rescueStatusId) => {
-        const url = `${base_url}api/approve-rescue/${rescueId}`;
-        const data = {
-            RescueStatus: rescueStatusId,
-            updated_by: JSON.parse(sessionStorage.getItem('user')).UserID
-        };
-
-        try {
-            loading.value = true;
-            const response = await axios.put(url, data);
-
-            if (response.status === 200) {
-                console.log('Successful');
-            } else {
-                console.log('Failed');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            throw error;
-        } finally {
-            loading.value = false;
-        }
-    };
-
-    const handleFailedRescue = (rescueId, rescueStatusId) => {
-        RescueId.value = rescueId;              
-        RescueStatusId.value = rescueStatusId; 
-        console.log(RescueId.value)
-        console.log(RescueStatusId.value)
-        failedRescueDialog.value = true;
-
-    }
-
-    const handleFailedRecue = async () => {
-        const url = `${base_url}api/approve-rescue/${RescueId.value}`;
-        const data = {
-            RescueStatus: RescueStatusId.value,
-            updated_by: JSON.parse(sessionStorage.getItem('user')).UserID,
-            FailedReason: failedReason.value
-        }
-        try {
-            loading.value = true;
-            const response = await axios.put(url, data);
-
-            if (response.status === 200) {
-                console.log('Successful');
-            } else {
-                console.log('Failed');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            throw error;
-        } finally {
-            loading.value = false;
-            failedRescueDialog.value = false;
-        }
-    }
-
-    const generateRescueReport = async (rescueId) => {
-        console.log('Test');
-        try{
-            const url = `${base_url}api/generate-rescue-report/${rescueId}`;
-            window.open(url, '_blank');
-        } catch (error) {
-            console.error('Error generating PDF:', error);
-        }
-    }
-
-    const postRescue = async () => {
-        const data = {
-            petId: ID,
-            Color: selectedColor.value,
-            Gender: selectedGender.value,
-            Barangay: selectedBarangay.value,
-            Injury: selectedInjury.value,
-            Urgency: selectedUrgency.value,
-            Street: foundStreet.value,
-            City: foundCity.value,
-            description: petDescription.value,
-            image: imageFile.value,
-
-        }
-        await handleAPIRequest(data, 'post-rescue');
-    }
-
-    const headers = [
-        { title: 'Lastname', key: 'Lastname' },
-        { title: 'Firstname', key: 'Firstname'},
-        { title: 'Middlename', key: 'Middlename' },
-        { title: 'Email', key: 'Email'},
-        { title: 'Gender', key: 'Gender'},
-        { title: 'Barangay', key: 'Barangay' },
-        { title: 'City', key: 'City' },
-        { title: 'Action', key: 'Action', sortable: false},
-    ];
-
-    const RescueHeaders = [
-        { title: 'Full Address', key: 'Address' },
-        { title: 'PetColor', key: 'PetColorId'},
-        { title: 'PetSex', key: 'PetSexId'},
-        { title: 'Important Note', key: 'ImportantNote'},
-        { title: 'Description', key: 'Description' },
-        { title: 'Posted By', key: 'created_by' },
-        { title: 'Date & Time Posted', key: 'created_at' },
-        { title: 'Approved By', key: 'updated_by' },
-        { title: 'Rescue Status', key:'RescueStatus'},
-        { title: 'Action', key: 'Action', sortable: false},
-    ];
-
-    const handleAPIRequest = async (data = {}, apiRequest = '') => {
-        try {
-            loading.value = true;
-            let response;
-
-            switch (apiRequest) {
-                case 'user-list':
-                    response = await axios.get(`${base_url}api/user-list`);
-                    if (response.status >= 200 && response.status < 300) {
-                        userList.value = response.data;
-                        loading.value = false;
-                    }
-                    break;
-
-                case 'list-of-pets':
-                    response = await axios.get(`${base_url}api/list-of-pets`);
-                    if (response.status >= 200 && response.status < 300) {
-                        petList.value = response.data;
-                        loading.value = false;
-                    }
-                    break;
-
-                case 'get-rescue-list': 
-                    response = await axios.get(`${base_url}api/get-rescue-list`);
-                    if(response.status >= 200 && response.status < 300) {
-                        rescueData.value = response.data;
-                        console.log('Rescue List : ', rescueData)
-                        loading.value = false;
-                    }
-                    break;
-                    
-                case 'get-gender':
-                    response = await axios.get(`${base_url}api/get-gender`);
-                    gender.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'barangay-list':
-                    response = await axios.get(`${base_url}api/barangay-list`);
-                    barangay.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'color-list':
-                    response = await axios.get(`${base_url}api/color-list`);
-                    color.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'injury-list':
-                    response = await axios.get(`${base_url}api/injury-list`);
-                    injuryList.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'get-urgency':
-                    response = await axios.get(`${base_url}api/get-urgency`);
-                    urgency.value = response.data;
-                    loading.value = false;
-                    break;
-
-                case 'post-rescue': 
-                    const formData = new FormData();
-                    for (const key in data) {
-                        formData.append(key, data[key]);
-                    }
-                    const loggedInUser = sessionStorage.getItem('user');
-                    if (loggedInUser) {
-                        const userObject = JSON.parse(loggedInUser);
-                        const userID = userObject.UserID;
-                        formData.append('UserID', userID);
-                    } else {
-                        console.log('No user data found in sessionStorage.');
-                    }
-                    console.log('Logged In:', sessionStorage.getItem('loggedIn'));
-
-                    response = await axios.post(`${base_url}api/post-rescue`, formData, {
-                        headers: {
-                                'Content-Type': 'multipart/form-data',
-                            },
-                    });
-                    break;
-
-                default:
-                    throw new Error('Invalid API request');
-            }
-
-            return response.data;
-        } catch (error) {
-            console.error(`Error ${apiRequest}:`, error);
-            loading.value = false;
-            throw error;
-        } finally {
-            loading.value = false;
-        }
-    };
-
-    handleAPIRequest({}, 'user-list');
-
-    const tabs = [
-        {text: 'Home',              id: 'Home'},
-    ];
-    
-    const authenticatedTabs = [
-        {text: 'Adopt Pet',         id: 'AdoptPet'},
-        {text: 'Post Rescue',       id: 'PostRescue'},
-        {text: 'Donation',          id: 'Donation'},
-        {text: 'Adoption Request',  id: 'AdoptionRequest' }, 
-        {text: 'For Rescue',        id: 'ForRescue'}
-    ]
-
-    const logout = () => {
-        loading.value = true;
-        authStore.logout(); 
-        isAuthenticated.value = false;
-        showSnackbar.value = true;
-        setTimeout(function(){
-            router.push('/login');
-        }, 2000)
-    };
-
-    onMounted(() => {
-        handleAPIRequest({}, 'list-of-pets');
-        handleAPIRequest({}, 'get-rescue-list');
-        handleAPIRequest({}, 'get-gender');
-        handleAPIRequest({}, 'barangay-list');
-        handleAPIRequest({}, 'color-list');
-        handleAPIRequest({}, 'injury-list');
-        handleAPIRequest({}, 'get-urgency');
-    })
-
-
+    const drawer = ref(false);
 </script>
 
 <style>
@@ -845,6 +185,14 @@
 }
 .banner-image {
     position: relative;
+}
+
+.fill-height {
+    @media only screen and (max-width: 620px){
+        position: relative !important;
+        padding: 10;
+        top: 30% !important;
+    }
 }
 
 .v-tabs-bar__content {
@@ -889,6 +237,60 @@
   gap: 10px;
   z-index: 10;
   transition: opacity 0.3s ease;
+}
+
+/* Team Section Styling */
+.team-section {
+    padding: 2rem 0;
+    background-color: #f9f9f9;
+    border-top: 2px solid #6A0DAD;
+}
+
+.team-card {
+    transition: transform 0.3s ease-in-out;
+    background-color: white;
+}
+
+.team-card:hover {
+    transform: translateY(-10px);
+}
+
+.team-member-card {
+    margin-bottom: 1rem;
+}
+
+.team-member-name {
+    color: #6A0DAD;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.team-member-role {
+    color: #6A0DAD;
+    font-style: italic;
+}
+
+.team-image {
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: -4rem;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Scroll animation */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animated-content {
+    animation: fadeInUp 1.5s ease-in-out;
 }
 
 </style>

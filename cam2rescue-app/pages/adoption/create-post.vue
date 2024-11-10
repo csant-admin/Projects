@@ -82,7 +82,8 @@
     import { logEvent } from '~/assets/js/LoggingService';
     import '~/assets/css/main.css'
     definePageMeta({
-        layout: "default-layout"
+        layout: "default-layout",
+        middleware: 'auth'
     });
 
     const imageFile = ref(null);

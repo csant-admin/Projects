@@ -87,7 +87,8 @@
     const router = useRouter();
 
     definePageMeta({
-        layout: "default-layout"
+        layout: "default-layout",
+        middleware: 'auth'
     })
 
     const petList           = ref([]);
