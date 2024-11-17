@@ -343,8 +343,8 @@
             type: Boolean,
             default: ()=>false
         });
-
-        const payload = ref([{}]);
+        const isLoading = ref(false);
+        const payload = ref({});
     
         const stepLabels = [
             'Pet Details', 
@@ -370,14 +370,20 @@
             if (step.value > 1) step.value--;
         };
     
-        const submitForm = () => {
+        const submitForm = async () => {
             if (agreementConfirmed.value) {
-                console.log('Form submitted:', {
-                    petDetails: petDetails.value,
-                    adopteeDetails: adopteeDetails.value,
-                    organizationDetails: organizationDetails.value,
-                    appointmentDetails: appointmentDetails.value,
-                });
+                isLoading.value = true;
+                try {
+                    const response = await axios.post(`${base_url}api/post-adoption`, payload.value);
+                    if(response) {
+                        console.log('Successfull');
+                        isLoading.value = false;
+                    }
+                } catch(error) {
+                    console.log('Error' + error);
+                } finally {
+                    isLoading.value = false;
+                }
             }
         };
 
@@ -415,6 +421,7 @@
                         if (petId.value) { 
                             response = await axios.get(`${base_url}api/get-pet-details/${petId.value}`);
                             petDetail.value = response.data;
+                            payload.value.pet_id = petDetail.value[0].PetID;
                             payload.value.petname = petDetail.value[0].PetName;
                             payload.value.gender  = petDetail.value[0].PetSex;
                         }
@@ -424,12 +431,14 @@
                         if(userID.value) {
                             response = await axios.get(`${base_url}api/get-user-details/${userID.value}`);
                             UserDetail.value = response.data;
+                            console.log('User Detail : ', UserDetail.value);
+                            payload.value.user_id = UserDetail.value[0].id
+                            payload.value.Firstname = UserDetail.value[0].firstname
                             payload.value.Lastname = UserDetail.value[0].lastname
-                            payload.value.Firstname = userDetail.value[0].firstname
-                            payload.value.Middlename = userDetail.value[0].middlename
-                            payload.value.dob = userDetail.value[0].birthday
-                            payload.value.Gender = userDetail.value[0].gender
-                            payload.value.CivilStatus = userDetail.value[0].CivilStatus
+                            payload.value.Middlename = UserDetail.value[0].middlename
+                            payload.value.dob = UserDetail.value[0].birthday
+                            payload.value.Gender = UserDetail.value[0].gender
+                            payload.value.CivilStatus = UserDetail.value[0].CivilStatus
                             console.log('User man ni lagi : ', response.data);
                         }
                         loading.value = false;
