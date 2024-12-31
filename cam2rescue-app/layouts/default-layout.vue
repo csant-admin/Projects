@@ -131,7 +131,7 @@
 						:prepend-icon="item.icon"
 						:title="item.name"
 						link
-						@click="logout()"
+						@click.prevent="logout()"
 					></v-list-item>
 				</template>
 			</v-list>
@@ -146,13 +146,47 @@
 		</div>
 
 			<v-divider></v-divider>
-
 			<v-list density="compact" nav>
-			<v-list-item prepend-icon="mdi-pill" title="Add Pet Illness" value="Add Pet Illness" color="#6A0DAD"></v-list-item>
-			<v-list-item prepend-icon="mdi-format-color-fill" title="Add Color" value="Add Color" color="#6A0DAD"></v-list-item>
-			<v-list-item prepend-icon="mdi-map-marker" title="Add Barangay" value="Add Barangay" color="#6A0DAD"></v-list-item>
-			<v-list-item prepend-icon="mdi-run-fast" title="Add Urgency" value="Add Urgency" color="#6A0DAD"></v-list-item>
-			<v-list-item prepend-icon="mdi-needle-off" title="Add Injury" value="Add Injury" color="#6A0DAD"></v-list-item>
+			<v-list-item 
+				prepend-icon="mdi-pill" 
+				title="Add Pet Illness" 
+				value="Add Pet Illness" 
+				color="#6A0DAD"
+				@click="handleOpenModal('Illness')"
+				>
+			</v-list-item>
+			<v-list-item 
+				prepend-icon="mdi-format-color-fill" 
+				title="Add Color" 
+				value="Add Color" 
+				color="#6A0DAD"
+				@click="handleOpenModal('Color')"
+				>
+			</v-list-item>
+			<v-list-item 
+				prepend-icon="mdi-map-marker" 
+				title="Add Barangay" 
+				value="Add Barangay" 
+				color="#6A0DAD"
+				@click="handleOpenModal('Barangay')"
+				>
+			</v-list-item>
+			<v-list-item 
+				prepend-icon="mdi-run-fast" 
+				title="Add Urgency" 
+				value="Add Urgency" 
+				color="#6A0DAD"
+				@click="handleOpenModal('Urgency')"
+				>
+			</v-list-item>
+			<v-list-item 
+				prepend-icon="mdi-needle-off" 
+				title="Add Injury" 
+				value="Add Injury" 
+				color="#6A0DAD"
+				@click="handleOpenModal('Injury')"
+				>
+			</v-list-item>
 			</v-list>
 		</v-navigation-drawer>
 		<v-main>
@@ -169,15 +203,28 @@
 			</v-container>
 		</v-main>
 	</v-layout>
+	<UtilityForm :show="openModal" :utility-title="utilityTitle" @close-dialog="handleCloseModal" />
 </template>
 
 <script setup>
 // import Swal from 'sweetalert2';
-import { ref } from 'vue';
+import { ref,  } from 'vue';
 import '../assets/css/sidebar.css';
 import '../assets/css/main.css';
+import UtilityForm from "@/components/reusables/utility/UtilityForm.vue";
 const rightdrawer = ref(false);
+import { useAuthStore, path } from '@/stores/auth';
+import { useRouter } from 'vue-router';
+const authStore = useAuthStore();
 
+const logout = async () => {
+	try {
+		await authStore.logout();
+		router.push('/'); 
+	} catch (error) {
+		console.error('Logout failed:', error);
+	}
+}
 const links = [
 	{
 		name:'Dashboard',
@@ -209,12 +256,12 @@ const links = [
 		icon:'mdi-account',
 		logout:false
 	},
-	{
-		name:'Add User',
-		path:'/user/add-user',
-		icon:'mdi-plus',
-		logout:false
-	},
+	// {
+	// 	name:'Add User',
+	// 	path:'/user/add-user',
+	// 	icon:'mdi-plus',
+	// 	logout:false
+	// },
 
 	{
 		name: 'For Rescue',
@@ -222,7 +269,6 @@ const links = [
 		icon:'mdi-ambulance',
 		logout:false
 	},
-
 
 	{
 		name:'Logout',
@@ -234,4 +280,16 @@ const links = [
 
 const drawer = ref(null);
 const router = useRouter();
+
+const openModal = ref(false);
+const utilityTitle = ref('');
+
+const handleOpenModal = (title, icon) => {
+	utilityTitle.value = title;
+	openModal.value = true;
+}
+const handleCloseModal = () => {
+	openModal.value = false;
+}
+
 </script>

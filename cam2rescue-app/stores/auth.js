@@ -23,6 +23,7 @@ export const useAuthStore = defineStore('auth', {
 					'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 				}
 			});
+			console.log('Mao ni Siya ang Response : ', response.message);
 			if (response.data) {
 				const token = useCookie('token');
 				token.value = response.data.access_token;

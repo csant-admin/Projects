@@ -2,38 +2,31 @@
     import { ref } from 'vue';
     import axios from 'axios';
     import '~/assets/css/main.css';
+    import { useAuthStore, userAuthenticated } from '@/stores/auth';
+    import Registration from '@/components/reusables/registration/Registration.vue';
+    const authStore = useAuthStore();
 
     const userList          = ref([]);
     const loading           = ref(true);
     const pagination        = ref({ page: 1, itemsPerPage: 10 });
     const base_url          =  useApiUrl();
-    const value             = ref(0)
-    const interval          = ref(null)
     const showSnackbar      = ref(false);
     const isError           = ref(false);
     const message           = ref('');
+    const showModal         = ref(false);
 
     definePageMeta({
         layout: "default-layout",
         middleware: 'auth'
     });
 
-    const startLoader = () => {
-        clearInterval(interval.value);
-        value.value = 0;
-        interval.value = setInterval(() => {
-            if (value.value === 100) {
-                value.value = 0 
-            } else {
-                value.value += 10
-            }
-        }, 1000)
+    const handleModal = () => {
+        showModal.value = true;
     }
 
-    const stopLoader = () => {
-        clearInterval(interval.value);
-        value.value = 0; 
-    };
+    const handleCloseModal = () => {
+       showModal.value = false;
+    }
 
     const headers = [
         { title: 'Lastname', key: 'Lastname' },
@@ -52,7 +45,6 @@
 
     const handleAPIRequest = async (data = {}, apiRequest = '') => {
         loading.value = true;
-        startLoader();
         try {
             let response;
 
@@ -62,56 +54,71 @@
                     if (response.status >= 200 && response.status < 300) {
                         userList.value = response.data;
                         loading.value = false;
-                        stopLoader();
                     }
                     break;
 
                 case 'update-user-status': 
-                    console.log('Sending request');
                     response = await axios.put(`${base_url}api/update-user-status/${data}`);
                     if(response) {
                         message.value = response.message || 'Updated Successfully';
                         loading.value = false;
-                        startLoader();
                     } else {
                         message.value = response.message || 'Failed to change user status, call Cam2Rescue team';
                         loading.value = false;
-                        startLoader();
                     }
                     break;
                 default:
                     throw new Error('Invalid API request');
             }
-
             return response.data;
-
         } catch (error) {
             console.error(`Error ${apiRequest}:`, error);
             loading.value = false;
             throw error;
         } finally {
             loading.value = false;
-            stopLoader();
         }
     };
 
+    const loadUserList = async () => {
+       await handleAPIRequest({}, 'user-list');
+    }
+
     onMounted(() => {
+        const loggedInUser = sessionStorage.getItem('user');
+            if (loggedInUser) {
+                const userObject = JSON.parse(loggedInUser);
+                console.log('User Object : ', userObject);
+                // userID.value = userObject.UserID;
+            }
         handleAPIRequest({}, 'user-list');
     })
 
 </script>
 
 <template>
-    <div class="page-label animated-page-header">
-        <h3>User List</h3>
+    <div class="animated animatedFadeInUp fadeInUp">
+        <v-row class="pa-4">
+            <h3>User List <v-icon color="#6A0DAD" medium @click="loadUserList">mdi-reload</v-icon></h3>
+            <v-spacer></v-spacer>
+            <v-btn 
+                color="#6A0DAD" 
+                type="button"
+                @click="handleModal";
+            ><v-icon>mdi-plus</v-icon>Add User</v-btn>
+        </v-row>
     </div>
-    <div class="animated-content">
+    <v-progress-linear
+        v-if="loading"
+        color="yellow-darken-2"
+        indeterminate
+    ></v-progress-linear>
+    <div class="animated animatedFadeInUp fadeInUp">
         <v-data-table
             :headers="headers"
             :items="userList"
             :pagination.sync="pagination"
             :loading="loading"
-            class="elevation-1"
         >
             <template v-slot:item="{ item }">
                 <tr>
@@ -159,15 +166,7 @@
                 <p><strong>ERROR! </strong>{{ message }}</p>
             </div>
         </v-snackbar>
-        <div v-if="loading">
-            <div class="text-center">
-                <v-progress-circular :model-value="value" :rotate="360" :size="100" :width="15" color="#107bac">
-                    <template v-slot:default> {{ value }} % </template>
-                </v-progress-circular><br/>
-                Checking Eligibility for May Go Home...
-            </div>
-        </div>
     </div>
-
+    <registration :show="showModal" @load-user="loadUserList" @close-modal="handleCloseModal" />
 </template>
 

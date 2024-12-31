@@ -103,7 +103,6 @@
     const rescueData        = ref([]);
     const isAuthenticated   = ref('')
     const base_url          =  useApiUrl();
-    console.log(base_url);
     if (process.client) {
         const authenticated = localStorage.getItem('Authenticated');
         isAuthenticated.value = authenticated === 'true'; 
