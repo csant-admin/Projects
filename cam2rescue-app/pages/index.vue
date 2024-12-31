@@ -23,9 +23,10 @@
                             <v-btn text tag="nuxt-link" to="/login">Login</v-btn>
                             </template>
                             <template v-else>
-                            <v-btn text @click="logout">Logout</v-btn>
+                            <v-btn text @click.prevent="logout">Logout</v-btn>
                             </template>
-                            <v-btn text tag="nuxt-link" to="/registration">Register</v-btn>
+                            <!-- <v-btn text tag="nuxt-link" to="/registration">Register</v-btn> -->
+                            <v-btn @click="handleModal">Register</v-btn>
                             <v-btn text tag="nuxt-link" to="/adoption-form">Adoption</v-btn>
                         </v-col>
                     </v-col>
@@ -40,7 +41,7 @@
                     <v-list-item link to="/login">Login</v-list-item>
                 </template>
                 <template v-else>
-                    <v-list-item @click="logout">Logout</v-list-item>
+                    <v-list-item @click.prevent="logout">Logout</v-list-item>
                 </template>
                 <v-list-item link to="/registration">Register</v-list-item>
                 <v-list-item link to="/adoption-form">Adoption</v-list-item>
@@ -169,12 +170,47 @@
             </v-col>
         </v-footer>
     </v-app>
+    <registration :show="showModal" @load-user="loadUserList" @close-modal="handleCloseModal" />
 </template>
 
 <script setup>
     import { ref } from 'vue';
+    import { useAuthStore, path } from '@/stores/auth';
+    import { useRouter } from 'vue-router';
+    const router = useRouter();
+    import Registration from '@/components/reusables/registration/Registration.vue';
+
+    const authStore = useAuthStore();
     import '~/assets/css/main.css';
     const drawer = ref(false);
+    const isAuthenticated = ref(false);
+    const showModal         = ref(false);
+    
+    const logout = async () => {
+        try {
+            await authStore.logout();
+            router.push('/'); 
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    }
+
+    const handleModal = () => {
+        console.log('testing on')
+        showModal.value = true;
+    }
+
+    const handleCloseModal = () => {
+       showModal.value = false;
+    }
+
+    onMounted(() => {
+            if (process.client) {
+                const authenticated = localStorage.getItem('Authenticated');
+                console.log('Authenticated:', authenticated); 
+                isAuthenticated.value = authenticated === 'true';
+            }
+        });
 </script>
 
 <style>

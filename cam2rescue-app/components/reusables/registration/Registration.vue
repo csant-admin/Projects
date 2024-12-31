@@ -1,7 +1,13 @@
-
 <script setup>
-    import {ref} from 'vue';
-    import axios from 'axios';
+     import {ref} from 'vue';
+     import axios from 'axios';
+
+    const props = defineProps({
+        show: Boolean,
+    });
+
+    const emits = defineEmits(['close-modal, load-user']);
+
     const valid             = ref(true)
     const gender_data       = ref([]);
     const barangay_data     = ref([]);
@@ -16,7 +22,6 @@
     const message           = ref('');
     const form              = ref(null)
     const payload           = ref({});
-    const pageLoader        = ref(false);
     const value             = ref(0)
     const interval          = ref(null)
 
@@ -30,10 +35,6 @@
 
     const toggleVisibility = () => {
         visible.value = !visible.value;
-    };
-
-    const handleRegistration = async () => {
-      await handleAPIRequest(payload.value, 'add-user');
     };
 
     const startLoader = () => {
@@ -53,22 +54,25 @@
         value.value = 0; 
     };
 
+    const handleRegistration = async () => {
+      await handleAPIRequest(payload.value, 'add-user');
+    };
+
     const handleAPIRequest = async (data = {}, apiRequest = '') => {
+        startLoader();
         try {
             loading.value = true;
             let response;
             switch(apiRequest) {
                 case 'add-user':
-                    startLoader();
                     response = await axios.post(`${base_url}api/add-user`, data);
                     showSnackbar.value = true;
                     if(response ) {
-                        stopLoader();
                         message.value = response.message ? response.message : 'User Registered Successfully';
                         isError.value = false;
+                        closeModal();
                         emits('load-user');
                     } else {
-                        stopLoader();
                         message.value = response.message ? response.message : 'Failed To Register, Call Cam2Rescue Team';
                         isError.value = true;
                     }
@@ -111,6 +115,8 @@
         } catch (error) {
             console.error(`Error ${apiRequest}:`, error);
             throw error;
+        } finally {
+            stopLoader();
         }
     };
 
@@ -122,16 +128,36 @@
         handleAPIRequest({}, 'get-organization-type');
     });
 
+
+
+    let dialogVisibility = ref(props.show);
+
+    const closeModal = () => {
+        emits('close-modal');
+    }
+
+    watch(() => props.show,
+     (newValue) => {
+        console.log(newValue);
+        dialogVisibility.value = newValue;
+    })
+
 </script>
 
 <template>
-    <container fluid>
-        <v-container>
+    <v-dialog v-model="dialogVisibility" persistent fullscreen hide-overlay>
+        <v-card class="pa-6">
+            <v-toolbar color="#6A0DAD">
+                <v-spacer></v-spacer>
+                <v-toolbar-items>
+                    <v-btn icon dark @click.prevent="closeModal"> <v-icon>mdi-close</v-icon></v-btn>
+                </v-toolbar-items>
+            </v-toolbar>
             <v-card-title class="text-center animated animatedFadeInUp fadeInUp" style="letter-spacing: 2px;">
                 <h1><span style="color:#6A0DAD;">Cam</span>2Rescue</h1>
             </v-card-title>
-            <p class="text-center ">An Online Platform form for pet rescue and shelter</p>
             <div class="animated animatedFadeInUp fadeInUp">
+                <p class="text-center ">An Online Platform form for pet rescue and shelter</p>
                 <div class="py-8">
                     <div class="page-label">
                         <h3>Registration Form</h3>
@@ -370,35 +396,39 @@
                                 </fieldset>
                             </v-col>
                         </v-row>
-                        <v-row>
-                            <v-col cols="6">
-                                <v-btn 
-                                    color="#6A0DAD" 
-                                    type="submit"
-                                ><v-icon>mdi-account-plus</v-icon> Register User</v-btn>
-                            </v-col>
-                        </v-row>
-                        
+                        <v-btn 
+                            color="#6A0DAD" 
+                            type="submit"
+                            class="mt-4"
+                            >
+                            <v-icon>mdi-account-plus</v-icon> 
+                            Register User
+                        </v-btn>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn class="mb-4" @click.prevent="closeModal">Close</v-btn>
+                        </v-card-actions>
                     </v-form>
                 </div>
             </div>
-        </v-container>
-        <v-snackbar
-            v-model="showSnackbar"
-            :timeout="2000"
-            color="#107dac"
-            elevation="24"
-            location="top right"
-            multi-line="true"
-            >
-            <div v-if="!isError">
-                <p><strong>{{ message }}</strong></p>
-            </div>
-            <div v-else>
-                <p><strong>ERROR! </strong>{{ message }}</p>
-            </div>
-        </v-snackbar>
-        <div v-if="loading">
+        </v-card>
+    </v-dialog>
+    <v-snackbar
+        v-model="showSnackbar"
+        :timeout="2000"
+        color="#107dac"
+        elevation="24"
+        location="top right"
+        multi-line="true"
+        >
+        <div v-if="!isError">
+            <p><strong>{{ message }}</strong></p>
+        </div>
+        <div v-else>
+            <p><strong>ERROR! </strong>{{ message }}</p>
+        </div>
+    </v-snackbar>
+    <div v-if="loading">
             <div class="text-center">
                 <v-progress-circular :model-value="value" :rotate="360" :size="100" :width="15" color="#107bac">
                     <template v-slot:default> {{ value }} % </template>
@@ -406,15 +436,16 @@
                 Checking Eligibility for May Go Home...
             </div>
         </div>
-    </container>
-  </template>
-  
-<style scoped>
-html, body, #app, .v-application {
-  height: 100%;
-}
+</template>
 
-.v-container {
-  height: 100%;
-}
+<style scoped>
+    html, body, #app, .v-application {
+        height: 100%;
+    }
+
+    .v-container {
+        height: 100%;
+    }
 </style>
+
+  

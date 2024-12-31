@@ -46,6 +46,9 @@
 						<div v-else>
 							<p>Login Failed</p>
 							<p><strong>ERROR! </strong>Incorrect username or password</p>
+							<h3 class="text-center">or</h3>
+							<p>Account has been deactivated</p>
+							<p><strong>Please try again or contact Cam2Rescue team.</strong></p>
 						</div>
 					</v-snackbar>
 				</v-container>
