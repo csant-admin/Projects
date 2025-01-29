@@ -168,7 +168,7 @@
                                 <fieldset class="pa-4 rounded-lg">
                                     <legend class="pa-2" style="color:#6A0DAD;">User Details</legend>
                                     <v-row>
-                                        <v-col cols="4">
+                                        <v-col cols="6">
                                             <fieldset class="pa-4 rounded-lg">
                                                 <legend class="pa-2" style="color:#6A0DAD;">Name</legend>
                                                 <v-col cols="12">
@@ -178,6 +178,8 @@
                                                         :rules="fieldRules"
                                                         label="Last Name"
                                                         variant="outlined"
+                                                        density="compact"
+                                                        hide-details
                                                     ></v-text-field>
                                                 </v-col>
 
@@ -188,6 +190,8 @@
                                                         label="First Name"
                                                         :rules="fieldRules"
                                                         variant="outlined"
+                                                        density="compact"
+                                                        hide-details
                                                     ></v-text-field>
                                                 </v-col>
                                                 <v-col cols="12">
@@ -196,11 +200,26 @@
                                                         hint="Middle Name"
                                                         label="Middle Name"
                                                         variant="outlined"
+                                                        density="compact"
+                                                        hide-details
                                                     ></v-text-field>
+                                                </v-col>
+                                                <v-col cols="12">
+                                                    <v-autocomplete 
+                                                        v-model="payload.Suffix" 
+                                                        label="Suffix"
+                                                        :rules="fieldRules" 
+                                                        variant="outlined"
+                                                        :items="suffix"
+                                                        item-title="description" 
+                                                        item-value="id" 
+                                                        density="compact"
+                                                        hide-details
+                                                    ></v-autocomplete>
                                                 </v-col>
                                             </fieldset>
                                         </v-col>
-                                        <v-col cols="4">
+                                        <v-col>
                                             <fieldset class="pa-4 rounded-lg">
                                                 <legend class="pa-2" style="color:#6A0DAD;">Other Details</legend>
                                                 <v-col cols="12">
@@ -211,6 +230,8 @@
                                                         type="date" 
                                                         :rules="fieldRules"
                                                         variant="outlined"
+                                                        density="compact"
+                                                        hide-details
                                                     ></v-text-field>
                                                 </v-col>
                                                 <v-col cols="12">
@@ -222,6 +243,8 @@
                                                         :rules="fieldRules"
                                                         item-title="description" 
                                                         item-value="id" 
+                                                        density="compact"
+                                                        hide-details
                                                     ></v-autocomplete>
                                                 </v-col>
                                                 <v-col cols="12">
@@ -233,7 +256,33 @@
                                                         :rules="fieldRules"
                                                         item-title="description" 
                                                         item-value="id" 
+                                                        density="compact"
+                                                        hide-details
                                                     ></v-autocomplete>
+                                                </v-col>
+                                                <v-col cols="12">
+                                                    <v-autocomplete 
+                                                        v-model="payload.Barangay" 
+                                                        label="Barangay"
+                                                        variant="outlined" 
+                                                        :items="barangay_data"
+                                                        :rules="fieldRules"
+                                                        item-title="description" 
+                                                        item-value="id" 
+                                                        density="compact"
+                                                        hide-details
+                                                    ></v-autocomplete>
+                                                </v-col>
+                                                <v-col cols="12">
+                                                    <v-text-field 
+                                                        v-model="payload.City" 
+                                                        label="City" 
+                                                        :rules="fieldRules"
+                                                        hint="City"
+                                                        variant="outlined"
+                                                        density="compact"
+                                                        hide-details
+                                                    ></v-text-field>
                                                 </v-col>
                                                 <v-col cols="12">
                                                     <v-autocomplete 
@@ -244,32 +293,9 @@
                                                         :items="userType"
                                                         item-title="description" 
                                                         item-value="id" 
+                                                        density="compact"
+                                                        hide-details
                                                     ></v-autocomplete>
-                                                </v-col>
-                                            </fieldset>
-                                        </v-col>
-                                        <v-col cols="4">
-                                            <fieldset class="pa-4 rounded-lg">
-                                                <legend class="pa-2" style="color:#6A0DAD;">Address</legend>
-                                                <v-col cols="12">
-                                                    <v-autocomplete 
-                                                        v-model="payload.Barangay" 
-                                                        label="Barangay"
-                                                        variant="outlined" 
-                                                        :items="barangay_data"
-                                                        :rules="fieldRules"
-                                                        item-title="description" 
-                                                        item-value="id" 
-                                                    ></v-autocomplete>
-                                                </v-col>
-                                                <v-col cols="12">
-                                                    <v-text-field 
-                                                        v-model="payload.City" 
-                                                        label="City" 
-                                                        :rules="fieldRules"
-                                                        hint="City"
-                                                        variant="outlined"
-                                                    ></v-text-field>
                                                 </v-col>
                                             </fieldset>
                                         </v-col>
@@ -280,7 +306,7 @@
                         <v-row>
                             <v-col cols="12">
                                 <fieldset class="pa-4 rounded-lg">
-                                    <legend class="pa-2">Auth Credentials</legend>
+                                    <legend class="pa-2" style="color:#6A0DAD;">Auth Credentials</legend>
                                     <v-row>
                                         <v-col cols="6">
                                             <fieldset class="pa-4 rounded-lg">
@@ -292,6 +318,8 @@
                                                         :rules="emailRules"
                                                         hint="Email"
                                                         variant="outlined"
+                                                        density="compact"
+                                                        hide-details
                                                     ></v-text-field>
                                                 </v-col>
                                                 <v-col cols="12">
@@ -300,6 +328,8 @@
                                                         hint="Username"
                                                         label="Username" 
                                                         variant="outlined"
+                                                        density="compact"
+                                                        hide-details
                                                     ></v-text-field>
                                                 </v-col>
                                             </fieldset>
@@ -313,6 +343,8 @@
                                                             label="Password" 
                                                             hint="Password"
                                                             variant="outlined" 
+                                                            density="compact"
+                                                            hide-details
                                                             :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'":type="visible ? 'text' : 'password'"  
                                                             @click:append-inner="toggleVisibility"
                                                         ></v-text-field>
@@ -323,6 +355,8 @@
                                                             label="Confirm Password" 
                                                             hint="Confirm Password"
                                                             variant="outlined" 
+                                                            density="compact"
+                                                            hide-details
                                                             :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'":type="visible ? 'text' : 'password'"  
                                                             @click:append-inner="toggleVisibility"
                                                         ></v-text-field>
@@ -351,6 +385,8 @@
                                                         item-value="id" 
                                                         :rules="parseInt(payload.UserType) === 2 ? fieldRules : ''"
                                                         :required="parseInt(payload.UserType) === 2"
+                                                        density="compact"
+                                                        hide-details
                                                     ></v-autocomplete>
                                                 </v-col>
                                                 <v-col cols="12">
@@ -361,6 +397,8 @@
                                                         variant="outlined"
                                                         :rules="parseInt(payload.UserType) === 2 ? fieldRules : ''"
                                                         :required="parseInt(payload.UserType) === 2"
+                                                        density="compact"
+                                                        hide-details
                                                     ></v-text-field>
                                                 </v-col>
                                             </fieldset>
@@ -378,6 +416,8 @@
                                                         item-value="id"
                                                         :rules="parseInt(payload.UserType) === 2 ? fieldRules : ''"
                                                         :required="parseInt(payload.UserType) === 2" 
+                                                        density="compact"
+                                                        hide-details
                                                     ></v-autocomplete>
                                                 </v-col>
                                                 <v-col cols="12">
@@ -388,6 +428,8 @@
                                                         variant="outlined"
                                                         :rules="parseInt(payload.UserType) === 2 ? fieldRules : ''"
                                                         :required="parseInt(payload.UserType) === 2"
+                                                        density="compact"
+                                                        hide-details
                                                     ></v-text-field>
                                                 </v-col>
                                             </fieldset>
@@ -396,17 +438,18 @@
                                 </fieldset>
                             </v-col>
                         </v-row>
-                        <v-btn 
-                            color="#6A0DAD" 
-                            type="submit"
-                            class="mt-4"
-                            >
-                            <v-icon>mdi-account-plus</v-icon> 
-                            Register User
-                        </v-btn>
                         <v-card-actions>
+                            <v-btn 
+                                color="#6A0DAD" 
+                                type="submit"
+                                class="text-white"
+                                style="background-color: #6A0DAD;"
+                                >
+                                <v-icon>mdi-account-plus</v-icon> 
+                                Register User
+                            </v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn class="mb-4" @click.prevent="closeModal">Close</v-btn>
+                            <v-btn class="bg-error" @click.prevent="closeModal">Close</v-btn>
                         </v-card-actions>
                     </v-form>
                 </div>

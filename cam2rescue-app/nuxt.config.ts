@@ -6,7 +6,7 @@ export default defineNuxtConfig({
     apiSecret: '1235',
     public: {
       apiBase: 'http://127.0.0.1:8000/'
-      // apiBase: 'http://192.168.1.6:8000'
+      // apiBase: 'http://192.168.1.4:8000'
     }
   },
 
@@ -16,8 +16,9 @@ export default defineNuxtConfig({
         meta: [
           {name: 'description', content: 'Adopt a pet, rescue stray animals, and donate to animal shelters. Join us in making a difference in the lives of pets in need.'},
           {name: 'description', content: 'An Online Platform for pet recue and shelter'},
-          { name: 'csrf-token', content: process.env.CSRF_TOKEN || '' }
+          { name: 'csrf-token', content: process.env.CSRF_TOKEN || '' },
         ],
+        link: [{ rel: 'icon', type: 'image/x-icon', href: '/cam2rescue.ico' }],
       charset: "utf-8",
       viewport: "width-device-width, initial-scale=1",
     },

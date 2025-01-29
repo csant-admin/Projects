@@ -1,83 +1,5 @@
-<template>
-   <div class="page-label animated-page-header">
-            <h3>List of Posted Rescues</h3>
-    </div>
-    <v-container fluid>
-                        <div class="animated animatedFadeInUp fadeInUp">
-                            <v-data-table
-                                :headers="RescueHeaders"
-                                :items="rescueData"
-                                :pagination.sync="pagination"
-                                :loading="loading"
-                                class="elevation-1"
-                            >
-                                <template v-slot:item="{ item }">
-                                    <tr>
-                                        <td>{{ item.Address }}</td>
-                                        <td>{{ item.PetColorId }}</td>
-                                        <td>{{ item.PetSexId }}</td>
-                                        <td>{{ item.ImportantNote }}</td>
-                                        <td>{{ item.Description }}</td>
-                                        <td>{{ item.created_by }}</td>
-                                        <td>{{ item.created_at }}</td>
-                                        <td>{{ item.updated_by }}</td>
-                                        <td>{{ item.RescueStatus }}</td>
-                                        <td>
-                                            <div>
-                                                <v-btn 
-                                                    color="#6A0DAD" 
-                                                    size="small"
-                                                    class="zoom-button"
-                                                >
-                                                    <v-icon> mdi-pencil-box-outline</v-icon>
-                                                    <v-tooltip
-                                                        activator="parent"
-                                                        location="top"
-                                                    >
-                                                        Update Rescue Details
-                                                    </v-tooltip>
-
-                                                </v-btn>
-                                                <v-btn 
-                                                    color="error" 
-                                                    size="small"
-                                                    class="zoom-button"
-                                                >
-                                                    <v-icon>mdi-trash-can-outline</v-icon>
-                                                    <v-tooltip
-                                                        activator="parent"
-                                                        location="top"
-                                                    >
-                                                        Delete From List
-                                                    </v-tooltip>
-
-                                                </v-btn>
-                                                <v-btn 
-                                                    color="#6A0DAD" 
-                                                    size="small"
-                                                    class="zoom-button"
-                                                >
-                                                    <v-icon>mdi-printer</v-icon>
-                                                    <v-tooltip
-                                                        activator="parent"
-                                                        location="top"
-                                                    >
-                                                        Print Rescue Details
-                                                    </v-tooltip>
-
-                                                </v-btn>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </v-data-table>
-                        </div>
-                    </v-container>
-
-</template>
-
 <script setup>
-     import { ref, onMounted} from 'vue';
+    import { ref, onMounted} from 'vue';
     import axios from 'axios';
     import { useAuthStore, userAuthenticated } from '@/stores/auth';
     import { generateUniqueIdb } from '~/assets/js/IDCenter';
@@ -109,18 +31,17 @@
         console.log('Authenticated : ', isAuthenticated);
     }
 
-
     const RescueHeaders = [
-        { title: 'Full Address', key: 'Address' },
-        { title: 'PetColor', key: 'PetColorId'},
-        { title: 'PetSex', key: 'PetSexId'},
-        { title: 'Important Note', key: 'ImportantNote'},
-        { title: 'Description', key: 'Description' },
-        { title: 'Posted By', key: 'created_by' },
-        { title: 'Date & Time Posted', key: 'created_at' },
-        { title: 'Approved By', key: 'updated_by' },
-        { title: 'Rescue Status', key:'RescueStatus'},
-        { title: 'Action', key: 'Action', sortable: false},
+        { title: 'Full Address',        key: 'Address' },
+        { title: 'PetColor',            key: 'PetColorId'},
+        { title: 'PetSex',              key: 'PetSexId'},
+        { title: 'Important Note',      key: 'ImportantNote'},
+        { title: 'Description',         key: 'Description' },
+        { title: 'Posted By',           key: 'created_by' },
+        { title: 'Date & Time Posted',  key: 'created_at' },
+        { title: 'Approved By',         key: 'updated_by' },
+        { title: 'Rescue Status',       key:'RescueStatus'},
+        { title: 'Action',              key: 'Action', sortable: false},
     ];
 
     const handleAction = async (rescueId, rescueStatusId) => {
@@ -129,7 +50,35 @@
             RescueStatus: rescueStatusId,
             updated_by: JSON.parse(sessionStorage.getItem('user')).UserID
         };
+        loading.value = true;
+        try {
+            const response = await axios.put(url, data);
 
+            if (response.status === 200) {
+                handleAPIRequest({}, 'get-rescue-list');
+                handleAPIRequest({}, 'get-gender');
+                handleAPIRequest({}, 'barangay-list');
+                handleAPIRequest({}, 'color-list');
+                handleAPIRequest({}, 'injury-list');
+                handleAPIRequest({}, 'get-urgency');
+            } else {
+                console.log('Failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    const handleFailedRecue = async () => {
+        const url = `${base_url}api/approve-rescue/${RescueId.value}`;
+        const data = {
+            RescueStatus: RescueStatusId.value,
+            updated_by: JSON.parse(sessionStorage.getItem('user')).UserID,
+            FailedReason: failedReason.value
+        }
         try {
             loading.value = true;
             const response = await axios.put(url, data);
@@ -144,8 +93,20 @@
             throw error;
         } finally {
             loading.value = false;
+            failedRescueDialog.value = false;
         }
-    };
+    }
+
+    const generateRescueReport = async (rescueId) => {
+        console.log('Test');
+        try{
+            const url = `${base_url}api/generate-rescue-report/${rescueId}`;
+            window.open(url, '_blank');
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+        }
+    }
+
 
     const handleAPIRequest = async (data = {}, apiRequest = '') => {
         try {
@@ -216,3 +177,109 @@
     })
 
 </script>
+<template>
+   <div class="page-label animated-page-header">
+            <h3>List of Posted Rescues</h3>
+    </div>
+    <v-container fluid>
+        <div class="animated animatedFadeInUp fadeInUp">
+            <v-data-table
+                :headers="RescueHeaders"
+                :items="rescueData"
+                :pagination.sync="pagination"
+                :loading="loading"
+                class="elevation-1"
+            >
+                <template v-slot:item="{ item }">
+                    <tr>
+                        <td>{{ item.Address }}</td>
+                        <td>{{ item.PetColorId }}</td>
+                        <td>{{ item.PetSexId }}</td>
+                        <td>{{ item.ImportantNote }}</td>
+                        <td>{{ item.Description }}</td>
+                        <td>{{ item.created_by }}</td>
+                        <td>{{ item.created_at }}</td>
+                        <td>{{ item.updated_by }}</td>
+                        <td>{{ item.RescueStatus }}</td>
+                        <td>
+                            <div>
+                                <v-btn 
+                                    color="#6A0DAD" 
+                                    size="small"
+                                    class="zoom-button"
+                                    @click.prevent="handleAction(item.RescueId, 1)"
+                                    :disabled="
+                                        parseInt(item.RescueStatusId) === 1 || 
+                                        parseInt(item.RescueStatusId) === 2 || 
+                                        parseInt(item.RescueStatusId) === 3
+                                    "
+                                >
+                                    <v-icon>mdi-ambulance</v-icon>
+                                    <v-tooltip
+                                        activator="parent"
+                                        location="top"
+                                    >
+                                        Confirm Rescue
+                                    </v-tooltip>
+                                </v-btn>
+                                <v-btn 
+                                    color="success" 
+                                    size="small"
+                                    class="zoom-button"
+                                    @click.prevent="handleAction(item.RescueId, 2)"
+                                    :disabled="
+                                        parseInt(item.RescueStatusId) === 0 || 
+                                        parseInt(item.RescueStatusId) === 2 || 
+                                        parseInt(item.RescueStatusId) === 3
+                                    "
+                                >
+                                    <v-icon>mdi-check-bold</v-icon>
+                                    <v-tooltip
+                                        activator="parent"
+                                        location="top"
+                                    >
+                                        Rescue was Successful
+                                    </v-tooltip>
+                                </v-btn>
+                                <v-btn 
+                                    color="error" 
+                                    size="small"
+                                    class="zoom-button"
+                                    @click.prevent="handleFailedRescue(item.RescueId, 3)"
+                                    :disabled="
+                                        parseInt(item.RescueStatusId) === 0 || 
+                                        parseInt(item.RescueStatusId) === 2 || 
+                                        parseInt(item.RescueStatusId) === 3
+                                    "
+                                >
+                                    <v-icon>mdi-close-thick</v-icon>
+                                    <v-tooltip
+                                        activator="parent"
+                                        location="top"
+                                    >
+                                        Rescue Operation Failed
+                                    </v-tooltip>
+                                </v-btn>
+                                <v-btn 
+                                    color="#6A0DAD" 
+                                    size="small"
+                                    class="zoom-button"
+                                    @click.prevent="generateRescueReport(item.RescueId)"
+                                >
+                                    <v-icon>mdi-printer</v-icon>
+                                    <v-tooltip
+                                        activator="parent"
+                                        location="top"
+                                    >
+                                        Print Rescue Details
+                                    </v-tooltip>
+
+                                </v-btn>
+                            </div>
+                        </td>
+                    </tr>
+                </template>
+            </v-data-table>
+        </div>
+    </v-container>
+</template>

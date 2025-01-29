@@ -211,16 +211,13 @@
                 </v-tabs-window-item>
             </v-tabs-window>
         </v-main>
-
         <!-- Footer -->
         <v-footer app>
             <v-col class="text-center">
                 <span>&copy; 2024 Cam2Rescue. All rights reserved.</span>
             </v-col>
         </v-footer>
-
         <!-- Modal -->
- 
             <div class="text-center pa-4">
                 <v-dialog
                     v-model="failedRescueDialog"
