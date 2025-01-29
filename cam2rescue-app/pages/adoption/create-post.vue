@@ -12,6 +12,8 @@
                                 v-model="petName" 
                                 label="Pet Name" 
                                 variant="outlined"
+                                density="compact"
+                                hide-details
                             ></v-text-field>
                         </v-col>
                         <v-col cols="4">
@@ -22,6 +24,8 @@
                             :items="gender"
                             item-title="description" 
                             item-value="id" 
+                            density="compact"
+                            hide-details
                         ></v-autocomplete>
                         </v-col>
                         <v-col cols="4">
@@ -32,6 +36,8 @@
                             :items="color"
                             item-title="description" 
                             item-value="id" 
+                            density="compact"
+                            hide-details
                         ></v-autocomplete>
                         </v-col>
                     </v-row>
@@ -53,6 +59,7 @@
                                 variant="outlined" 
                                 type="file" 
                                 @change="handleTargetSelected"
+                                density="compact"
                             >
                             </v-text-field>
                         </v-col>
