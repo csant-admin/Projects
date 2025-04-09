@@ -5,8 +5,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     apiSecret: '1235',
     public: {
-      apiBase: 'http://127.0.0.1:8000/'
-      // apiBase: 'http://192.168.1.4:8000'
+      // apiBase: 'http://127.0.0.1:8000/'
+      apiBase: 'http://192.168.1.10:8000'
     }
   },
 

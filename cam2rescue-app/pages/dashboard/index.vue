@@ -18,59 +18,39 @@
                     </v-btn>
                 </v-toolbar>
                 <v-row>
-                    <v-col cols="3">
-                        <v-col cols="12">
-                            <v-card rounded>
-                                <v-card-title>
-                                    Registered User
-                                </v-card-title>
-                                <v-divider></v-divider>
-                                <v-card-text class="text-center">
-                                    20
-                                </v-card-text>
-                            </v-card>
-                        </v-col>
+                    <v-col cols="12" sm="6" md="3">
+                        <v-card rounded>
+                        <v-card-title>Registered User</v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text class="text-center">20</v-card-text>
+                        </v-card>
                     </v-col>
-                    <v-col cols="3">
-                        <v-col cols="12">
-                            <v-card rounded>
-                                <v-card-title>
-                                    Rescued Pets
-                                </v-card-title>
-                                <v-divider></v-divider>
-                                <v-card-text class="text-center">
-                                    4
-                                </v-card-text>
-                            </v-card>
-                        </v-col>
+
+                    <v-col cols="12" sm="6" md="3">
+                        <v-card rounded>
+                        <v-card-title>Rescued Pets</v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text class="text-center">4</v-card-text>
+                        </v-card>
                     </v-col>
-                    <v-col cols="3">
-                        <v-col cols="12">
-                            <v-card rounded>
-                                <v-card-title>
-                                    Adopted Pets
-                                </v-card-title>
-                                <v-divider></v-divider>
-                                <v-card-text class="text-center">
-                                    10
-                                </v-card-text>
-                            </v-card>
-                        </v-col>
+
+                    <v-col cols="12" sm="6" md="3">
+                        <v-card rounded>
+                        <v-card-title>Adopted Pets</v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text class="text-center">10</v-card-text>
+                        </v-card>
                     </v-col>
-                    <v-col cols="3">
-                        <v-col cols="12">
-                            <v-card rounded>
-                                <v-card-title>
-                                    Donated Amounts
-                                </v-card-title>
-                                <v-divider></v-divider>
-                                <v-card-text class="text-center">
-                                    P 1000.00
-                                </v-card-text>
-                            </v-card>
-                        </v-col>
+
+                    <v-col cols="12" sm="6" md="3">
+                        <v-card rounded>
+                        <v-card-title>Donated Amounts</v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text class="text-center">P 1000.00</v-card-text>
+                        </v-card>
                     </v-col>
-                </v-row>
+                    </v-row>
+
             </v-card>
         </v-container>
     </v-container>

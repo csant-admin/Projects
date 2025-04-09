@@ -3,6 +3,8 @@ import axios from 'axios';
 export const userAuthenticated = ref([]);
 export const path = ref('');
 
+const base_api = 'http://192.168.1.10:8000';
+const default_api = 'http://127.0.0.1:8000';
 export const useAuthStore = defineStore('auth', {
   	state: () => ({
     	authenticated: false,
@@ -15,7 +17,7 @@ export const useAuthStore = defineStore('auth', {
    		async authenticateUser({ Username, Password }) {
       		this.loading = true;
 			try {
-				const response = await axios.post('http://127.0.0.1:8000/api/login', {
+				const response = await axios.post(`${base_api}/api/login`, {
 					username: Username,
 					password: Password,
 				}, {
@@ -47,7 +49,7 @@ export const useAuthStore = defineStore('auth', {
   
 		async logout() {
 		try {
-			await axios.post('http://127.0.0.1:8000/api/logout', {}, {
+			await axios.post(`${base_api}/api/logout`, {}, {
 			headers: {
 				'Authorization': `Bearer ${this.token}`  // Include the token
 			}

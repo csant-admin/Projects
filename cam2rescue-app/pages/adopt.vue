@@ -33,18 +33,23 @@
                             <v-col cols="12" md="4">
                                 <v-select 
                                     v-model="payload.gender" 
-                                    :items="genders" 
-                                    label="Gender" 
+                                    label="Pet Gender" 
                                     variant="outlined"
+                                    :items="gender_data"
+                                    item-title="description"
+                                    item-value="id"
                                 ></v-select>
                             </v-col>
 
                             <v-col cols="12" md="4">
-                                <v-text-field 
+                                <v-select 
                                     v-model="payload.color" 
+                                    :items="color" 
                                     label="Color" 
                                     variant="outlined"
-                                ></v-text-field>
+                                    item-title="description"
+                                    item-value="id"
+                                ></v-select>
                             </v-col>
 
                         </v-row>
@@ -325,13 +330,9 @@
         const statuses              = ref([]);
         const userType              = ref([]);
         const orgType               = ref([]);
+        const color                 = ref([]);
         const base_url              = useApiUrl();
-        const ID                    = generateUniqueIdb();
-        const visible               = ref(false);
         const loading               = ref(false);
-        const email                 = ref('');
-        const form                  = ref(null)
-        const showAgreement         = ref(false);
         const agreementConfirmed    = ref(false);
         const petDetail             = ref([]);
         const petId                 = ref(null);
@@ -374,7 +375,7 @@
             if (agreementConfirmed.value) {
                 isLoading.value = true;
                 try {
-                    const response = await axios.post(`${base_url}api/post-adoption`, payload.value);
+                    const response = await axios.post(`${base_url}/api/post-adoption`, payload.value);
                     if(response) {
                         console.log('Successfull');
                         isLoading.value = false;
@@ -393,43 +394,50 @@
                 let response;
                 switch(apiRequest) {
                     case 'get-gender':
-                        response = await axios.get(`${base_url}api/get-gender`);
+                        response = await axios.get(`${base_url}/api/get-gender`);
                         gender_data.value = response.data;
                         loading.value = false;
                         break;
                     case 'barangay-list':
-                        response = await axios.get(`${base_url}api/barangay-list`);
+                        response = await axios.get(`${base_url}/api/barangay-list`);
                         barangay_data.value = response.data;
                         loading.value = false;
                         break; 
                     case 'get-statuses':
-                        response = await axios.get(`${base_url}api/get-statuses`);
+                        response = await axios.get(`${base_url}/api/get-statuses`);
                         statuses.value = response.data;
                         loading.value = false;
                         break;         
                     case 'get-user-type':
-                        response = await axios.get(`${base_url}api/get-user-type`);
+                        response = await axios.get(`${base_url}/api/get-user-type`);
                         userType.value = response.data;
                         loading.value = false;
-                        break;            
+                        break;  
+                    case 'color-list':
+                        response = await axios.get(`${base_url}/api/color-list`);
+                        color.value = response.data;
+                        loading.value = false;
+                        break;          
                     case 'get-organization-type':
-                        response = await axios.get(`${base_url}api/get-organization-type`);
+                        response = await axios.get(`${base_url}/api/get-organization-type`);
                         orgType.value = response.data;
                         loading.value = false;
                         break;                
                     case 'get-pet-details':
                         if (petId.value) { 
-                            response = await axios.get(`${base_url}api/get-pet-details/${petId.value}`);
+                            response = await axios.get(`${base_url}/api/get-pet-details/${petId.value}`);
+                            console.log('PET ID : ', response.data);
                             petDetail.value = response.data;
                             payload.value.pet_id = petDetail.value[0].PetID;
                             payload.value.petname = petDetail.value[0].PetName;
                             payload.value.gender  = petDetail.value[0].PetSex;
+                            payload.value.color   = petDetail.value[0].PetColor;
                         }
                         loading.value = false;
                         break;
                     case 'get-user-details':
                         if(userID.value) {
-                            response = await axios.get(`${base_url}api/get-user-details/${userID.value}`);
+                            response = await axios.get(`${base_url}/api/get-user-details/${userID.value}`);
                             UserDetail.value = response.data;
                             console.log('User Detail : ', UserDetail.value);
                             payload.value.user_id = UserDetail.value[0].id
@@ -439,7 +447,6 @@
                             payload.value.dob = UserDetail.value[0].birthday
                             payload.value.Gender = UserDetail.value[0].gender
                             payload.value.CivilStatus = UserDetail.value[0].CivilStatus
-                            console.log('User man ni lagi : ', response.data);
                         }
                         loading.value = false;
                         break;
@@ -482,6 +489,7 @@
                 handleAPIRequest({}, 'barangay-list');
                 handleAPIRequest({}, 'get-statuses');
                 handleAPIRequest({}, 'get-user-type');
+                handleAPIRequest({}, 'color-list');
                 handleAPIRequest({}, 'get-organization-type');
             } 
         });
