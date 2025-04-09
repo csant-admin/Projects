@@ -9,7 +9,7 @@
                     </v-col>
                     <v-col class="d-none d-md-flex">
                         <v-toolbar-title>
-                            <v-btn text tag="nuxt-link" to="/user-dashboard">
+                            <v-btn text tag="nuxt-link" to="/">
                                 Cam2Rescue
                             </v-btn>
                         </v-toolbar-title>
@@ -35,6 +35,7 @@
         </v-app-bar>
         <v-navigation-drawer v-model="drawer" temporary app color="#6A0DAD">
             <v-list>
+                <v-list-item link to="/">Home</v-list-item>
                 <v-list-item link to="/about">About Us</v-list-item>
                 <v-list-item link to="/contact">Contact Us</v-list-item>
                 <template v-if="!isAuthenticated">
@@ -43,7 +44,7 @@
                 <template v-else>
                     <v-list-item @click.prevent="logout">Logout</v-list-item>
                 </template>
-                <v-list-item link to="/registration">Register</v-list-item>
+                <v-btn @click="handleModal">Register</v-btn>
                 <v-list-item link to="/adoption-form">Adoption</v-list-item>
             </v-list>
         </v-navigation-drawer>
@@ -65,7 +66,7 @@
         <v-main>
             <v-progress-linear v-if="loading" color="deep-purple-accent-4" indeterminate></v-progress-linear>
             <!-- Header -->
-            <v-container class="text-center my-5">
+            <v-container class="text-center">
                 <v-row class="align-center justify-center">
                     <v-col cols="auto">
                         <img src="/assets/images/logo3.png" alt="Cam2Rescue Official logo" style="height: 100px;">
@@ -80,12 +81,24 @@
             </v-container>
 
             <v-container fluid class="animated-content">
-                <v-img src="../assets/images/cam2rescue-banner.jpg" class="banner-image">
+                <v-img src="../assets/images/c2r_bg5.webp" class="banner-image">
                     <v-row class="fill-height" align="center" justify="center">
                         <v-col class="text-center">
-                            <div class="action-btn">
-                                <v-btn text tag="nuxt-link" to="/adoption/home" large color="primary" class="mx-3">Find Your Furry Friend</v-btn>
-                                <v-btn large color="secondary" class="mx-3">Post Rescue</v-btn>
+                            <div class="glass-panel">
+                                <v-btn 
+                                    text tag="nuxt-link" 
+                                    to="/adoption/home" 
+                                    large color="primary" 
+                                    class="mx-3 bg-button"
+                                >
+                                    Find Your Furry Friend
+                                </v-btn>
+                                <v-btn 
+                                    large color="secondary" 
+                                    class="mx-3 bg-button"
+                                >
+                                    Post Rescue
+                                </v-btn>
                             </div>
                         </v-col>
                     </v-row>
@@ -196,7 +209,6 @@
     }
 
     const handleModal = () => {
-        console.log('testing on')
         showModal.value = true;
     }
 
@@ -205,128 +217,223 @@
     }
 
     onMounted(() => {
-            if (process.client) {
-                const authenticated = localStorage.getItem('Authenticated');
-                console.log('Authenticated:', authenticated); 
-                isAuthenticated.value = authenticated === 'true';
-            }
-        });
+        if (process.client) {
+            const authenticated = localStorage.getItem('Authenticated');
+            console.log('Authenticated:', authenticated); 
+            isAuthenticated.value = authenticated === 'true';
+        }
+    });
 </script>
 
-<style>
-.v-tab--selected {
-    color: #6A0DAD !important;
-    border-bottom: 2px solid #6A0DAD !important;
-    font-weight: bold !important;
-}
-.banner-image {
-    position: relative;
-}
-
-.fill-height {
-    @media only screen and (max-width: 620px){
-        position: relative !important;
-        padding: 10;
-        top: 30% !important;
+<style scoped>
+    .background-container {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        background-image: url('@/assets/images/esr_bg5.webp');
+        background-size: cover;
+        background-position: center center;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-}
 
-.v-tabs-bar__content {
-  transition: transform 6s ease-in-out !important;
-}
+    /* Background overlay - Reduce blur */
+    .background-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom right, rgba(59, 2, 61, 0.2), rgba(0, 0, 0, 0.4));
+        backdrop-filter: blur(1px);
+        z-index: 1;
+    }
 
-.v-tabs-slider-wrapper {
-  transition: transform 6s ease-in-out !important;
-}
+    /* Light glow effect */
+    .banner-image::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 120%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 10%, transparent 70%);
+        transform: translateX(-50%);
+        z-index: 1;
+        animation: lightMotion 8s linear infinite;
+    }
 
-/* Change border color of the outlined text field when focused */
-.v-autocomplete__selection {
-    border-width: 2px !important;
-    color: #6A0DAD !important;
-}
+    @keyframes lightMotion {
+        0% { transform: translateX(-50%) rotate(0deg); }
+        100% { transform: translateX(-50%) rotate(360deg); }
+    }
 
-.v-field--active {
-    border-color: #6A0DAD !important; 
-    border-width: 2px !important; 
+    /* Glass panel effect */
+    .glass-panel {
+        /* position: relative;
+        left: 20%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        width: 100%;
+        max-width: 900px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        z-index: 10;
+        animation: fadeIn 1.5s ease-out; */
 
-}
+        position: absolute;
+        top: 35%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+        width: 90%;
+        max-width: 300px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        z-index: 10;
+        animation: fadeIn 1.5s ease-out;
+    }
 
-.v-field--active {
-    color: #6A0DAD !important;
-}
 
-.v-card--reveal {
-    align-items: center;
-    bottom: 0;
-    justify-content: center;
-    opacity: .9;
+    /* Button Styling */
+    .bg-button {
+        background: linear-gradient(to right, #673AB7, #512DA8);
+        color: white;
+        font-weight: bold;
+        transition: 0.3s ease-in-out;
+    }
+
+    .bg-button:hover {
+        background: linear-gradient(to right, #512DA8, #311B92);
+    }
+    .v-tab--selected {
+        color: #6A0DAD !important;
+        border-bottom: 2px solid #6A0DAD !important;
+        font-weight: bold !important;
+    }
+    .banner-image {
+        position: relative;
+    }
+
+    .fill-height {
+        @media only screen and (max-width: 620px){
+            position: relative !important;
+            padding: 10;
+            top: 30% !important;
+        }
+    }
+
+    .v-tabs-bar__content {
+    transition: transform 6s ease-in-out !important;
+    }
+
+    .v-tabs-slider-wrapper {
+    transition: transform 6s ease-in-out !important;
+    }
+
+    /* Change border color of the outlined text field when focused */
+    .v-autocomplete__selection {
+        border-width: 2px !important;
+        color: #6A0DAD !important;
+    }
+
+    .v-field--active {
+        border-color: #6A0DAD !important; 
+        border-width: 2px !important; 
+
+    }
+
+    .v-field--active {
+        color: #6A0DAD !important;
+    }
+
+    .v-card--reveal {
+        align-items: center;
+        bottom: 0;
+        justify-content: center;
+        opacity: .9;
+        position: absolute;
+        width: 100%;
+    }
+
+    .action-buttons {
     position: absolute;
-    width: 100%;
-}
-
-.action-buttons {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  gap: 10px;
-  z-index: 10;
-  transition: opacity 0.3s ease;
-}
-
-/* Team Section Styling */
-.team-section {
-    padding: 2rem 0;
-    background-color: #f9f9f9;
-    border-top: 2px solid #6A0DAD;
-}
-
-.team-card {
-    transition: transform 0.3s ease-in-out;
-    background-color: white;
-}
-
-.team-card:hover {
-    transform: translateY(-10px);
-}
-
-.team-member-card {
-    margin-bottom: 1rem;
-}
-
-.team-member-name {
-    color: #6A0DAD;
-    font-weight: bold;
-    font-size: 1.2rem;
-}
-
-.team-member-role {
-    color: #6A0DAD;
-    font-style: italic;
-}
-
-.team-image {
-    border-radius: 50%;
-    object-fit: cover;
-    margin-top: -4rem;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Scroll animation */
-@keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        transform: translateY(30px);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+    transition: opacity 0.3s ease;
     }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
-.animated-content {
-    animation: fadeInUp 1.5s ease-in-out;
-}
+    /* Team Section Styling */
+    .team-section {
+        padding: 2rem 0;
+        background-color: #f9f9f9;
+        border-top: 2px solid #6A0DAD;
+    }
+
+    .team-card {
+        transition: transform 0.3s ease-in-out;
+        background-color: white;
+    }
+
+    .team-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .team-member-card {
+        margin-bottom: 1rem;
+    }
+
+    .team-member-name {
+        color: #6A0DAD;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .team-member-role {
+        color: #6A0DAD;
+        font-style: italic;
+    }
+
+    .team-image {
+        border-radius: 50%;
+        object-fit: cover;
+        margin-top: -4rem;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Scroll animation */
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animated-content {
+        animation: fadeInUp 1.5s ease-in-out;
+    }
 
 </style>

@@ -7,7 +7,7 @@
             <div class="animated animatedFadeInUp fadeInUp">
                 <form  @submit.prevent="submitImage">
                     <v-row>
-                        <v-col cols="4">
+                        <v-col sm="12" md="4" lg="3">
                             <v-text-field 
                                 v-model="petName" 
                                 label="Pet Name" 
@@ -16,29 +16,29 @@
                                 hide-details
                             ></v-text-field>
                         </v-col>
-                        <v-col cols="4">
+                        <v-col sm="12" md="4" lg="3">
                             <v-autocomplete 
-                            v-model="petGender" 
-                            label="Pet Gender" 
-                            variant="outlined" 
-                            :items="gender"
-                            item-title="description" 
-                            item-value="id" 
-                            density="compact"
-                            hide-details
-                        ></v-autocomplete>
+                                v-model="petGender" 
+                                label="Pet Gender" 
+                                variant="outlined" 
+                                :items="gender"
+                                item-title="description" 
+                                item-value="id" 
+                                density="compact"
+                                hide-details
+                            ></v-autocomplete>
                         </v-col>
-                        <v-col cols="4">
+                        <v-col sm="12" md="4" lg="3">
                             <v-autocomplete
-                            v-model="petColor" 
-                            label="Pet Color" 
-                            variant="outlined" 
-                            :items="color"
-                            item-title="description" 
-                            item-value="id" 
-                            density="compact"
-                            hide-details
-                        ></v-autocomplete>
+                                v-model="petColor" 
+                                label="Pet Color" 
+                                variant="outlined" 
+                                :items="color"
+                                item-title="description" 
+                                item-value="id" 
+                                density="compact"
+                                hide-details
+                            ></v-autocomplete>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -80,6 +80,14 @@
                 </form>
             </div>
     </v-container>
+    <v-snackbar
+      v-model="snackbar"
+      :multi-line="mode === 'multi-line'"
+      :vertical="mode === 'vertical'"
+      location="top right"
+    >
+      {{ message }}
+    </v-snackbar>
 </template>
 
 <script setup>
@@ -93,6 +101,27 @@
         middleware: 'auth'
     });
 
+    const snackbar = ref(false);
+    const message = ref("");
+
+    const showSnackbar = () => {
+        snackbar.value = true;
+    };
+
+    const resetForm = () => {
+        petName.value = '';
+        petGender.value = '';
+        petColor.value = '';
+        petDescription.value = '';
+        imageFile.value = null;
+        imagePreview.value = null;
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput) {
+            fileInput.value = '';
+        }
+    };
+
+
     const imageFile = ref(null);
     const imagePreview = ref(null);
     const petName = ref('');
@@ -103,6 +132,7 @@
     const gender = ref([]);
     const base_url =  useApiUrl();
     const ID = generateUniqueIdb();
+    const loading = ref(false);
 
     const handleTargetSelected = (event) => {
         if (event.target.files.length === 0) {
@@ -136,39 +166,38 @@
             for (const key in data) {
                 formData.append(key, data[key]);
             }
-            console.log('Data', formData);
             try {
                 let response;
                 switch(apiRequest) {
                     case 'post-pet':
-                        response = await axios.post(`${base_url}api/post-pet`, formData, {
+                        response = await axios.post(`${base_url}/api/post-pet`, formData, {
                             headers: {
                                 'Content-Type': 'multipart/form-data',
                             },
                         });
-                        logEvent('Uploading Pet', {
-                            upload: {
-                                petId: data.petId,
-                                petName: data.petname,
-                                sex: data.petGender,
-                                description: data.petDescription,
-                                image: data.image.name
-                            }
-                        });
+                        // logEvent('Uploading Pet', {
+                        //     upload: {
+                        //         petId: data.petId,
+                        //         petName: data.petname,
+                        //         sex: data.petGender,
+                        //         description: data.petDescription,
+                        //         image: data.image.name
+                        //     }
+                        // });
                         break;
                     
                     case 'fetch-images':
-                        response = await axios.get(`${base_url}api/images`);
+                        response = await axios.get(`${base_url}/api/images`);
                         break;
 
                     case 'get-gender':
-                        response = await axios.get(`${base_url}api/get-gender`);
+                        response = await axios.get(`${base_url}/api/get-gender`);
                         gender.value = response.data;
                         loading.value = false;
                         break;
 
                     case 'color-list':
-                        response = await axios.get(`${base_url}api/color-list`);
+                        response = await axios.get(`${base_url}/api/color-list`);
                         color.value = response.data;
                         loading.value = false;
                         break;
@@ -176,7 +205,11 @@
                     default:
                         throw new Error('Invalid API request');
                 }
-                return response.data;
+                if(response.status === 200) {
+                    message.value = "Pet has been successfully posted"
+                    showSnackbar()
+                    resetForm()
+                }
             } catch (error) {
                 console.error(`Error ${apiRequest}:`, error);
                 throw error;
