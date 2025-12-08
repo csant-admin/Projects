@@ -1,93 +1,98 @@
 <template>
-    <v-container>
-        <div class="page-label animated-page-header">
-            <h3>Create Post</h3>
-        </div>
-        
-            <div class="animated animatedFadeInUp fadeInUp">
-                <form  @submit.prevent="submitImage">
-                    <v-row>
-                        <v-col sm="12" md="4" lg="3">
-                            <v-text-field 
-                                v-model="petName" 
-                                label="Pet Name" 
-                                variant="outlined"
-                                density="compact"
-                                hide-details
-                            ></v-text-field>
-                        </v-col>
-                        <v-col sm="12" md="4" lg="3">
-                            <v-autocomplete 
-                                v-model="petGender" 
-                                label="Pet Gender" 
-                                variant="outlined" 
-                                :items="gender"
-                                item-title="description" 
-                                item-value="id" 
-                                density="compact"
-                                hide-details
-                            ></v-autocomplete>
-                        </v-col>
-                        <v-col sm="12" md="4" lg="3">
-                            <v-autocomplete
-                                v-model="petColor" 
-                                label="Pet Color" 
-                                variant="outlined" 
-                                :items="color"
-                                item-title="description" 
-                                item-value="id" 
-                                density="compact"
-                                hide-details
-                            ></v-autocomplete>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col cols="12">
-                            <v-textarea 
-                            label="Description" 
-                            v-model="petDescription" 
-                            name="input-7-1" 
-                            variant="outlined" 
-                            auto-grow
-                        ></v-textarea>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col cols="6">
-                            <v-text-field 
-                                label="Upload Images" 
-                                variant="outlined" 
-                                type="file" 
-                                @change="handleTargetSelected"
-                                density="compact"
-                            >
-                            </v-text-field>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col cols="6">
-                            <v-btn color="#6A0DAD" type="submit">Upload</v-btn>
-                        </v-col>
-                    </v-row>
-                    <v-row>
+    <v-container class="animated animatedFadeInUp fadeInUp">
+        <div class="animated animatedFadeInUp fadeInUp">
+            <form  @submit.prevent="submitImage" class="animated animatedFadeInUp fadeInUp">
+                <v-row>
+                    <v-col cols="6">
+                        <v-row align="center">
+                            <v-col cols="4" class="text-right">Pet Name:</v-col>
+                            <v-col cols="8">
+                                <v-text-field 
+                                    v-model="petName" 
+                                    label="Pet Name" 
+                                    variant="outlined"
+                                    density="compact"
+                                    hide-details
+                                ></v-text-field>
+                            </v-col>
+                        </v-row>
+                            <v-row align="center">
+                            <v-col cols="4" class="text-right">Pet Sex:</v-col>
+                            <v-col cols="8">
+                                <v-autocomplete 
+                                    v-model="petGender" 
+                                    label="Pet Gender" 
+                                    variant="outlined" 
+                                    :items="gender"
+                                    item-title="description" 
+                                    item-value="id" 
+                                    density="compact"
+                                    hide-details
+                                ></v-autocomplete>
+                            </v-col>
+                        </v-row>
+                        <v-row align="center">
+                            <v-col cols="4" class="text-right">Pet Color:</v-col>
+                            <v-col cols="8">
+                                <v-autocomplete
+                                    v-model="petColor" 
+                                    label="Pet Color" 
+                                    variant="outlined" 
+                                    :items="color"
+                                    item-title="description" 
+                                    item-value="id" 
+                                    density="compact"
+                                    hide-details
+                                ></v-autocomplete>
+                            </v-col>
+                        </v-row>
+                            <v-row>
+                            <v-col cols="4" class="text-right">Pet Description:</v-col>
+                            <v-col cols="8">
+                                <v-textarea 
+                                    label="Description" 
+                                    v-model="petDescription" 
+                                    name="input-7-1" 
+                                    variant="outlined" 
+                                    auto-grow
+                                ></v-textarea>
+                            </v-col>
+                        </v-row>
+                        <v-row align="center">
+                            <v-col cols="4" class="text-right">Upload Image:</v-col>
+                            <v-col cols="8">
+                                <v-text-field 
+                                    label="Upload Images" 
+                                    variant="outlined" 
+                                    type="file" 
+                                    @change="handleTargetSelected"
+                                    density="compact"
+                                >
+                                </v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row align="center">
+                            <v-col cols="4"></v-col>
+                            <v-col cols="8">
+                                <v-btn 
+                                    color="#50075e"
+                                    block
+                                    type="submit">Upload</v-btn>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+                    <v-col cols="6" style="border: 1px solid #F5F5F5">
                         <img 
                             v-if="imagePreview" 
                             :src="imagePreview" 
                             alt="Image Preview" 
-                            style="max-width: 400px; height: auto;" class="mt-3"
+                            style="max-width: 570px; height: auto;" class="mt-3"
                         />
-                    </v-row>
-                </form>
-            </div>
+                    </v-col>
+                </v-row>
+            </form>
+        </div>
     </v-container>
-    <v-snackbar
-      v-model="snackbar"
-      :multi-line="mode === 'multi-line'"
-      :vertical="mode === 'vertical'"
-      location="top right"
-    >
-      {{ message }}
-    </v-snackbar>
 </template>
 
 <script setup>
@@ -97,10 +102,10 @@
     import { logEvent } from '~/assets/js/LoggingService';
     import '~/assets/css/main.css'
     definePageMeta({
-        layout: "default-layout",
-        middleware: 'auth'
+        layout: "user-default-layout",
+        // middleware: 'auth'
     });
-
+    const { showAlert } = useAlert()
     const snackbar = ref(false);
     const message = ref("");
 
@@ -175,17 +180,12 @@
                                 'Content-Type': 'multipart/form-data',
                             },
                         });
-                        // logEvent('Uploading Pet', {
-                        //     upload: {
-                        //         petId: data.petId,
-                        //         petName: data.petname,
-                        //         sex: data.petGender,
-                        //         description: data.petDescription,
-                        //         image: data.image.name
-                        //     }
-                        // });
+                        if(response.status === 200) {
+                            message.value = "Pet has been successfully posted"
+                            showAlert(message.value, 'success');
+                            resetForm()
+                        }
                         break;
-                    
                     case 'fetch-images':
                         response = await axios.get(`${base_url}/api/images`);
                         break;
@@ -204,11 +204,6 @@
 
                     default:
                         throw new Error('Invalid API request');
-                }
-                if(response.status === 200) {
-                    message.value = "Pet has been successfully posted"
-                    showSnackbar()
-                    resetForm()
                 }
             } catch (error) {
                 console.error(`Error ${apiRequest}:`, error);
@@ -230,6 +225,9 @@
 </script>
 
 <style>
+    .v-col.v-col-8 {
+        padding: 0 12px;
+    }
     .file-upload-icon {
         position: absolute;
         top: 50%;

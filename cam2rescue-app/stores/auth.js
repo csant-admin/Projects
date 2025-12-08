@@ -1,121 +1,114 @@
-import { defineStore } from 'pinia';
-import axios from 'axios';
-export const userAuthenticated = ref([]);
-export const path = ref('');
+import { defineStore } from 'pinia'
+import axios from 'axios'
 
-const base_api = 'http://192.168.1.10:8000';
-const default_api = 'http://127.0.0.1:8000';
+const default_api = 'http://127.0.0.1:8000'
+let inactivityTimeout
+
 export const useAuthStore = defineStore('auth', {
-  	state: () => ({
-    	authenticated: false,
-    	loading: false,
-		user: null,
-		token: null,
-	}),
+  state: () => ({
+    authenticated: false,
+    loading: false,
+    user: null,
+    token: null,
+	message: null,
+  }),
 
-  	actions: {
-   		async authenticateUser({ Username, Password }) {
-      		this.loading = true;
-			try {
-				const response = await axios.post(`${base_api}/api/login`, {
-					username: Username,
-					password: Password,
-				}, {
-					headers: {
-						'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-					}
-				});
-				if (response.data) {
-					const token = useCookie('token');
-					token.value = response.data.access_token;
-					this.authenticated = true;
-					this.user = response.data.user;
-					if(parseInt(this.user.UserType) === 1 ) {
-						path.value = 'dashboard';
-					} else {
-						path.value = '/';
-					}
-					sessionStorage.setItem('user', JSON.stringify(this.user));  
-					sessionStorage.setItem('loggedIn', true); 
-					localStorage.setItem('Authenticated', 'true');
-					localStorage.setItem('token', this.token);
-				}
-			} catch (error) {
-				throw new Error('Invalid credentials');
-			} finally {
-			this.loading = false;
-			}
-  		},
-  
-		async logout() {
-		try {
-			await axios.post(`${base_api}/api/logout`, {}, {
-			headers: {
-				'Authorization': `Bearer ${this.token}`  // Include the token
-			}
-			});
-			this.authenticated = false;
-			this.user = null;
-			this.token = null;
-			sessionStorage.clear();
-			const token = useCookie('token');
-			token.value = null;
-			clearTimeout(inactivityTimeout);
-			localStorage.removeItem('Authenticated');
-			localStorage.removeItem('token');
-			localStorage.removeItem('type');
-		} catch (error) {
-			console.error('Logout failed:', error);
-		}
-		},
+  actions: {
+    async authenticateUser({ Username, Password }) {
+  this.loading = true
+  try {
+    const { data } = await axios.post(`${default_api}/api/login`, {
+      username: Username,
+      password: Password,
+    })
 
-		checkAuth() {
-		const user = sessionStorage.getItem('user');
-		const token = sessionStorage.getItem('token');
-		const loggedIn = sessionStorage.getItem('loggedIn');
+    if (data.status === 'success') {
+      const { access_token, user } = data.data
 
-		if (user && token && loggedIn) {
-			this.user = JSON.parse(user);
-			this.token = token;
-			this.authenticated = true;
-			const authenticated = localStorage.getItem('Authenticated');
-			const token = localStorage.getItem('token');
-		} else {
-			this.authenticated = false;
-			this.user = null;
-			this.token = null;
-		}
-		},
-	}
-});
+      this.token = access_token
+      this.user = user
+      this.authenticated = true
+      this.message = data.message
 
-let inactivityTimeout;
+      if (process.client) {
+        localStorage.setItem('token', access_token)
+        localStorage.setItem('user', JSON.stringify(user))
+        localStorage.setItem('authenticated', 'true')
+      }
+    } else {
+      // Laravel explicitly sent an error message
+      this.message = data.message || 'Login failed.'
+    }
+  } catch (error) {
+    console.error('Login error:', error)
 
-function startInactivityTimer() {
-  const authStore = useAuthStore();
-  inactivityTimeout = setTimeout(() => {  
-    authStore.logout(); 
-  }, 1800000); 
-}
+    if (error.response) {
+      this.message = error.response.data?.message ||
+        `Error ${error.response.status}: Something went wrong.`
+    } else if (error.request) {
+      this.message = 'Cannot reach the server. Check your connection.'
+    } else {
+      this.message = 'Unexpected error. Please try again.'
+    }
 
-function resetInactivityTimer() {
-  clearTimeout(inactivityTimeout);
-  startInactivityTimer();
-}
-
-
-if (process.client) {
-  window.onload = () => {
-    startInactivityTimer();
-    document.onmousemove = resetInactivityTimer;
-    document.onkeypress = resetInactivityTimer;
-  };
-
-  window.onclose = () => {
-    const authStore = useAuthStore();
-    inactivityTimeout = setTimeout(() => {  
-      authStore.logout(); 
-    }, 1000 * 60 * 5); 
+    throw new Error(this.message)
+  } finally {
+    this.loading = false
   }
-}
+},
 
+
+    async logout() {
+		try {
+			await axios.post(`${default_api}/api/logout`, {}, {
+			headers: { 'Authorization': `Bearer ${this.token}` }
+			})
+		} catch (e) {
+			console.error('Logout failed', e)
+		}
+		if(process.client) {
+			this.authenticated = false
+			this.user = null
+			this.token = null
+			localStorage.clear()
+			clearTimeout(inactivityTimeout)
+		}
+    },
+
+    checkAuth() {
+		try {
+			if(process.client) {
+				const token = localStorage.getItem('token')
+				const userStr = this.user = SafeStorage.get('user')
+				const authenticated = localStorage.getItem('authenticated') === 'true'
+
+				if (token && userStr && authenticated) {
+					this.token = token
+					this.user = JSON.parse(userStr)  
+					this.authenticated = true
+				} else {
+					this.authenticated = false
+					this.user = null
+					this.token = null
+				}
+			}
+		} catch (e) {
+			console.warn('Invalid JSON in localStorage.user, resetting...', e)
+			localStorage.removeItem('user')
+			this.user = null
+			}
+    },
+
+    startInactivityTimer() {
+      clearTimeout(inactivityTimeout)
+      inactivityTimeout = setTimeout(() => {
+        this.logout()
+      }, 1800000) // 30 mins
+    },
+
+    resetInactivityTimer() {
+      clearTimeout(inactivityTimeout)
+      this.startInactivityTimer()
+    }
+  }
+})

@@ -17,7 +17,7 @@
 
     definePageMeta({
         layout: "default-layout",
-        middleware: 'auth'
+        // middleware: 'auth'
     });
 
     const handleModal = () => {

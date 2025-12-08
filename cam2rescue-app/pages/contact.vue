@@ -1,123 +1,158 @@
-<template>
-    <v-app>
-        <v-app-bar app color="#6A0DAD">
-            <v-container fluid>
-                <v-row align="center" no-gutters>
-                    <v-col class="text-left d-flex d-md-none">
-                        <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-                    </v-col>
-                    <v-col class="d-none d-md-flex">
-                        <v-toolbar-title>
-                            <v-btn text tag="nuxt-link" to="/">
-                                Cam2Rescue
-                            </v-btn>
-                        </v-toolbar-title>
-                    </v-col>
 
-                    <v-col class="d-none d-md-flex text-right" cols="6">
-                        <v-col cols="12">
-                            <v-btn text tag="nuxt-link" to="/about">About Us</v-btn>
-                            <v-btn text tag="nuxt-link" to="/contact">Contact Us</v-btn>
-                            <template v-if="!isAuthenticated">
-                            <v-btn text tag="nuxt-link" to="/login">Login</v-btn>
-                            </template>
-                            <template v-else>
-                            <v-btn text @click.prevent="logout">Logout</v-btn>
-                            </template>
-                            <!-- <v-btn text tag="nuxt-link" to="/registration">Register</v-btn> -->
-                            <v-btn @click="handleModal">Register</v-btn>
-                            <v-btn text tag="nuxt-link" to="/adoption-form">Adoption</v-btn>
+<template>
+    <v-container class="contact-page">
+        <v-row justify="center" align="center">
+            <v-col cols="12" md="10" lg="8">
+                <v-card class="contact-card animated animatedFadeInUp fadeInUp" elevation="3">
+                    <v-row no-gutters>
+                        <v-col cols="12" md="6" class="contact-image-col">
+                            <v-img
+                                src="../assets/images/bg2.jpg"
+                                alt="Rescue Pets"
+                                class="contact-image"
+                                height="100%"
+                                cover
+                            ></v-img>
                         </v-col>
-                    </v-col>
-                </v-row>
-            </v-container>
-        </v-app-bar>
-        <v-navigation-drawer v-model="drawer" temporary app color="#6A0DAD">
-            <v-list>
-                <v-list-item link to="/">Home</v-list-item>
-                <v-list-item link to="/about">About Us</v-list-item>
-                <v-list-item link to="/contact">Contact Us</v-list-item>
-                <template v-if="!isAuthenticated">
-                    <v-list-item link to="/login">Login</v-list-item>
-                </template>
-                <template v-else>
-                    <v-list-item @click.prevent="logout">Logout</v-list-item>
-                </template>
-                <v-btn @click="handleModal">Register</v-btn>
-                <v-list-item link to="/adoption-form">Adoption</v-list-item>
-            </v-list>
-        </v-navigation-drawer>
-        <v-container class="contact-us">
-        <v-row class="align-center">
-            <!-- Left Side: Contact Form -->
-            <v-col cols="12" md="6">
-                <v-img 
-                    src="../assets/images/c2r_bg5.webp" 
-                    alt="Rescue Pets" 
-                    max-width="500"
-                    class="mx-auto"
-                ></v-img>
-            </v-col>
-            
-            <!-- Right Side: Image -->
-            <v-col cols="12" md="6" class="text-center">
-                
-                    <h2 class="text-h5 font-weight-bold mb-4">Get in Touch</h2>
-                    <p class="text-body-2">Email: contact@cam2rescue.com</p>
-                    <p class="text-body-2">Phone: +63 900 123 4567</p>
-                    <v-textarea
-                        label="Your Message"
-                        variant="outlined"
-                        rows="4"
-                        class="mt-4"
-                    ></v-textarea>
-                    <v-btn color="deep-purple" class="mt-2" block>Send Message</v-btn>
+                        <v-col cols="12" md="6" class="contact-form-col">
+                            <v-card-text>
+                                <h2 class="text-h4 font-weight-bold mb-6">Get in Touch</h2>
+                                <v-list>
+                                    <v-list-item prepend-icon="mdi-email" class="mb-2">
+                                        <v-list-item-title>contact@cam2rescue.com</v-list-item-title>
+                                    </v-list-item>
+                                    <v-list-item prepend-icon="mdi-phone" class="mb-4">
+                                        <v-list-item-title>+63 900 123 4567</v-list-item-title>
+                                    </v-list-item>
+                                </v-list>
+                                <v-form @submit.prevent="submitForm" class="mt-6 animated animatedFadeInUp fadeInUp">
+                                    <v-text-field
+                                        v-model="payload.FromName"
+                                        label="Your Name"
+                                        variant="outlined"
+                                        required
+                                        density="compact"
+                                    ></v-text-field>
+                                    <v-text-field
+                                        v-model="payload.Subject"
+                                        label="Subject"
+                                        variant="outlined"
+                                        type="text"
+                                        required
+                                        density="compact"
+                                    ></v-text-field>
+                                    <v-text-field
+                                        v-model="payload.FromEmail"
+                                        label="Your Email"
+                                        variant="outlined"
+                                        type="email"
+                                        required
+                                        density="compact"
+                                    ></v-text-field>
+                                    <v-textarea
+                                        v-model="payload.Content"
+                                        label="Your Message"
+                                        variant="outlined"
+                                        rows="4"
+                                        required
+                                        density="compact"
+                                    ></v-textarea>
+                                    <v-btn
+                                        type="submit"
+                                        color="#50075e"
+                                        block
+                                        class="mt-4"
+                                        :loading="loading"
+                                    >
+                                        Send Message
+                                    </v-btn>
+                                </v-form>
+                            </v-card-text>
+                        </v-col>
+                    </v-row>
+                </v-card>
             </v-col>
         </v-row>
-        </v-container>
-        <v-footer app>
-            <v-col class="text-center">
-                <span>&copy; 2024 Cam2Rescue. All rights reserved.</span>
-            </v-col>
-        </v-footer>
-    </v-app>
-    <registration :show="showModal" @load-user="loadUserList" @close-modal="handleCloseModal" />
-  </template>
-  
+    </v-container>
+</template>
+
   <script setup>
-        import { ref } from 'vue';
-        import { useAuthStore, path } from '@/stores/auth';
-        import { useRouter } from 'vue-router';
-        const router = useRouter();
-        import Registration from '@/components/reusables/registration/Registration.vue';
+    import { ref } from 'vue';
+    import axios from 'axios';
+    import { useAuthStore } from '@/stores/auth';
+    import { useRouter } from 'vue-router';
+    const router = useRouter();
+    
+    const authStore = useAuthStore();
+    import '~/assets/css/main.css';
+    const drawer = ref(false);
+    const isAuthenticated = ref(false);
+    const showModal         = ref(false);
 
-        const authStore = useAuthStore();
-        import '~/assets/css/main.css';
-        const drawer = ref(false);
-        const isAuthenticated = ref(false);
-        const showModal         = ref(false);
+    definePageMeta({
+        layout: 'user-default-layout',
+        // middleware: 'auth'
+    })
 
-        const handleModal = () => {
-            showModal.value = true;
+    const payload = ref({  
+        FromName: '',
+        Subject: '',
+        FromEmail: '',
+        Content: ''
+    });
+    const submitForm = async () => {
+        try {
+            const response = await axios.post(`${useApiUrl()}/api/send-email`, payload.value, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${useAuthStore().token}`,
+                }
+            });
+            if (response.data.code === 200) {
+                alert('email was sent to subject');
+            }
+        } catch (error) {
+            console.error('Error sending email:', error);
+            alert('Failed to send email. Please try again later.');
         }
+    }
 
-        const handleCloseModal = () => {
-            showModal.value = false;
-        }
-
-        // onMounted(() => {
-        //     if (process.client) {
-        //         const authenticated = localStorage.getItem('Authenticated');
-        //         console.log('Authenticated:', authenticated); 
-        //         isAuthenticated.value = authenticated === 'true';
-        //     }
-        // });
-  </script>
+</script>
   
 <style scoped>
-    .contact-us {
+    /* .contact-us {
         min-height: 100vh;
         display: flex;
         align-items: center;
-    }
+    } */
+     .contact-page {
+  padding: 4rem 0;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.contact-card {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.contact-image-col {
+  min-height: 300px;
+}
+
+.contact-form-col {
+  padding: 2rem;
+}
+
+@media (max-width: 960px) {
+  .contact-image-col {
+    min-height: 200px;
+  }
+  
+  .contact-form-col {
+    padding: 1.5rem;
+  }
+}
 </style>

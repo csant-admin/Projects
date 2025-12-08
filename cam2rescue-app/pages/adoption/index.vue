@@ -9,13 +9,13 @@
     import {ref} from 'vue';
     definePageMeta({
         layout: "default-layout",
-        middleware: 'auth'
+        // middleware: 'auth'
     });
 
 </script>
 
 <script>
     export default {
-        middleware: 'auth'
+        // middleware: 'auth'
     }
 </script>

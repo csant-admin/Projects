@@ -1,7 +1,77 @@
+<script setup>
+	import { ref, computed, onMounted } from 'vue'
+	import { useRouter } from 'vue-router'
+	import { useAuthStore } from '@/stores/auth'
+	import UtilityForm from '@/components/reusables/utility/UtilityForm.vue'
+	import '../assets/css/sidebar.css'
+	import '../assets/css/main.css'
+
+	const router = useRouter()
+	const drawer = ref(false)
+	const rightdrawer = ref(false)
+	const openModal = ref(false)
+	const utilityTitle = ref('')
+	const authStore = useAuthStore()
+
+	const user = ref(authStore.user) 
+
+	watch(() => authStore.user, (val) => {
+		user.value = val
+	})
+
+
+	onMounted(() => {
+		if (!authStore.user) {
+			const storedUser = localStorage.getItem('user')
+			const storedToken = localStorage.getItem('token')
+			if (storedUser && storedToken) {
+			authStore.user = JSON.parse(storedUser)
+			authStore.token = storedToken
+			authStore.authenticated = true
+			}
+		}
+    })
+	// logout
+	const logout = async () => {
+		await authStore.logout()
+		router.push('/')
+	}
+
+	// helper
+	const normalizePath = (path) => {
+        if (!path) return '/'
+        let cleaned = path.trim().toLowerCase()
+        if (!cleaned.startsWith('/')) cleaned = '/' + cleaned
+        return cleaned.replace(/\/+$/, '') || '/'
+    }
+
+	// --------------------
+	//  MAIN DYNAMIC RBAC
+	// --------------------
+	const allowedPaths = computed(() => {
+        const user = authStore.user
+        if (!user) return []
+
+        const access = user.roles?.access_control || []
+        const cleaned = access
+            .filter(a => a.access_permission === 1)
+            .filter(a => a.Name && a.Name.trim() !== '')
+            .filter(a => a.group_url === 2)
+            .map(a => ({
+                path: normalizePath(a.registered_url.replace(/\\/g, '')),
+                name: a.Name
+            }))
+            console.log('allowedPaths:', cleaned)
+            return cleaned
+        })
+</script>
+
+
+
 <template>
 	<v-layout>
 		<v-app-bar
-			color="#673AB7"
+			color="#50075e;"
 			prominent
 		>
 			<v-container fluid>
@@ -34,15 +104,35 @@
 				</v-img>
 			</v-avatar>
 			<div v-if="user">
-				<div class="pa-4"><span class="text-capitalize">{{ user }}</span></div>
+				<div class="pa-4"><span class="text-capitalize">{{ user?.first_name }} {{ user?.last_name }}</span></div>
 			</div>
 			<div v-else>
 				<div class="pa-4">User's Name</div>
 			</div>
 
 			<v-divider></v-divider>
-
 			<v-list>
+				<template v-for="item in allowedPaths" :key="item.path">
+					<v-list-item>
+						<v-list-item-icon>
+							<v-icon v-if="item.icon">{{ item.icon }}</v-icon>
+						</v-list-item-icon>
+						<v-list-item-title>
+							{{ item.name }}
+						</v-list-item-title>
+						<router-link :to="item.path" class="stretched-link"></router-link>
+					</v-list-item>
+				</template>
+
+    <!-- logout -->
+    <v-list-item
+      prepend-icon="mdi-logout"
+      title="Logout"
+      link
+      @click.prevent="logout"
+    />
+  </v-list>
+			<!-- <v-list>
 				<template v-for="(item, index) in links">
 					<v-list-item
 						v-if="item.name === 'AddModule'"
@@ -55,10 +145,8 @@
 				</template>
 				
 				
-				<template v-for="(item, index) in links">
+				<template v-for="item in allowedPaths" :key="item.path">
 					<v-list-item
-						v-if="item.name === 'Dashboard'"
-						:key="index"
 						:prepend-icon="item.icon"
 						:title="item.name"
 						link
@@ -66,7 +154,7 @@
 					></v-list-item>
 				</template>
 
-				<template v-for="(item, index) in links">
+				<template v-for="item in allowedPaths" :key="item.path">
 					<v-list-item
 						v-if="item.name === 'For Rescue'"
 						:key="index"
@@ -77,53 +165,7 @@
 					></v-list-item>
 				</template>
 				
-				<v-list-group>
-					<template v-slot:activator="{ props }">
-						<v-list-item v-bind="props" class="parent-nav">
-							Adoption
-						</v-list-item>
-					</template>
-					<template v-for="(item, index) in links" :key="index">
-						<div class="custom-link-style">
-							<v-list-item
-							v-if="item.name !== 'Dashboard' && 
-							!item.logout && 
-							item.name !== 'Add Module' &&
-							item.name !== 'Users' &&
-							item.name !== 'Add User' &&
-							item.name !== 'For Rescue'"
-							:prepend-icon="item.icon"
-							:title="item.name"
-							link
-							:to="item.path"
-							></v-list-item>
-						</div>
-					</template>
-				</v-list-group>
-
-				<v-list-group>
-					<template v-slot:activator="{ props }">
-						<v-list-item v-bind="props" class="parent-nav">
-							User
-						</v-list-item>
-					</template>
-					<template v-for="(item, index) in links" :key="index">
-						<div class="custom-link-style">
-							<v-list-item
-							v-if="item.name !== 'Dashboard' && 
-							!item.logout && 
-							item.name !== 'Add Module' &&
-							item.name !== 'Adoption Request' &&
-							item.name !== 'Create Post' &&
-							item.name !== 'For Rescue'"
-							:prepend-icon="item.icon"
-							:title="item.name"
-							link
-							:to="item.path"
-							></v-list-item>
-						</div>
-					</template>
-				</v-list-group>
+				
 				<template v-for="(item, index) in links" :key="index">
 					<v-list-item
 						block
@@ -134,7 +176,7 @@
 						@click.prevent="logout()"
 					></v-list-item>
 				</template>
-			</v-list>
+			</v-list> -->
 		</v-navigation-drawer>
 		<v-navigation-drawer
 			v-model="rightdrawer"
@@ -206,90 +248,3 @@
 	<UtilityForm :show="openModal" :utility-title="utilityTitle" @close-dialog="handleCloseModal" />
 </template>
 
-<script setup>
-// import Swal from 'sweetalert2';
-import { ref,  } from 'vue';
-import '../assets/css/sidebar.css';
-import '../assets/css/main.css';
-import UtilityForm from "@/components/reusables/utility/UtilityForm.vue";
-const rightdrawer = ref(false);
-import { useAuthStore, path } from '@/stores/auth';
-import { useRouter } from 'vue-router';
-const authStore = useAuthStore();
-
-const logout = async () => {
-	try {
-		await authStore.logout();
-		router.push('/'); 
-	} catch (error) {
-		console.error('Logout failed:', error);
-	}
-}
-const links = [
-	{
-		name:'Dashboard',
-		path:'/dashboard',
-		icon:'mdi-view-dashboard',
-		logout: false,
-	},
-	{
-		name:'Adoption Request',
-		path:'/adoption',
-		icon:'mdi-account-circle',
-		logout:false,
-	},
-	{
-		name:'Create Post',
-		path:'/adoption/create-post',
-		icon:'mdi-plus',
-		logout:false
-	},
-	{
-		name:'Add Module',
-		path:'/module',
-		icon:'mdi-plus',
-		logout:false
-	},
-	{
-		name:'Users',
-		path:'/user',
-		icon:'mdi-account',
-		logout:false
-	},
-	// {
-	// 	name:'Add User',
-	// 	path:'/user/add-user',
-	// 	icon:'mdi-plus',
-	// 	logout:false
-	// },
-
-	{
-		name: 'For Rescue',
-		path:'/rescue',
-		icon:'mdi-ambulance',
-		logout:false
-	},
-
-	{
-		name:'Logout',
-		path:'dashboard',
-		icon:'mdi-logout',
-		logout:true
-	}
-];
-
-const drawer = ref(null);
-const router = useRouter();
-
-const openModal = ref(false);
-const utilityTitle = ref('');
-
-const handleOpenModal = (title, icon) => {
-	utilityTitle.value = title;
-	openModal.value = true;
-}
-const handleCloseModal = () => {
-	openModal.value = false;
-}
-
-</script>

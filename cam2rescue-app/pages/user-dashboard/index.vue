@@ -299,7 +299,7 @@
     import '~/assets/css/main.css';
 
     definePageMeta({
-        middleware: 'auth'
+        // middleware: 'auth'
     })
 
     const authStore = useAuthStore();

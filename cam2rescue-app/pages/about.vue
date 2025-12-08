@@ -1,112 +1,71 @@
-<template>
-    <v-app>
-        <v-app-bar app color="#6A0DAD">
-            <v-container fluid>
-                <v-row align="center" no-gutters>
-                    <v-col class="text-left d-flex d-md-none">
-                        <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-                    </v-col>
-                    <v-col class="d-none d-md-flex">
-                        <v-toolbar-title>
-                            <v-btn text tag="nuxt-link" to="/">
-                                Cam2Rescue
-                            </v-btn>
-                        </v-toolbar-title>
-                    </v-col>
 
-                    <v-col class="d-none d-md-flex text-right" cols="6">
-                        <v-col cols="12">
-                            <v-btn text tag="nuxt-link" to="/about">About Us</v-btn>
-                            <v-btn text tag="nuxt-link" to="/contact">Contact Us</v-btn>
-                            <template v-if="!isAuthenticated">
-                            <v-btn text tag="nuxt-link" to="/login">Login</v-btn>
-                            </template>
-                            <template v-else>
-                            <v-btn text @click.prevent="logout">Logout</v-btn>
-                            </template>
-                            <!-- <v-btn text tag="nuxt-link" to="/registration">Register</v-btn> -->
-                            <v-btn @click="handleModal">Register</v-btn>
-                            <v-btn text tag="nuxt-link" to="/adoption-form">Adoption</v-btn>
-                        </v-col>
-                    </v-col>
-                </v-row>
-            </v-container>
-        </v-app-bar>
-        <v-navigation-drawer v-model="drawer" temporary app color="#6A0DAD">
-            <v-list>
-                <v-list-item link to="/">Home</v-list-item>
-                <v-list-item link to="/about">About Us</v-list-item>
-                <v-list-item link to="/contact">Contact Us</v-list-item>
-                <template v-if="!isAuthenticated">
-                    <v-list-item link to="/login">Login</v-list-item>
-                </template>
-                <template v-else>
-                    <v-list-item @click.prevent="logout">Logout</v-list-item>
-                </template>
-                <v-btn @click="handleModal">Register</v-btn>
-                <v-list-item link to="/adoption-form">Adoption</v-list-item>
-            </v-list>
-        </v-navigation-drawer>
-        <v-container class="contact-us">
-        <v-row class="align-center">
-            <!-- Left Side: Contact Form -->
-            <v-col cols="12" md="6">
-                <v-img 
-                    src="../assets/images/c2r_bg5.webp" 
-                    alt="Rescue Pets" 
-                    max-width="500"
-                    class="mx-auto"
-                ></v-img>
-            </v-col>
+<template>
+    <v-container class="about-page animated animatedFadeInUp fadeInUp">
+        <v-row justify="center" align="center">
+        <v-col cols="12" md="10" lg="8">
+            <v-card class="about-card animated animatedFadeInUp fadeInUp" elevation="2">
+            <v-card-title class="text-h4 font-weight-bold text-center mb-6">
+                About Cam2Rescue
+            </v-card-title>
             
-            <!-- Right Side: Image -->
-            <v-col cols="12" md="6" class="text-center">
-                <div>
-                    <h2 class="text-h5 font-weight-bold text-left">Mission</h2>
-                    <p class="text-body-2 text-left">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-                        Dolore eveniet laboriosam beatae dicta assumenda, recusandae modi, 
-                        et molestiae ipsum deleniti sunt maxime tempore ipsam officia sit facilis laudantium quos, 
-                        officiis tempora. Neque, eaque tempora quas, 
-                        hic corporis eveniet dicta officiis est tenetur doloribus dignissimos accusantium magni. 
-                        Eaque porro iusto molestiae?
+            <v-row>
+                <v-col cols="12" md="6">
+                <v-img 
+                    src="../assets/images/bg2.jpg" 
+                    alt="Rescue Pets" 
+                    class="about-image"
+                    cover
+                ></v-img>
+                </v-col>
+                
+                <v-col cols="12" md="6">
+                <div class="about-content animated animatedFadeInUp fadeInUp">
+                    <h2 class="text-h5 font-weight-medium mb-4">Our Mission</h2>
+                    <p class="text-body-1">
+                    At Cam2Rescue, we are dedicated to creating a world where every pet has a loving home. 
+                    Our mission is to connect compassionate individuals with animals in need, 
+                    facilitating adoptions that enrich both human and animal lives.
+                    </p>
+                    
+                    <h2 class="text-h5 font-weight-medium mt-6 mb-4">Our Vision</h2>
+                    <p class="text-body-1">
+                    We envision a future where animal shelters are no longer necessary, 
+                    and every pet is cherished in a caring home. Through education, 
+                    community engagement, and innovative adoption processes, 
+                    we strive to make this vision a reality.
                     </p>
                 </div>
-                <div>
-                    <h2 class="text-h5 font-weight-bold mt-6 text-left">Vission</h2>
-                    <p class="text-body-2 text-left">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-                        Possimus odio eum reprehenderit excepturi suscipit qui. 
-                        Debitis labore obcaecati ipsum doloremque error, 
-                        laudantium atque distinctio sint aperiam ab quam doloribus enim, 
-                        tempora omnis maxime ipsa dignissimos adipisci, 
-                        perferendis eveniet animi voluptatibus eius corporis? Architecto, 
-                        suscipit voluptas esse quis sunt sapiente deleniti?
-                    </p>
-                </div>
-            </v-col>
+                </v-col>
+            </v-row>
+            
+            <v-divider class="my-8"></v-divider>
+            
+            <v-row class="values-section">
+                <v-col cols="12" md="4" v-for="(value, index) in coreValues" :key="index">
+                  <v-card class="value-card" elevation="2">
+                    <div class="value-item text-center">
+                        <v-icon :icon="value.icon" size="large" color="#50075e" class="mb-4"></v-icon>
+                        <h3 class="text-h6 font-weight-medium mb-2">{{ value.title }}</h3>
+                        <p class="text-body-2">{{ value.description }}</p>
+                    </div>
+                  </v-card>
+                </v-col>
+            </v-row>
+            </v-card>
+        </v-col>
         </v-row>
-        </v-container>
-        <v-footer app>
-            <v-col class="text-center">
-                <span>&copy; 2024 Cam2Rescue. All rights reserved.</span>
-            </v-col>
-        </v-footer>
-    </v-app>
-    <registration :show="showModal" @load-user="loadUserList" @close-modal="handleCloseModal" />
-  </template>
+    </v-container>
+</template>
   
   <script setup>
         import { ref } from 'vue';
-        import { useAuthStore, path } from '@/stores/auth';
-        import { useRouter } from 'vue-router';
-        const router = useRouter();
         import Registration from '@/components/reusables/registration/Registration.vue';
 
-        const authStore = useAuthStore();
-        import '~/assets/css/main.css';
-        const drawer = ref(false);
-        const isAuthenticated = ref(false);
+        definePageMeta({
+            layout: "user-default-layout",
+            // middleware: 'auth'
+        })
+
         const showModal         = ref(false);
 
         const handleModal = () => {
@@ -117,19 +76,65 @@
             showModal.value = false;
         }
 
-        // onMounted(() => {
-        //     if (process.client) {
-        //         const authenticated = localStorage.getItem('Authenticated');
-        //         console.log('Authenticated:', authenticated); 
-        //         isAuthenticated.value = authenticated === 'true';
-        //     }
-        // });
+        const coreValues = ref([
+            {
+                icon: 'mdi-heart',
+                title: 'Compassion',
+                description: 'We approach every animal and adopter with empathy and understanding.'
+            },
+            {
+                icon: 'mdi-account-group',
+                title: 'Community',
+                description: 'We believe in the power of community to make a difference in animal welfare.'
+            },
+            {
+                icon: 'mdi-shield-check',
+                title: 'Responsibility',
+                description: 'We promote responsible pet ownership and ethical adoption practices.'
+            }
+        ]);
+
   </script>
   
 <style scoped>
-    .contact-us {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
+    .about-page {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        background-color: #f5f5f5;
     }
+
+.about-card {
+	background-color: white;
+	border-radius: 16px;
+	overflow: hidden;
+	padding: 2rem;
+}
+
+.about-image {
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.about-content {
+  	padding: 0 1rem;
+}
+
+.values-section {
+  	margin-top: 2rem;
+}
+
+.value-item {
+	padding: 1rem;
+	transition: transform 0.3s ease;
+}
+
+.value-item:hover {
+  	transform: translateY(-5px);
+}
+
+@media (max-width: 960px) {
+	.about-content {
+		padding: 2rem 0 0 0;
+	}
+}
 </style>

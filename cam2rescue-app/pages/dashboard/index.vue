@@ -60,7 +60,7 @@
     import {ref} from 'vue';
     definePageMeta({
         layout: "default-layout",
-        middleware: 'auth'
+        // middleware: 'auth'
     })
 </script>
 <style scoped>
